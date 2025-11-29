@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>MBTI 분석</title>
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<h2>📁 카카오톡 MBTI 분석</h2>
+
+<form method="post" th:action="@{/mbti}" enctype="multipart/form-data">
+    <label>내 이름:</label>
+    <input type="text" name="myName" required>
+
+    <label>카카오톡 txt 파일 업로드</label>
+    <input type="file" name="file" accept=".txt" required>
+
+    <button type="submit">분석하기</button>
+</form>
+
+<div th:if="${error}">
+    <p style="color:red;" th:text="${error}"></p>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>
