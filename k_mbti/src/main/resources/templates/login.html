@@ -1,57 +1,113 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>카카오 로그인 예제</title>
+    <title>로그인</title>
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+
+    <!-- 로그인 페이지 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
 
- <a id="kakao-login-btn" href="#">
-    <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
-         width="222" alt="카카오 로그인 버튼"/>
-</a>
+<div th:replace="fragments/header :: siteHeader"></div>
 
-<p id="result"></p>
+<div class="page-wrap">
+    <h2 class="page-title">
+        <span>🔐</span>
+        <span>로그인</span>
+    </h2>
+
+    <p class="page-sub">
+        카카오톡으로 간편 로그인하거나<br>
+        이메일 회원가입으로 이용할 수 있어요.
+    </p>
+
+    <div class="card login-card">
+
+        <!-- 일반 로그인 -->
+        <form th:action="@{/login}" method="post" class="normal-login-form">
+
+            <div class="form-row">
+                <label class="form-label">이메일</label>
+                <input type="email" name="email" class="form-input" placeholder="이메일을 입력하세요" required>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">비밀번호</label>
+                <input type="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+            </div>
+
+            <button type="submit" class="btn-submit full">
+                로그인
+            </button>
+        </form>
+
+        <!-- 구분선 -->
+        <div class="divider">또는</div>
+
+        <!-- 카카오 로그인 -->
+        <div class="login-btn-wrap">
+            <a id="kakao-login-btn" href="#" class="kakao-btn">
+                <img id="login-img"
+                     src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
+                     alt="카카오 로그인 버튼">
+            </a>
+        </div>
+
+        <!-- 회원가입 유도 -->
+        <div class="signup-box">
+            아직 계정이 없으신가요?
+            <a th:href="@{/signup}" class="signup-link">회원가입</a>
+        </div>
+
+        <p id="result" class="login-msg"></p>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
 
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 
 <script>
-    // 실제 자바스크립트 키로 바꾸기!
-    Kakao.init('2cad92817abfe73ed312b2096271aec4');
-    console.log(Kakao.isInitialized());
+    Kakao.init('99a1f32a3d1e4592669ec778f7bb36d2');
+
+    const loginBtn = document.getElementById('kakao-login-btn');
 
     function loginWithKakao() {
         Kakao.Auth.login({
             scope: 'profile_nickname, profile_image, account_email',
-            success: function(authObj) {
-                console.log(authObj);
-                alert("로그인 성공! 토큰: " + authObj.access_token);
-
+            success: function() {
                 Kakao.API.request({
                     url: '/v2/user/me',
-                    success: function(response) {
-                        console.log(response);
-                        document.getElementById('result').innerText =
-                            `환영합니다, ${response.kakao_account.profile.nickname}님!`;
-                    },
-                    fail: function(error) {
-                        console.error(error);
+                    success: function(res) {
+                        const name = res.kakao_account.profile.nickname;
+                        localStorage.setItem("kakao_nickname", name);
+
+                        document.getElementById('result').innerText = `${name}님 환영합니다!`;
+
+                        // 로그인 후 MBTI 페이지로 이동 가능
+                        // window.location.href = "/mbti";
                     }
                 });
-            },
-            fail: function(err) {
-                console.error(err);
-            },
+            }
         });
     }
 
-    // >>> 여기 핵심: 버튼 클릭하면 loginWithKakao() 실행
-    document.getElementById('kakao-login-btn').addEventListener('click', function(e) {
-        e.preventDefault(); // a 태그의 기본 이동 막기
+    loginBtn.addEventListener('click', function(e) {
+        e.preventDefault();
         loginWithKakao();
     });
-</script>
 
+    window.onload = function() {
+        const saved = localStorage.getItem("kakao_nickname");
+        if (saved) {
+            document.getElementById('result').innerText = `${saved}님 환영합니다!`;
+        }
+    }
+</script>
 
 </body>
 </html>

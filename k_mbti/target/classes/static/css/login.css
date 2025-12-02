@@ -1,0 +1,173 @@
+/* -------------------------------------
+   로그인 페이지 레이아웃
+--------------------------------------*/
+
+/* body 는 공통(common.css)에서 쓰되,
+   여기서는 배경색 정도만 건드리는게 좋아요 */
+body {
+    background-color: #FFF7C2;
+}
+
+/* 로그인 페이지 전체 감싸는 컨테이너 */
+.page-wrap {
+    max-width: 480px;          /* 한 줄 폭 */
+    margin: 80px auto 80px;    /* 위/아래 간격 + 가운데 정렬 */
+    padding: 0 16px;           /* 좌우 여백 */
+    text-align: center;        /* 제목/설명 기본 가운데 정렬 */
+}
+
+/* 🔐 로그인 제목 */
+.page-title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;                  /* 자물쇠와 글자 사이 간격 */
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 10px;
+    color: #3c2c00;
+}
+
+/* 제목 안의 이모지/텍스트도 줄 간격 통일 */
+.page-title span {
+    display: inline-block;
+}
+
+/* 설명 문구 – 보기 편하게 줄간격 넉넉하게 */
+.page-sub {
+    margin: 0 0 26px;
+    font-size: 14px;
+    color: #6a5d40;
+    line-height: 1.6;
+}
+
+/* -------------------------------------
+   로그인 카드
+--------------------------------------*/
+
+.login-card {
+    max-width: 420px;
+    margin: 0 auto;                   /* 카드도 가운데 */
+    padding: 34px 26px 40px;
+    background-color: #fff;
+    border-radius: 14px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    text-align: left;                 /* 폼 요소는 왼쪽 정렬이 자연스러움 */
+}
+
+/* 일반 로그인 폼 */
+.normal-login-form .form-row {
+    margin-bottom: 18px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4b3e26;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e0d6b5;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* 로그인 버튼 */
+.btn-submit.full {
+    width: 100%;
+    margin-top: 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px 0;
+
+    border: none;
+    border-radius: 20px;
+    background-color: #ffd54a;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+/* 구분선 */
+.divider {
+    text-align: center;
+    margin: 22px 0;
+    font-size: 14px;
+    color: #6a5d40;
+    position: relative;
+}
+.divider:before,
+.divider:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 35%;
+    height: 1px;
+    background-color: rgba(0,0,0,0.15);
+}
+.divider:before { left: 0; }
+.divider:after { right: 0; }
+
+/* 카카오 버튼 영역 */
+.login-btn-wrap {
+    display: flex;
+    justify-content: center;
+}
+.kakao-btn img {
+    width: 230px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: transform .18s ease-out, box-shadow .18s ease-out;
+}
+.kakao-btn img:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+/* 회원가입 안내 */
+.signup-box {
+    margin-top: 24px;
+    text-align: center;
+    color: #60543a;
+    font-size: 14px;
+}
+.signup-link {
+    margin-left: 4px;
+    font-weight: 700;
+    color: #d17b00;
+    text-decoration: none;
+}
+.signup-link:hover {
+    text-decoration: underline;
+}
+
+/* 로그인 메시지 */
+.login-msg {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3c2c00;
+}
+
+/* -------------------------------------
+   모바일 대응
+--------------------------------------*/
+@media (max-width: 600px) {
+    .page-wrap {
+        margin-top: 60px;
+    }
+
+    .login-card {
+        padding: 24px 18px 30px;
+    }
+}

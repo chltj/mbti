@@ -1,0 +1,14 @@
+/* signup.css */
+
+@import url("/css/login.css");
+
+/* 회원가입 페이지만의 작은 차이만 여기서 정의 */
+
+.page-title span:last-child {
+    /* 회원가입 페이지 제목 살짝만 느낌 다르게 */
+    letter-spacing: 1px;
+}
+
+.page-sub {
+    margin-bottom: 30px;
+}

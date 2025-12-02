@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+
+    <!-- 회원가입 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/signup.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+    <h2 class="page-title">
+        <span>🧑‍💻</span>
+        <span>회원가입</span>
+    </h2>
+
+    <p class="page-sub">
+        이메일로 계정을 만들고<br>
+        카카오톡 MBTI 분석 서비스를 이용해 보세요.
+    </p>
+
+    <div class="card login-card"><!-- 스타일 재사용 -->
+
+        <form th:action="@{/signup}" method="post" class="normal-login-form">
+
+            <!-- 이메일 -->
+            <div class="form-row">
+                <label class="form-label" for="email">이메일</label>
+                <input type="email" id="email" name="email"
+                       class="form-input"
+                       placeholder="이메일을 입력하세요" required>
+            </div>
+
+            <!-- 닉네임 -->
+            <div class="form-row">
+                <label class="form-label" for="nickname">닉네임</label>
+                <input type="text" id="nickname" name="nickname"
+                       class="form-input"
+                       placeholder="카카오톡에서 사용할 닉네임" required>
+            </div>
+
+            <!-- 비밀번호 -->
+            <div class="form-row">
+                <label class="form-label" for="password">비밀번호</label>
+                <input type="password" id="password" name="password"
+                       class="form-input"
+                       placeholder="비밀번호를 입력하세요" required>
+            </div>
+
+            <!-- 비밀번호 확인 -->
+            <div class="form-row">
+                <label class="form-label" for="passwordConfirm">비밀번호 확인</label>
+                <input type="password" id="passwordConfirm" name="passwordConfirm"
+                       class="form-input"
+                       placeholder="비밀번호를 한 번 더 입력하세요" required>
+            </div>
+
+            <!-- 에러/안내 메시지 -->
+            <p id="pw-msg" class="login-msg" style="display:none;"></p>
+
+            <!-- 회원가입 버튼 -->
+            <button type="submit" class="btn-submit full">
+                회원가입
+            </button>
+        </form>
+
+        <!-- 로그인으로 이동 -->
+        <div class="signup-box">
+            이미 계정이 있으신가요?
+            <a th:href="@{/login}" class="signup-link">로그인</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+<script>
+    // 비밀번호/비밀번호 확인 간단 체크
+    const form = document.querySelector('.normal-login-form');
+    const pw = document.getElementById('password');
+    const pw2 = document.getElementById('passwordConfirm');
+    const pwMsg = document.getElementById('pw-msg');
+
+    form.addEventListener('submit', function (e) {
+        if (pw.value !== pw2.value) {
+            e.preventDefault();
+            pwMsg.style.display = 'block';
+            pwMsg.textContent = '비밀번호가 일치하지 않습니다.';
+            pwMsg.style.color = '#d9534f';
+            pw2.focus();
+        }
+    });
+</script>
+
+</body>
+</html>
