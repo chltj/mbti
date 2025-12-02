@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 public class Maincontroller {
@@ -57,5 +59,16 @@ public class Maincontroller {
             return "Mbti";
         }
     }
+            @GetMapping("/crush")
+    public String crushPage() {
+        return "crush";  // Main.html을 의미
+    }
+    @PostMapping("/crush")
+    public String crushPage(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return "crush";
+    }
+    
     
 }
