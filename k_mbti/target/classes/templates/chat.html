@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>대화하기</title>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+    <h2 class="page-title">
+        <span>💬</span>
+        <span>MBTI별 대화하기</span>
+    </h2>
+    <p class="page-sub">
+        대화하고 싶은 <b>MBTI 타입</b>을 고른 뒤, 아래 채팅창에서 자유롭게 이야기를 걸어보세요.<br>
+        선택한 MBTI 성향에 맞게 말투와 반응이 달라집니다.
+    </p>
+
+    <!-- MBTI 선택 -->
+    <div class="card chat-card">
+        <div class="form-row">
+            <label class="form-label">대화할 MBTI 선택</label>
+
+            <select id="mbtiSelect" class="form-input mbti-select">
+    <option value="ISTJ">ISTJ</option>
+    <option value="ISFJ">ISFJ</option>
+    <option value="INFJ">INFJ</option>
+    <option value="INTJ">INTJ</option>
+
+    <option value="ISTP">ISTP</option>
+    <option value="ISFP">ISFP</option>
+    <option value="INFP">INFP</option>
+    <option value="INTP">INTP</option>
+
+    <option value="ESTP">ESTP</option>
+    <option value="ESFP">ESFP</option>
+    <option value="ENFP">ENFP</option>
+    <option value="ENTP">ENTP</option>
+
+    <option value="ESTJ">ESTJ</option>
+    <option value="ESFJ">ESFJ</option>
+    <option value="ENFJ">ENFJ</option>
+    <option value="ENTJ">ENTJ</option>
+</select>
+
+            <div class="hint-text">
+                나중에 더 많은 MBTI 타입/커스텀 프리셋도 추가할 수 있어요.
+            </div>
+        </div>
+
+        <!-- 채팅 영역 -->
+        <div id="chatWindow" class="chat-window">
+            <!-- JS에서 대화 버블을 append -->
+        </div>
+
+        <!-- 입력 영역 -->
+        <div class="chat-input-row">
+            <input id="chatInput" type="text" class="form-input chat-input" placeholder="하고 싶은 말을 적어보세요 :) 엔터 또는 전송 버튼">
+            <button id="sendBtn" type="button" class="btn-primary chat-send-btn">전송</button>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+<script>
+    const chatWindow = document.getElementById('chatWindow');
+    const chatInput  = document.getElementById('chatInput');
+    const sendBtn    = document.getElementById('sendBtn');
+    const mbtiSelect = document.getElementById('mbtiSelect');
+
+    function addBubble(text, who) {
+        const div = document.createElement('div');
+        div.classList.add('chat-bubble', who);
+        div.innerText = text;
+        chatWindow.appendChild(div);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        const mbti = mbtiSelect.value;
+
+        // 내 말 버블 추가
+        addBubble(message, 'me');
+        chatInput.value = '';
+
+        try {
+            const params = new URLSearchParams();
+            params.append('mbti', mbti);
+            params.append('message', message);
+
+            const res = await fetch('/chat/message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            });
+
+            const data = await res.json();
+            addBubble(data.reply, 'bot');
+        } catch (e) {
+            addBubble('오류가 발생했어. 잠시 후 다시 시도해줘 🥲', 'bot');
+        }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // ★★★ 여기가 추가해야 하는 부분 ★★★
+    // MBTI 선택이 변경될 때마다 채팅창을 초기화
+    mbtiSelect.addEventListener('change', () => {
+        const newMbti = mbtiSelect.value;
+
+        // 채팅창 비우기
+        chatWindow.innerHTML = "";
+
+        // 변경 안내 버블 추가 (선택)
+        addBubble(newMbti + " 타입과의 새 대화를 시작했어요! 😊", "bot");
+    });
+    // ★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+body {
+    background-color: #FFF7C2;
+}
+
+.chat-card {
+    margin-top: 12px;
+}
+
+.chat-window {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 14px;
+    background-color: #fafafa;
+    height: 320px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chat-bubble {
+    max-width: 75%;
+    padding: 8px 12px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+.chat-bubble.me {
+    align-self: flex-end;
+    background-color: #FFD93B;
+}
+
+.chat-bubble.bot {
+    align-self: flex-start;
+    background-color: #ffffff;
+    border: 1px solid #eee;
+}
+
+.chat-input-row {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.chat-input {
+    flex: 1;
+}
+
+.chat-send-btn {
+    white-space: nowrap;
+}
+.mbti-select {
+    width: 140px;          /* 원하는 너비 */
+    padding: 8px 10px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+/* 드롭다운 펼쳐졌을 때 스크롤 추가 */
+.mbti-select option {
+    padding: 8px 10px;
+}
+
+/* 크롬/엣지/사파리 드롭다운 스크롤 높이 제어 */
+.mbti-select:focus {
+    outline: none;
+}
+
+/* 핵심! select 펼침창 높이(5개 정도) */
+select.mbti-select[size],
+select.mbti-select[size="1"] {
+    height: auto;
+    max-height: 180px; /* 약 5개 옵션 높이 */
+    overflow-y: auto;
+}
+

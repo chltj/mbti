@@ -1,0 +1,77 @@
+/* 결과 페이지 배경 */
+body {
+    background-color: #FFF7C2;
+}
+
+.result-tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: #FFF7C2;
+    margin-bottom: 12px;
+}
+
+.result-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.result-sub {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 22px;
+}
+
+.mbti-box {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 32px 20px;
+    border-radius: 16px;
+    background-color: #FFFBEA;
+    border: 1px solid #FFE58F;
+    min-width: 220px;
+    margin-bottom: 18px;
+}
+
+.mbti-label {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.mbti-value {
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: 4px;
+}
+
+.mbti-desc {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+@media (max-width: 600px) {
+    .page-wrap {
+        margin-top: 24px;
+    }
+    .card {
+        padding: 22px 18px 24px;
+    }
+    .mbti-value {
+        font-size: 32px;
+    }
+}

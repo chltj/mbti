@@ -3,25 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>MBTI 분석</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/mbti.css}">
 </head>
 <body>
 
 <div th:replace="fragments/header :: siteHeader"></div>
 
-<h2>📁 카카오톡 MBTI 분석</h2>
+<div class="page-wrap">
+    <h2 class="page-title">
+        <span>📁</span>
+        <span>카카오톡 MBTI 분석</span>
+    </h2>
+    <p class="page-sub">
+        카카오톡 대화 txt 파일을 업로드하면, 말투를 기반으로 여러분의 MBTI를 재미로 분석해 드릴게요.
+        (대화 내용은 어디에도 저장되지 않습니다.)
+    </p>
 
-<form method="post" th:action="@{/mbti}" enctype="multipart/form-data">
-    <label>내 이름:</label>
-    <input type="text" name="myName" required>
+    <div class="card">
+        <form method="post" th:action="@{/mbti}" enctype="multipart/form-data">
+            <!-- 내 이름 -->
+            <div class="form-row">
+                <label class="form-label">내 이름</label>
+                <input class="form-input" type="text" name="myName" placeholder="예) 서연" required>
+                <div class="hint-text">카톡 대화에서 내가 사용하는 이름(대화명)을 입력해 주세요.</div>
+            </div>
 
-    <label>카카오톡 txt 파일 업로드</label>
-    <input type="file" name="file" accept=".txt" required>
+            <!-- 파일 업로드 -->
+            <div class="form-row">
+                <label class="form-label">카카오톡 txt 파일 업로드</label>
+                <input class="form-file" type="file" name="file" accept=".txt" required>
+                <div class="hint-text">카카오톡 대화 내보내기 → 텍스트 파일(.txt)을 업로드해 주세요.</div>
+            </div>
 
-    <button type="submit">분석하기</button>
-</form>
+            <!-- 제출 버튼 -->
+            <button type="submit" class="btn-submit">
+                <span class="icon">TALK</span>
+                <span>분석하기</span>
+            </button>
+        </form>
 
-<div th:if="${error}">
-    <p style="color:red;" th:text="${error}"></p>
+        <div th:if="${error}" class="error-text" th:text="${error}"></div>
+    </div>
 </div>
 
 <div th:replace="fragments/footer :: siteFooter"></div>

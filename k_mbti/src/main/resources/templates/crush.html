@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>호감도 분석</title>
+    <!-- 공통 CSS + 호감도 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/crush.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+    <!-- 타이틀 -->
+    <h2 class="page-title">
+        <span>💘</span>
+        <span>카카오톡 호감도 분석</span>
+    </h2>
+    <p class="page-sub">
+        둘만의 카카오톡 대화를 바탕으로<br>
+        <b>답장 속도</b>, <b>대화 빈도</b>, <b>말투</b> 등을 분석해서
+        상대가 나에게 얼마나 호감이 있는지 재미로 체크해보는 페이지예요.
+    </p>
+
+    <!-- 업로드 카드 -->
+    <div class="card">
+        <form method="post" th:action="@{/crush}" enctype="multipart/form-data">
+            <!-- 내 이름 -->
+            <div class="form-row">
+                <label class="form-label">내 이름</label>
+                <input class="form-input" type="text" name="myName" placeholder="예) 서연" required>
+                <div class="hint-text">카톡 대화에서 내가 사용하는 이름(대화명)을 입력해 주세요.</div>
+            </div>
+
+            <!-- 상대 이름 -->
+            <div class="form-row">
+                <label class="form-label">상대 이름</label>
+                <input class="form-input" type="text" name="targetName" placeholder="예) 도현" required>
+                <div class="hint-text">호감도를 알고 싶은 상대의 카톡 이름(대화명)을 입력해 주세요.</div>
+            </div>
+
+            <!-- 카카오톡 txt 파일 업로드 -->
+            <div class="form-row">
+                <label class="form-label">카카오톡 txt 파일 업로드</label>
+                <input class="form-file" type="file" name="file" accept=".txt" required>
+                <div class="hint-text">
+                    카카오톡 대화 내보내기 → 텍스트 파일(.txt)을 선택해 주세요.
+                    <br>가능하면 <b>둘만의 1:1 대화방</b>이 좋습니다.
+                </div>
+            </div>
+
+            <!-- 분석 옵션(선택) -->
+            <div class="form-row">
+                <label class="form-label">분석 기준 기간 (선택)</label>
+                <select class="form-input" name="range">
+                    <option value="ALL" selected>전체 기간 분석</option>
+                    <option value="30">최근 30일만 보기</option>
+                    <option value="7">최근 7일만 보기</option>
+                </select>
+                <div class="hint-text">
+                    기간을 선택하면, 그 기간에 해당하는 대화만 기준으로 호감도를 계산해요.
+                </div>
+            </div>
+
+            <!-- 제출 버튼 -->
+            <button type="submit" class="btn-submit">
+                <span class="icon">TALK</span>
+                <span>호감도 분석하기</span>
+            </button>
+        </form>
+
+        <!-- 에러 메시지 -->
+        <div th:if="${error}" class="error-text" th:text="${error}"></div>
+    </div>
+
+    <!-- 분석 항목 안내 -->
+    <div class="crush-hint-card">
+        <div class="crush-hint-title">어떤 걸 기준으로 호감도를 볼까요?</div>
+        <ul class="crush-hint-list">
+            <li><b>응답 속도</b> – 상대가 내 메시지에 답장하는 데 걸리는 평균 시간</li>
+            <li><b>대화 주도권</b> – 먼저 말을 거는 비율, 먼저 안부를 묻는 사람이 누구인지</li>
+            <li><b>답장 길이</b> – 내 메시지보다 상대 답장이 더 긴 편인지</li>
+            <li><b>이모티콘/ㅋㅋ/ㅎㅎ 사용 빈도</b> – 딱딱한지, 친근한지</li>
+            <li><b>연속 미읽/단답 횟수</b> – 잠수, 단답 비율</li>
+        </ul>
+        <p class="crush-hint-footer">
+            이 지표들을 종합해서 <b>호감도 점수</b>와 함께 간단한 해석을 보여줄 예정이에요.  
+            (모든 결과는 어디에도 저장되지 않고, 페이지 새로고침 시 사라집니다.)
+        </p>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>

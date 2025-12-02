@@ -1,5 +1,6 @@
 package com.example.k_mbti.controller;
 
+import com.example.k_mbti.dto.CrushResultDto;
 import com.example.k_mbti.parser.KakaoParser;
 import com.example.k_mbti.service.MbtiRuleService;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -59,16 +61,7 @@ public class Maincontroller {
             return "Mbti";
         }
     }
-            @GetMapping("/crush")
-    public String crushPage() {
-        return "crush";  // Main.html을 의미
-    }
-    @PostMapping("/crush")
-    public String crushPage(@RequestBody String entity) {
-        //TODO: process POST request
-        
-        return "crush";
-    }
+
     
     
 }

@@ -1,0 +1,49 @@
+/* 호감도 페이지 배경색 (MBTI 업로드/결과와 통일감) */
+body {
+    background-color: #FFF7C2;
+}
+
+/* 호감도 설명 카드 */
+.crush-hint-card {
+    margin-top: 24px;
+    background-color: #ffffff;
+    border-radius: 18px;
+    padding: 20px 22px 24px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    font-size: 13px;
+    color: #555;
+}
+
+.crush-hint-title {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.crush-hint-list {
+    margin: 0 0 10px 18px;
+    padding: 0;
+}
+.crush-hint-list li {
+    margin-bottom: 4px;
+    line-height: 1.5;
+}
+
+.crush-hint-footer {
+    margin: 0;
+    font-size: 12px;
+    color: #777;
+}
+
+/* 호감도 페이지에서도 submit 버튼 모양 동일하게 사용 */
+.btn-submit span.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background-color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+}
