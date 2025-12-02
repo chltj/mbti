@@ -4,109 +4,8 @@
     <meta charset="UTF-8">
     <title>카카오톡 MBTI 분석 메인</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Pretendard", system-ui, sans-serif;
-            background-color: #f5f5f5;
-        }
-
-        /* ----------------------------
-           Hero Section (메인 상단 영역)
-        ---------------------------- */
-        .hero {
-            background: #4EA3B7;
-            padding: 120px 20px 160px;
-            text-align: center;
-            color: white;
-            position: relative;
-        }
-
-        .hero-title {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 16px;
-        }
-
-        .hero-sub {
-            font-size: 17px;
-            opacity: 0.9;
-            margin-bottom: 40px;
-        }
-
-        /* 중앙 버튼 */
-        .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 18px 42px;
-            font-size: 20px;
-            font-weight: 700;
-            border-radius: 40px;
-            background: #9D58C0;
-            color: white;
-            text-decoration: none;
-            transition: 0.2s ease;
-        }
-        .cta-btn:hover {
-            background: #8748A8;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-        .cta-btn svg {
-            margin-right: 10px;
-        }
-
-        /* ----------------------------
-           아래 카드 공통 스타일
-        ---------------------------- */
-        .content {
-            padding: 40px 20px 80px;
-            max-width: 900px;
-            margin: auto;
-        }
-
-        .section-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .section-sub {
-            font-size: 14px;
-            color: #777;
-            margin-bottom: 20px;
-        }
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin-top: 16px;
-        }
-        .card {
-            border-radius: 12px;
-            padding: 16px 18px;
-            background-color: #fffbea;
-            border: 1px solid #ffe58f;
-            cursor: pointer;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-            text-decoration: none;
-            color: #333;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-        }
-        .card-title {
-            font-weight: 700;
-            margin-bottom: 6px;
-            font-size: 16px;
-        }
-        .card-desc {
-            font-size: 13px;
-            color: #666;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 
 <body>
@@ -116,51 +15,67 @@
 
 <!-- Hero Section -->
 <div class="hero">
-    <div class="hero-title">“드디어 제 성격을 이해받을 수 있어서 정말 기뻐요.”</div>
-    <div class="hero-sub">
-        성격 테스트를 통해 여러분의 성향과 행동에 대한 정확한 분석 결과를 확인해보세요.
-    </div>
+    <div class="hero-inner">
+        <div class="hero-badge">
+            🔍 카카오톡 말투로 보는 나의 성향
+        </div>
+        <div class="hero-title">"어서 와, 카톡 분석은 처음이지?"</div>
+        <div class="hero-sub">
+            카카오톡 대화 내용을 기반으로 여러분의 성향과 행동 패턴을 분석해,<br>
+            MBTI부터 관계의 온도까지 재미있게 알려드릴게요.
+        </div>
 
-    <!-- CTA 버튼 -->
-    <a class="cta-btn" th:href="@{/mbti}">
-        <svg width="22" height="22" viewBox="0 0 24 24">
-            <path fill="#FFF" d="M12 2C6.48 2 2 5.93 2 10.5c0 2.77 1.69 5.24 4.32 6.82-.14.84-.82 4.08-.95 4.78-.15.81.29.8.62.58.25-.17 3.94-2.69 4.62-3.16.43.05.87.08 1.33.08 5.52 0 10-3.93 10-8.5S17.52 2 12 2Z"/>
-            <text x="6.5" y="14" font-size="7.5" font-family="Arial" fill="#FEE500" font-weight="bold">TALK</text>
-        </svg>
-        카카오톡 분석하러 가기 →
-    </a>
+        <a class="cta-btn" th:href="@{/mbti}">
+            <svg width="22" height="22" viewBox="0 0 24 24">
+                <path fill="#FFF" d="M12 2C6.48 2 2 5.93 2 10.5c0 2.77 1.69 5.24 4.32 6.82-.14.84-.82 4.08-.95 4.78-.15.81.29.8.62.58.25-.17 3.94-2.69 4.62-3.16.43.05.87.08 1.33.08 5.52 0 10-3.93 10-8.5S17.52 2 12 2Z"/>
+                <text x="6.5" y="14" font-size="7.5" font-family="Arial" fill="#FEE500" font-weight="bold">TALK</text>
+            </svg>
+            카카오톡 분석하러 가기 →
+        </a>
+    </div>
 </div>
 
 <!-- 메인 기능 카드 영역 -->
-<div class="content">
+<div class="content-wrap">
+    <div class="content-card">
+        <div class="section-title">무엇을 해볼까요?</div>
+        <div class="section-sub">
+            원하는 기능을 선택해서 MBTI, 호감도, 대화 톤까지 한 번에 확인해 보세요.
+        </div>
 
-    <div class="section-title">어서 와, 카톡 분석은 처음이지? 👋</div>
+        <div class="card-grid">
+            <a class="card" th:href="@{/mbti}">
+                <div class="card-title">🧬 MBTI 분석</div>
+                <div class="card-desc">
+                    카카오톡 말투만으로 나와 친구의 MBTI를 규칙 기반으로 추정해요.
+                    초보자도 쉽게 바로 사용할 수 있어요.
+                </div>
+            </a>
 
-    <div class="section-sub">
-        카카오톡 대화 내용을 기반으로 <b>MBTI</b>, <b>호감도</b>, <b>감정 패턴</b> 등을 재미로 분석해보는 페이지야.
-        아래 카드 중 원하는 기능을 선택해 봐!
-    </div>
+            <a class="card" th:href="@{/likeability}">
+                <div class="card-title">💘 호감도 보기</div>
+                <div class="card-desc">
+                    대화 빈도, 말투, 이모티콘 등을 바탕으로
+                    상대가 나에게 얼마나 호감이 있는지 재미로 체크해봐요.
+                </div>
+            </a>
 
-    <div class="card-grid">
-        <a class="card" th:href="@{/mbti}">
-            <div class="card-title">🧬 MBTI 분석</div>
-            <div class="card-desc">말투만으로 나와 친구의 MBTI를 규칙 기반으로 추정해봐.</div>
-        </a>
+            <a class="card" th:href="@{/chat}">
+                <div class="card-title">💬 대화하기</div>
+                <div class="card-desc">
+                    분석 결과를 바탕으로 어떤 톤과 스타일로
+                    대화하면 좋은지 아이디어를 얻을 수 있어요.
+                </div>
+            </a>
 
-        <a class="card" th:href="@{/crush}">
-            <div class="card-title">💘 호감도 보기</div>
-            <div class="card-desc">대화를 기준으로 상대 호감도를 재미로 체크해봐.</div>
-        </a>
-
-        <a class="card" th:href="@{/chat}">
-            <div class="card-title">💬 대화하기</div>
-            <div class="card-desc">분석 기반으로 어떤 톤으로 대화할지 아이디어를 얻자.</div>
-        </a>
-
-        <a class="card" th:href="@{/board}">
-            <div class="card-title">📌 게시판</div>
-            <div class="card-desc">결과 공유하고 재밌게 소통하는 커뮤니티 공간.</div>
-        </a>
+            <a class="card" th:href="@{/board}">
+                <div class="card-title">📌 게시판</div>
+                <div class="card-desc">
+                    나만의 분석 결과를 공유하고,
+                    다른 사람들과 비교해 보면서 놀 수 있는 커뮤니티 공간입니다.
+                </div>
+            </a>
+        </div>
     </div>
 </div>
 

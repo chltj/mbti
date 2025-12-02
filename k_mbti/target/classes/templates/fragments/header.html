@@ -2,11 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <header th:fragment="siteHeader">
+
+    <!-- 1. 메인 헤더 (로고 + 로그인/회원가입) -->
     <div style="
         background-color: #FFD93B;
         padding: 16px 0;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        ">
+    ">
         <div style="
             max-width: 960px;
             margin: 0 auto;
@@ -17,39 +19,71 @@
         ">
             <!-- 로고 / 제목 -->
             <div style="font-weight: 700; font-size: 20px;">
-                🧠 KakaoTalk MBTI Analyzer
+              <a th:href="@{/}" style="text-decoration:none; color:#333;">
+    🧠 KakaoTalk MBTI Analyzer
+</a>
+
+
             </div>
 
-            <!-- 메뉴 -->
+            <!-- 로그인 / 회원가입 -->
             <nav>
                 <ul style="
                     display: flex;
                     list-style: none;
-                    gap: 18px;
+                    gap: 16px;
                     margin: 0;
                     padding: 0;
                     font-size: 15px;
                     font-weight: 500;
                 ">
-                    <!-- href는 나중에 매핑 생기면 변경하면 됨 -->
-                    <li><a th:href="@{/mbti}" style="text-decoration:none; color:#333;">MBTI</a></li>
+                    <li>
+                        <a th:href="@{/login}" style="text-decoration:none; color:#333;">
+                            로그인
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/signup}" style="text-decoration:none; color:#333;">
+                            회원가입
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 2. 서브 헤더 (MBTI / 호감도 / 대화하기 / 게시판 메뉴) -->
+    <div style="
+        background-color: #ffffff;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    ">
+        <div style="
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 25px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        ">
+            <nav>
+                <ul style="
+                    display: flex;
+                    list-style: none;
+                    gap: 100px;
+                    margin: 0;
+                    padding: 0;
+                    font-size: 15px;
+                    font-weight: 500;
+                ">
+                    <li><a th:href="@{/mbti}"  style="text-decoration:none; color:#333;">MBTI</a></li>
                     <li><a th:href="@{/crush}" style="text-decoration:none; color:#333;">호감도</a></li>
-                    <li><a th:href="@{/chat}" style="text-decoration:none; color:#333;">대화하기</a></li>
+                    <li><a th:href="@{/chat}"  style="text-decoration:none; color:#333;">대화하기</a></li>
                     <li><a th:href="@{/board}" style="text-decoration:none; color:#333;">게시판</a></li>
                 </ul>
             </nav>
         </div>
     </div>
 
-    <!-- 공통 컨테이너 시작 -->
-    <div style="
-        max-width: 960px;
-        margin: 24px auto;
-        background-color: #ffffff;
-        border-radius: 14px;
-        padding: 24px 28px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    ">
 </header>
 </body>
 </html>
