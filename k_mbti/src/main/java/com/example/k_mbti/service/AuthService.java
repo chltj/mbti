@@ -6,7 +6,9 @@ import com.example.k_mbti.dto.UserDto;
 
 public interface AuthService {
 
-    void signup(SignupDto request);
+    void signup(SignupDto signupDto);
 
-    UserDto login(LoginDto request);
+    UserDto login(LoginDto loginDto);
+
+    UserDto kakaoLogin(String email, String nickname);
 }

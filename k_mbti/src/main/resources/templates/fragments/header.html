@@ -2,6 +2,51 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <header th:fragment="siteHeader">
+    <style>
+ /* 드롭다운 기본 설정 */
+.nav-main .dropdown {
+    position: relative;
+}
+
+/* 처음에는 감춰두기 */
+.nav-main .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;       /* 부모 li 바로 아래에 붙게 */
+    left: 0;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 6px;
+    padding: 6px 0;
+    list-style: none;
+    min-width: 140px;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+}
+
+/* 드롭다운 안의 링크 스타일 */
+.nav-main .dropdown-menu li a {
+    display: block;
+    padding: 6px 14px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* ✅ 핵심: 부모 위나 드롭다운 위에 있을 때는 계속 보이게 */
+.nav-main .dropdown:hover .dropdown-menu,
+.nav-main .dropdown-menu:hover {
+    display: block;
+}
+
+/* 항목 hover 효과 */
+.nav-main .dropdown-menu li a:hover {
+    background: #f5f5f5;
+}
+
+</style>
+
 
     <!-- 1. 메인 헤더 (로고 + 로그인/회원가입) -->
     <div style="
@@ -25,37 +70,71 @@
             </div>
 
             <!-- 로그인 / 회원가입 -->
-            <nav>
-                <ul style="
-                    display: flex;
-                    list-style: none;
-                    gap: 16px;
-                    margin: 0;
-                    padding: 0;
-                    font-size: 15px;
-                    font-weight: 500;
-                ">
-                    <li>
-                        <a th:href="@{/login}" style="text-decoration:none; color:#333;">
-                            로그인
-                        </a>
-                    </li>
-                    <li>
-                        <a th:href="@{/signup}" style="text-decoration:none; color:#333;">
-                            회원가입
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+<nav>
+    <ul style="
+        display: flex;
+        list-style: none;
+        gap: 16px;
+        margin: 0;
+        padding: 0;
+        font-size: 15px;
+        font-weight: 500;
+    ">
+
+        <!-- 🔥 로그인 상태일 때 (세션에 loginUser가 있을 때) -->
+        <li th:if="${session.loginUser != null}" style="color:#333;">
+            <strong th:text="${session.loginUser.nickname}"></strong>님 환영합니다!
+        </li>
+
+        <li th:if="${session.loginUser != null}">
+<a href="/logout" onclick="return logoutAll();"
+   style="text-decoration:none; color:#333;">
+    로그아웃
+</a>
+<script>
+  function logoutAll() {
+    // 카카오 SDK가 로드된 경우에만
+    if (window.Kakao && Kakao.Auth && Kakao.Auth.getAccessToken()) {
+      Kakao.Auth.logout(function () {
+        console.log('kakao logout done');
+        localStorage.removeItem('kakao_nickname');
+        // 스프링 세션 로그아웃 요청
+        window.location.href = '/logout';
+      });
+      return false; // a 태그 기본 이동 막기
+    } else {
+      localStorage.removeItem('kakao_nickname');
+      return true; // 그냥 /logout으로 이동
+    }
+  }
+</script>
+
+        </li>
+
+        <!-- 🔥 로그인 안 되어 있을 때 -->
+        <li th:if="${session.loginUser == null}">
+            <a th:href="@{/login}" style="text-decoration:none; color:#333;">
+                로그인
+            </a>
+        </li>
+        <li th:if="${session.loginUser == null}">
+            <a th:href="@{/signup}" style="text-decoration:none; color:#333;">
+                회원가입
+            </a>
+        </li>
+
+    </ul>
+</nav>
+
         </div>
     </div>
 
-    <!-- 2. 서브 헤더 -->
-    <div style="
+<!-- 2. 서브 헤더 -->
+<div style="
         background-color: #ffffff;
         border-bottom: 1px solid rgba(0,0,0,0.05);
     ">
-        <div style="
+    <div style="
             max-width: 960px;
             margin: 0 auto;
             padding: 25px 0;
@@ -63,8 +142,8 @@
             align-items: center;
             justify-content: center;
         ">
-            <nav>
-                <ul style="
+        <nav>
+            <ul class="nav-main" style="
                     display: flex;
                     list-style: none;
                     gap: 100px;
@@ -73,15 +152,92 @@
                     font-size: 15px;
                     font-weight: 500;
                 ">
-                    <li><a th:href="@{/mbti}"  style="text-decoration:none; color:#333;">MBTI</a></li>
-                    <li><a th:href="@{/crush}" style="text-decoration:none; color:#333;">호감도</a></li>
-                    <li><a th:href="@{/chat}"  style="text-decoration:none; color:#333;">대화하기</a></li>
-                    <li><a th:href="@{/board}" style="text-decoration:none; color:#333;">게시판</a></li>
-                </ul>
-            </nav>
-        </div>
+                <!-- MBTI: 모두 사용 가능 -->
+                <li>
+                    <a th:href="@{/mbti}" style="text-decoration:none; color:#333;">
+                        MBTI
+                    </a>
+                </li>
+
+                <!-- 호감도 -->
+                <li>
+                    <a th:if="${session.loginUser != null}"
+                       th:href="@{/crush}"
+                       style="text-decoration:none; color:#333;">
+                        호감도
+                    </a>
+
+                    <a th:if="${session.loginUser == null}"
+                       href="#"
+                       onclick="return needLogin();"
+                       style="text-decoration:none; color:#333;">
+                        호감도
+                    </a>
+                </li>
+
+                <!-- 대화하기 -->
+                <li>
+                    <a th:if="${session.loginUser != null}"
+                       th:href="@{/chat}"
+                       style="text-decoration:none; color:#333;">
+                        대화하기
+                    </a>
+
+                    <a th:if="${session.loginUser == null}"
+                       href="#"
+                       onclick="return needLogin();"
+                       style="text-decoration:none; color:#333;">
+                        대화하기
+                    </a>
+                </li>
+
+                <!-- ✅ 게시판 드롭다운 -->
+                <li class="dropdown">
+                    <a href="#" style="text-decoration:none; color:#333;">
+                        게시판 
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a th:if="${session.loginUser != null}"
+                               th:href="@{/board/inquiry}">
+                                문의 게시판
+                            </a>
+                            <a th:if="${session.loginUser == null}"
+                               href="#"
+                               onclick="return needLogin();">
+                                문의 게시판
+                            </a>
+                        </li>
+                        <li>
+                            <a th:if="${session.loginUser != null}"
+                               th:href="@{/board/community}">
+                                소통의 방
+                            </a>
+                            <a th:if="${session.loginUser == null}"
+                               href="#"
+                               onclick="return needLogin();">
+                                소통의 방
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </nav>
     </div>
+</div>
+<script>
+    function needLogin() {
+        if (confirm("로그인 후 이용할 수 있는 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
+            window.location.href = "/login";
+        }
+        return false;
+    }
+</script>
+
 
 </header>
+
 </body>
 </html>

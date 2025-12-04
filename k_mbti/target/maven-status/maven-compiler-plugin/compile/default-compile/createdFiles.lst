@@ -8,6 +8,5 @@ com\example\k_mbti\service\MbtiRuleService.class
 com\example\k_mbti\dto\CrushResultDto.class
 com\example\k_mbti\dto\Message.class
 com\example\k_mbti\service\MbtiChatService.class
-com\example\k_mbti\controller\LoginController.class
 com\example\k_mbti\service\ChatService.class
 com\example\k_mbti\service\CrushService.class

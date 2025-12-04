@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>문의 작성하기</title>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+    <h2 class="page-title">
+        <span>✏️</span>
+        <span>문의 작성</span>
+    </h2>
+
+    <div class="card">
+        <form th:action="@{/board/inquiry/write}" method="post">
+
+            <div class="form-row">
+                <label class="form-label">제목</label>
+                <input type="text" name="title" class="form-input"
+                       placeholder="문의 제목을 입력하세요" required>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">내용</label>
+                <textarea name="content" class="form-textarea"
+                          rows="8" placeholder="문의 내용을 자세히 적어 주세요" required></textarea>
+            </div>
+
+            <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:16px;">
+                <a th:href="@{/board/inquiry}"
+                   style="padding:8px 14px; border-radius:8px; border:1px solid #ddd; text-decoration:none; font-size:14px;">
+                    목록으로
+                </a>
+                <button type="submit"
+                        style="padding:8px 16px; border-radius:8px; border:none; background:#FFD93B; font-size:14px; cursor:pointer;">
+                    등록하기
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>

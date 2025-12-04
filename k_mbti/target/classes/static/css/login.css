@@ -158,6 +158,16 @@ body {
     font-weight: 600;
     color: #3c2c00;
 }
+.error-msg {
+    background: #ffe0e0;
+    border: 1px solid #ffb5b5;
+    color: #d60000;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+}
 
 /* -------------------------------------
    모바일 대응

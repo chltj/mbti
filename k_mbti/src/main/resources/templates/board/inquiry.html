@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>문의 게시판</title>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <!-- 필요하면 전용 CSS도 추가 -->
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+    <h2 class="page-title">
+        <span>📮</span>
+        <span>문의 게시판</span>
+    </h2>
+
+    <p class="page-sub">
+        서비스 이용 중 궁금한 점이나 요청 사항이 있다면<br>
+        아래 문의 게시판에서 남겨주세요.
+    </p>
+
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="margin:0; font-size:18px;">문의 목록</h3>
+
+            <!-- 로그인 상태에서만 글쓰기 버튼 노출 (선택) -->
+            <a th:if="${session.loginUser != null}"
+               th:href="@{/board/inquiry/write}"
+               style="padding:8px 14px; border-radius:8px; background:#FFD93B; color:#333; text-decoration:none; font-size:14px;">
+                문의 작성하기
+            </a>
+        </div>
+
+        <table style="width:100%; border-collapse: collapse; font-size:14px;">
+            <thead>
+            <tr style="border-bottom:1px solid #eee;">
+                <th style="text-align:left; padding:8px 4px; width:60px;">번호</th>
+                <th style="text-align:left; padding:8px 4px;">제목</th>
+                <th style="text-align:left; padding:8px 4px; width:120px;">작성자</th>
+                <th style="text-align:left; padding:8px 4px; width:160px;">작성일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(inquiryList)}">
+                <td colspan="4" style="padding:16px 4px; text-align:center; color:#777;">
+                    등록된 문의가 없습니다.
+                </td>
+            </tr>
+
+            <tr th:each="inq, stat : ${inquiryList}"
+                style="border-bottom:1px solid #f3f3f3;">
+                <td th:text="${stat.count}" style="padding:8px 4px;"></td>
+                <td style="padding:8px 4px;">
+                    <a th:href="@{'/board/inquiry/' + ${inq.id}}"
+                       th:text="${inq.title}"
+                       style="text-decoration:none; color:#333;"></a>
+                </td>
+                <td th:text="${inq.writer}" style="padding:8px 4px;"></td>
+                <td th:text="${#temporals.format(inq.createdAt, 'yyyy-MM-dd HH:mm')}"
+                    style="padding:8px 4px;"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>

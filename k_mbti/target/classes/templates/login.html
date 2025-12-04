@@ -26,7 +26,10 @@
     </p>
 
     <div class="card login-card">
-
+    <!-- 로그인 실패 메시지 -->
+    <div th:if="${loginError}" class="error-msg">
+        <p th:text="${loginError}"></p>
+    </div>
         <!-- 일반 로그인 -->
         <form th:action="@{/login}" method="post" class="normal-login-form">
 
@@ -84,12 +87,18 @@
                     url: '/v2/user/me',
                     success: function(res) {
                         const name = res.kakao_account.profile.nickname;
-                        localStorage.setItem("kakao_nickname", name);
+                        const email = res.kakao_account.email;  // 이메일 권한 허용했을 때
 
-                        document.getElementById('result').innerText = `${name}님 환영합니다!`;
+                        // ★ 더 이상 localStorage에만 저장하지 않고
+                        //    서버로 보내서 세션에 로그인 정보 저장하게 함
+                        const params = new URLSearchParams();
+                        params.append("nickname", name);
+                        if (email) {
+                            params.append("email", email);
+                        }
 
-                        // 로그인 후 MBTI 페이지로 이동 가능
-                        // window.location.href = "/mbti";
+                        // /kakao-login 으로 이동 → 서버에서 세션 설정 후 메인으로 redirect
+                        window.location.href = "/kakao-login?" + params.toString();
                     }
                 });
             }
@@ -101,12 +110,7 @@
         loginWithKakao();
     });
 
-    window.onload = function() {
-        const saved = localStorage.getItem("kakao_nickname");
-        if (saved) {
-            document.getElementById('result').innerText = `${saved}님 환영합니다!`;
-        }
-    }
+    // ★ localStorage 기반 환영메시지는 더 이상 사용 안 함
 </script>
 
 </body>
