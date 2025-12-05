@@ -1,22 +1,28 @@
-package com.example.k_mbti.dto; // ← 패키지 경로는 프로젝트에 맞게 수정해줘
+package com.example.k_mbti.dto;
 
 public class CrushResultDto {
 
-    private int score;                 // 0 ~ 100
-    private String level;              // 예: "관심 많음 / 썸 느낌 💓"
-    private String comment;            // 전체 코멘트
+    private int score;
+    private String level;
+    private String comment;
 
-    private String replySpeedLabel;    // 답장 속도 라벨
-    private String frequencyLabel;     // 대화 빈도 라벨
-    private String initiativeLabel;    // 먼저 말 거는 비율 라벨
-    private String warmthLabel;        // 말투/이모티콘 따뜻함 라벨
+    // 7개의 세부 라벨 필드
+    private String replySpeedLabel;
+    private String frequencyLabel;
+    private String initiativeLabel;
+    private String warmthLabel;
+    private String lengthLabel;
+    private String overlapLabel;
+    private String ratioLabel;
 
     public CrushResultDto() {
     }
 
+    // 10개 인자를 받는 생성자 (CrushService 호환)
     public CrushResultDto(int score, String level, String comment,
                           String replySpeedLabel, String frequencyLabel,
-                          String initiativeLabel, String warmthLabel) {
+                          String initiativeLabel, String warmthLabel,
+                          String lengthLabel, String overlapLabel, String ratioLabel) {
         this.score = score;
         this.level = level;
         this.comment = comment;
@@ -24,61 +30,22 @@ public class CrushResultDto {
         this.frequencyLabel = frequencyLabel;
         this.initiativeLabel = initiativeLabel;
         this.warmthLabel = warmthLabel;
+        this.lengthLabel = lengthLabel;
+        this.overlapLabel = overlapLabel;
+        this.ratioLabel = ratioLabel;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String getReplySpeedLabel() {
-        return replySpeedLabel;
-    }
-
-    public void setReplySpeedLabel(String replySpeedLabel) {
-        this.replySpeedLabel = replySpeedLabel;
-    }
-
-    public String getFrequencyLabel() {
-        return frequencyLabel;
-    }
-
-    public void setFrequencyLabel(String frequencyLabel) {
-        this.frequencyLabel = frequencyLabel;
-    }
-
-    public String getInitiativeLabel() {
-        return initiativeLabel;
-    }
-
-    public void setInitiativeLabel(String initiativeLabel) {
-        this.initiativeLabel = initiativeLabel;
-    }
-
-    public String getWarmthLabel() {
-        return warmthLabel;
-    }
-
-    public void setWarmthLabel(String warmthLabel) {
-        this.warmthLabel = warmthLabel;
-    }
+    // --- Getter 메소드 (Controller 및 View에서 사용) ---
+    public int getScore() { return score; }
+    public String getLevel() { return level; }
+    public String getComment() { return comment; }
+    public String getReplySpeedLabel() { return replySpeedLabel; }
+    public String getFrequencyLabel() { return frequencyLabel; }
+    public String getInitiativeLabel() { return initiativeLabel; }
+    public String getWarmthLabel() { return warmthLabel; }
+    public String getLengthLabel() { return lengthLabel; }
+    public String getOverlapLabel() { return overlapLabel; }
+    public String getRatioLabel() { return ratioLabel; }
+    
+    // Setter 메소드는 필요에 따라 추가하십시오.
 }

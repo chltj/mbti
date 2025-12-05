@@ -1,139 +1,120 @@
-/* 배경색: 업로드 페이지와 통일 */
-body {
-    background-color: #FFF7C2;
-}
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f7f7f7; 
+            padding-top: 50px; 
+            display: flex; 
+            justify-content: center;
+        }
+        .container { 
+            max-width: 1000px; 
+            width: 90%;
+            margin: 0 auto;
+            background: #fff; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); 
+        }
+        .header { text-align: center; margin-bottom: 40px; }
+        
+        /* 1. 종합 점수 섹션 스타일 (원형 그래프 포함) */
+        .score-box { 
+            display: flex; /* 요소들을 가로로 배열 */
+            align-items: center; /* 수직 중앙 정렬 */
+            justify-content: center;
+            padding: 30px; 
+            border-radius: 15px; 
+            background: linear-gradient(135deg, #fff3f5 0%, #ffc1d4 100%); 
+            margin-bottom: 40px; 
+            box-shadow: 0 5px 15px rgba(255, 193, 212, 0.4);
+        }
+        
+        /* 원형 그래프 컨테이너 (시각화 UI) */
+        .circular-progress-container {
+            width: 150px;
+            height: 150px;
+            margin-right: 40px;
+            position: relative;
+            background: conic-gradient(#d81b60 0deg, #f0f0f0 0deg); /* CSS로 원형 그래프 구현 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        /* 원형 그래프 내부의 흰색 원 */
+        .circular-progress-container::before {
+            content: "";
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        /* 점수 텍스트 */
+        .score-percentage {
+            position: relative;
+            font-size: 38px;
+            font-weight: 900;
+            color: #d81b60;
+        }
+        
+        /* 종합 코멘트 섹션 */
+        .score-text-area {
+            max-width: 60%;
+            text-align: left;
+        }
+        .score-level { 
+            font-size: 28px; 
+            font-weight: bold; 
+            color: #333; 
+            margin-bottom: 10px;
+        }
+        .score-comment { 
+            font-size: 18px; 
+            color: #555; 
+            line-height: 1.4;
+        }
 
-/* 메인 결과 카드 */
-.crush-main-card {
-    margin-bottom: 22px;
-}
-
-.result-badge {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 600;
-    color: #666;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background-color: #FFF7C2;
-    margin-bottom: 16px;
-}
-
-.crush-score-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
-}
-
-.crush-score-main {
-    min-width: 240px;
-}
-
-.crush-score-number {
-    font-size: 40px;
-    font-weight: 800;
-    display: flex;
-    align-items: baseline;
-    gap: 2px;
-}
-.crush-score-number .percent {
-    font-size: 20px;
-}
-
-.crush-score-level {
-    margin-top: 4px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #444;
-}
-
-.crush-score-bar {
-    margin-top: 12px;
-    width: 220px;
-    max-width: 100%;
-    height: 10px;
-    border-radius: 999px;
-    background-color: #f0f0f0;
-    overflow: hidden;
-}
-.crush-score-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #FF9A9E, #FFD93B);
-    border-radius: 999px;
-    width: 0;
-}
-
-.crush-score-comment {
-    flex: 1;
-    min-width: 220px;
-    font-size: 13px;
-    color: #666;
-    line-height: 1.6;
-}
-
-/* 세부 지표 카드 */
-.crush-detail-card {
-    margin-top: 18px;
-}
-
-.metric-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 14px;
-    margin-top: 10px;
-}
-
-.metric-card {
-    padding: 14px 14px 16px;
-    border-radius: 14px;
-    background-color: #FFFDF0;
-    border: 1px solid #FFE58F;
-    font-size: 13px;
-}
-
-.metric-title {
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.metric-value {
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 6px;
-}
-
-.metric-desc {
-    margin: 0;
-    color: #777;
-    line-height: 1.5;
-}
-
-/* 하단 안내 + 버튼 */
-.crush-bottom-card {
-    margin-top: 18px;
-}
-
-.crush-bottom-text {
-    font-size: 13px;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 14px;
-}
-
-.crush-btn-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-/* 반응형 */
-@media (max-width: 600px) {
-    .crush-score-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .crush-score-bar {
-        width: 100%;
-    }
-}
+        /* 2. 세부 지표 섹션 (기존 그리드 유지) */
+        .metrics-grid-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .metric-card {
+            padding: 25px;
+            border-radius: 12px;
+            background-color: #ffffff;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            min-height: 150px; 
+        }
+        .metric-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4a148c;
+            margin-bottom: 15px;
+        }
+        .metric-label {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.6;
+        }
+        .metric-sub-label {
+            font-size: 14px;
+            color: #777;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        /* 버튼 스타일 */
+        .footer-actions { text-align: center; margin-top: 40px; }
+        .btn { display: inline-block; padding: 12px 25px; margin: 0 10px; border-radius: 8px; text-decoration: none; font-weight: bold; }
+        .btn-primary { background-color: #d81b60; color: white; }
+        .btn-secondary { background-color: #eee; color: #333; }
