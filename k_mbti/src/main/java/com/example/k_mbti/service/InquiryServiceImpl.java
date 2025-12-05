@@ -26,7 +26,14 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     @Override
-    public InquiryDto getInquiry(Long id) {
+    public InquiryDto findById(Long id) {
         return inquiryDao.findById(id);
     }
+
+    @Override
+    public void updateInquiry(InquiryDto inquiry) {
+        inquiryDao.updateInquiry(inquiry);   // ✅ DAO로 위임
+    }
+
+    // 아래 두 개는 역할이 겹치면 삭제해도 됨
 }

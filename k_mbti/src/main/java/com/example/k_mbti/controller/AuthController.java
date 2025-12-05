@@ -56,14 +56,16 @@ public String signup(@ModelAttribute SignupDto signupDto, Model model) {
     try {
         authService.signup(signupDto);  // DB에 사용자 저장
     } catch (IllegalArgumentException e) {
-        // 회원가입 실패 → 메시지 띄우고 다시 signup 페이지로
-        model.addAttribute("signupError", e.getMessage());
+        // 회원가입 실패 → 메시지 + 이전 입력값 다시 전달
+        model.addAttribute("signupDto", signupDto);
+        model.addAttribute("signupError", e.getMessage()); // "이미 있는 이메일입니다."
         return "signup";
     }
 
-    // ⭐ 회원가입 성공 → 로그인 페이지로 강제 이동
+    // ⭐ 회원가입 성공 → 로그인 페이지로 이동
     return "redirect:/login";
 }
+
 @GetMapping("/logout")
 public String logout(HttpSession session) {
     session.invalidate();

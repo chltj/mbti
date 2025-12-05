@@ -54,26 +54,25 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 일반 회원가입
      */
-    @Override
-    public void signup(SignupDto signupDto) {
+@Override
+public void signup(SignupDto signupDto) {
 
-        // 1. 이메일 중복 체크
-        UserDto existing = userDao.findByEmail(signupDto.getEmail());
-        if (existing != null) {
-            // 컨트롤러에서 처리할 수 있도록 런타임 예외 던지기
-            throw new IllegalStateException("이미 사용 중인 이메일입니다.");
-        }
-
-        // 2. UserDto로 변환해서 저장
-        UserDto user = new UserDto();
-        user.setEmail(signupDto.getEmail());
-        user.setNickname(signupDto.getNickname());
-        // 비밀번호 암호화
-        user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
-        user.setCreatedAt(LocalDateTime.now());
-
-        userDao.insertUser(user);
+    // 1. 이메일 중복 체크
+    UserDto existing = userDao.findByEmail(signupDto.getEmail());
+    if (existing != null) {
+        // 🔁 여기 타입/문구를 컨트롤러와 맞춰주기
+        throw new IllegalArgumentException("이미 있는 이메일입니다.");
     }
+
+    // 2. UserDto로 변환해서 저장
+    UserDto user = new UserDto();
+    user.setEmail(signupDto.getEmail());
+    user.setNickname(signupDto.getNickname());
+    user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
+    user.setCreatedAt(LocalDateTime.now());
+
+    userDao.insertUser(user);
+}
 
     /**
      * 일반 로그인

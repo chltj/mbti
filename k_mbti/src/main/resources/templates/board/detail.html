@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>문의 상세</title>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/inquiry.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+    <h2 class="page-title">
+        <span>📮</span>
+        <span>문의 상세</span>
+    </h2>
+<!-- 에러 메시지가 있을 때만 표시 -->
+<div th:if="${errorMsg != null}"
+     style="margin-bottom:16px; padding:12px; background:#ffeaea; border:1px solid #f5b1b1; border-radius:8px; color:#c00; text-align:center;">
+    <span th:text="${errorMsg}"></span>
+</div>
+    <div class="card">
+        <!-- 제목 -->
+        <h3 th:text="${inquiry.title}" style="margin-top:0;"></h3>
+
+        <!-- 작성자 / 작성일 -->
+        <p style="font-size:13px; color:#777; margin-bottom:16px;">
+            <span th:text="${inquiry.writer}">작성자</span>
+            ·
+            <span th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">
+                2025-12-05 17:00
+            </span>
+        </p>
+
+        <!-- 내용 -->
+        <div style="font-size:14px; line-height:1.6; white-space:pre-wrap;"
+             th:text="${inquiry.content}">
+            내용이 들어갑니다.
+        </div>
+
+        <!-- 버튼 영역 -->
+        <div style="margin-top:20px; text-align:right;">
+            <a th:href="@{/board/inquiry}"
+               style="margin-right:8px; font-size:13px;">목록</a>
+
+            <!-- 내가 쓴 글일 때만 수정 버튼 노출 -->
+            <a th:if="${canEdit}"
+               th:href="@{'/board/inquiry/' + ${inquiry.id} + '/edit'}"
+               class="btn-write">
+                수정하기
+            </a>
+        </div>
+        
+    </div>
+    
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>

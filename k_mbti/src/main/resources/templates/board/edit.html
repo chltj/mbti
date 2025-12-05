@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>문의 수정</title>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/inquiry.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+    <h2 class="page-title">
+        <span>✏️</span>
+        <span>문의 수정</span>
+    </h2>
+
+    <div class="card">
+
+        <!-- 🔴 에러 메시지 (if needed) -->
+        <div th:if="${errorMsg != null}"
+             style="margin-bottom:16px; padding:12px; background:#ffeaea; border:1px solid #f5b1b1;
+                    border-radius:12px; color:#c00; text-align:center;">
+            <span th:text="${errorMsg}"></span>
+        </div>
+
+        <!-- 수정 폼 -->
+        <form th:action="@{'/board/inquiry/' + ${inquiry.id} + '/edit'}"
+              method="post"
+              th:object="${inquiry}">
+
+            <!-- 제목 -->
+            <div class="form-row">
+                <label class="form-label" for="title">제목</label>
+                <input type="text" id="title"
+                       th:field="*{title}"
+                       class="form-input"
+                       placeholder="제목을 입력하세요"
+                       required>
+            </div>
+
+            <!-- 내용 -->
+            <div class="form-row">
+                <label class="form-label" for="content">내용</label>
+                <textarea id="content"
+                          th:field="*{content}"
+                          class="form-input"
+                          rows="8"
+                          placeholder="내용을 입력하세요"
+                          required></textarea>
+            </div>
+
+            <!-- 버튼 영역 -->
+            <div style="margin-top:20px; text-align:right;">
+                <button class="btn-submit" type="submit">저장하기</button>
+
+                <a th:href="@{'/board/inquiry/' + ${inquiry.id}}"
+                   style="margin-left:8px; font-size:13px; color:#333; text-decoration:none;">
+                    취소
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>
