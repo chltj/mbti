@@ -1,10 +1,13 @@
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\config\SecurityConfig.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\AuthController.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\BoardController.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\ChatController.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\CrushController.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\Maincontroller.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dao\InquiryDao.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dao\UserDao.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\CrushResultDto.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\InquiryDto.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\LoginDto.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\Message.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\SignupDto.java
@@ -15,5 +18,7 @@ C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\AuthService.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\AuthServiceImpl.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\ChatService.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\CrushService.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\InquiryService.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\InquiryServiceImpl.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\MbtiChatService.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\MbtiRuleService.java
