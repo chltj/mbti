@@ -1,4 +1,5 @@
 package com.example.k_mbti.dao;
+
 import com.example.k_mbti.dto.InquiryDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,4 +13,6 @@ public interface InquiryDao {
     void insertInquiry(InquiryDto inquiry);
 
     InquiryDto findById(Long id);
+
+    void updateInquiry(InquiryDto inquiry); // ✅ 추가
 }

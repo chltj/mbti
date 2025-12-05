@@ -60,6 +60,15 @@
                        class="form-input"
                        placeholder="비밀번호를 한 번 더 입력하세요" required>
             </div>
+<!-- 서버에서 넘어온 회원가입 에러 메시지 -->
+<p th:if="${signupError != null}"
+   th:text="${signupError}"
+   class="login-msg"
+   style="display:block; color:#d9534f; margin-top:8px;">
+</p>
+
+<!-- 에러/안내 메시지 (비밀번호 JS 체크용) -->
+<p id="pw-msg" class="login-msg" style="display:none;"></p>
 
             <!-- 에러/안내 메시지 -->
             <p id="pw-msg" class="login-msg" style="display:none;"></p>

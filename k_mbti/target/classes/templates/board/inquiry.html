@@ -5,6 +5,7 @@
     <title>문의 게시판</title>
 
     <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/inquiry.css}">
     <!-- 필요하면 전용 CSS도 추가 -->
 </head>
 <body>
@@ -53,11 +54,22 @@
             <tr th:each="inq, stat : ${inquiryList}"
                 style="border-bottom:1px solid #f3f3f3;">
                 <td th:text="${stat.count}" style="padding:8px 4px;"></td>
-                <td style="padding:8px 4px;">
-                    <a th:href="@{'/board/inquiry/' + ${inq.id}}"
-                       th:text="${inq.title}"
-                       style="text-decoration:none; color:#333;"></a>
-                </td>
+             <td style="padding:8px 4px;">
+
+    <!-- 내 글이면: 링크 클릭 가능 -->
+    <a th:if="${session.loginUser != null and inq.writer == session.loginUser.nickname}"
+       th:href="@{'/board/inquiry/' + ${inq.id}}"
+       th:text="${inq.title}"
+       style="text-decoration:none; color:#333;"></a>
+
+    <!-- 남의 글이면: 링크 막음 + 오류 메시지 발생 -->
+    <span th:if="${session.loginUser == null or inq.writer != session.loginUser.nickname}"
+          th:text="${inq.title}"
+          style="color:#333; cursor:pointer;"
+          onclick="showAccessDenied();"></span>
+
+</td>
+
                 <td th:text="${inq.writer}" style="padding:8px 4px;"></td>
                 <td th:text="${#temporals.format(inq.createdAt, 'yyyy-MM-dd HH:mm')}"
                     style="padding:8px 4px;"></td>
@@ -68,6 +80,10 @@
 </div>
 
 <div th:replace="fragments/footer :: siteFooter"></div>
-
+<script>
+    function showAccessDenied() {
+        alert("접근 제한이 없습니다.");
+    }
+</script>
 </body>
 </html>

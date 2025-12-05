@@ -1,0 +1,87 @@
+/* ============================
+   문의 게시판 공통 배경
+============================ */
+body {
+    background-color: #FFF7C2; /* MBTI/호감도 페이지와 색상 통일 */
+}
+
+/* ============================
+   페이지 타이틀 & 설명
+============================ */
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.page-sub {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 22px;
+    line-height: 1.5;
+}
+
+/* ============================
+   카드 공통 스타일
+============================ */
+.card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px 24px 26px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+/* ============================
+   글쓰기 버튼
+============================ */
+.btn-write {
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #FFD93B;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ============================
+   테이블 스타일
+============================ */
+.inquiry-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.inquiry-table thead tr {
+    border-bottom: 1px solid #eee;
+}
+
+.inquiry-table th,
+.inquiry-table td {
+    text-align: left;
+    padding: 8px 4px;
+}
+
+.inquiry-table tbody tr {
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.inquiry-table a {
+    text-decoration: none;
+    color: #333;
+}
+
+/* ============================
+   빈 데이터 메시지
+============================ */
+.empty-row {
+    padding: 16px 4px;
+    text-align: center;
+    color: #777;
+    font-size: 13px;
+}

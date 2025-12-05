@@ -35,4 +35,14 @@
         WHERE id = #{id}
     </select>
 
+    <!-- ✅ 수정 -->
+    <update id="updateInquiry"
+            parameterType="com.example.k_mbti.dto.InquiryDto">
+        UPDATE inquiry
+        SET
+            title   = #{title},
+            content = #{content}
+        WHERE id = #{id}
+    </update>
+
 </mapper>
