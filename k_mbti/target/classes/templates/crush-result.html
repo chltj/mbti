@@ -1,41 +1,61 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>호감도 분석 결과 - K-MBTI</title>
-
+    <title>호감도 분석 결과</title>
+    <!-- 공통 CSS + 호감도 결과 전용 CSS -->
     <link rel="stylesheet" th:href="@{/css/common.css}">
-    <link rel="stylesheet" th:href="@{/css/crush-result.css}"> 
+    <link rel="stylesheet" th:href="@{/css/crush-result.css}">
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>❤️ 호감도 분석 결과</h1>
-            <p><span th:text="${targetName}">상대방</span> 님의 호감도를 <span th:text="${myName}">나</span> 님 기준으로 분석한 결과입니다.</p>
-        </div>
+<div th:replace="fragments/header :: siteHeader"></div>
 
+<div class="page-wrap">
+    <!-- 타이틀 (업로드 페이지랑 느낌 통일) -->
+    <h2 class="page-title">
+        <span>💘</span>
+        <span>카카오톡 호감도 분석 결과</span>
+    </h2>
+    <p class="page-sub">
+        카카오톡 대화를 바탕으로<b>답장 속도</b>, <b>대화 빈도</b>, <b>말투</b>, <b>시간대</b> 등을 분석해 상대방의 호감도를 재미로 확인해보는 결과 페이지예요.
+    </p>
+
+    <!-- 결과 카드 -->
+    <div class="card result-card">
+
+        <!-- 카드 안에 굵은 안내 문구 (가운데 정렬용) -->
+        <p class="result-description">
+            <span th:text="${targetName}">상대방</span> 님의 호감도를
+            <span th:text="${myName}">나</span> 님 기준으로 분석한 결과입니다.
+        </p>
+
+        <!-- 종합 점수 박스 -->
         <div class="score-box">
-            
+
             <div class="circular-progress-container"
                  th:style="'background: conic-gradient(#d81b60 ' + ${crushScore} + '%, #f0f0f0 ' + ${crushScore} + '%);'">
                 <div class="score-percentage" th:text="${crushScore} + '%'">65%</div>
             </div>
-            
+
             <div class="score-text-area">
-                <div class="score-level" th:text="${crushLevel}">호감 있음 / 친한 친구 이상 😊</div>
+                <div class="score-level" th:text="${crushLevel}">
+                    호감 있음 / 친한 친구 이상 😊
+                </div>
                 <div class="score-comment" th:text="${crushComment}">
                     상대방의 호감 정도와 종합 분석 코멘트가 여기에 표시됩니다.
                 </div>
             </div>
         </div>
 
+        <!-- 세부 지표 타이틀 -->
         <div class="metrics-grid-title">
             📊 7가지 세부 지표 분석
         </div>
-        
+
+        <!-- 세부 지표 카드들 -->
         <div class="metrics-grid">
-            
+
             <div class="metric-card">
                 <div class="metric-title">⏱️ 답장 속도</div>
                 <div class="metric-label" th:text="${replySpeedLabel}"></div>
@@ -51,7 +71,7 @@
                 <div class="metric-title">❓ 질문 횟수 (대화 주도권)</div>
                 <div class="metric-label" th:text="${initiativeLabel}"></div>
             </div>
-            
+
             <div class="metric-card">
                 <div class="metric-title">😊 따뜻한 말투</div>
                 <div class="metric-label" th:text="${warmthLabel}"></div>
@@ -61,21 +81,27 @@
                 <div class="metric-title">📝 메시지 성실도 (길이)</div>
                 <div class="metric-label" th:text="${lengthLabel}"></div>
             </div>
-            
+
             <div class="metric-card">
                 <div class="metric-title">☀️ 활동 시간 일치</div>
                 <div class="metric-label" th:text="${overlapLabel}"></div>
             </div>
-            
-        </div> 
-        <div class="footer-actions"> <p style="color: #777; font-size: 14px; margin-bottom: 20px;">
-                결과는 데이터 기반 통계이며, 참고용으로만 사용해 주세요. 😉
+
+        </div>
+
+        <!-- 하단 안내 + 버튼 -->
+        <div class="footer-actions">
+            <p>
+                결과는 데이터 기반 통계이며, 어디까지나 <b>참고용</b>으로만 사용해 주세요. 😉
             </p>
             <a th:href="@{/crush}" class="btn btn-primary">다른 대화로 다시 호감도 분석하기</a>
             <a th:href="@{/mbti}" class="btn btn-secondary">MBTI 분석해보기</a>
         </div>
-        </div>
-        
-        
-    </body>
+
+    </div> <!-- /.card -->
+</div> <!-- /.page-wrap -->
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
 </html>

@@ -13,11 +13,11 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/board")
-public class BoardController {
+public class InquiryController {
 
     private final InquiryService inquiryService;
 
-    public BoardController(InquiryService inquiryService) {
+    public InquiryController(InquiryService inquiryService) {
         this.inquiryService = inquiryService;
     }
 
@@ -146,5 +146,18 @@ public String edit(@PathVariable Long id,
 
     return "redirect:/board/inquiry/" + id;
 }
+@PostMapping("/inquiry/{id}/delete")
+public String deleteInquiry(@PathVariable Long id,
+                            RedirectAttributes redirectAttributes) {
+    try {
+        inquiryService.deleteInquiry(id);   // ❗ 여기 deleteInquiry
+        redirectAttributes.addFlashAttribute("msg", "문의가 삭제되었습니다.");
+        return "redirect:/board/inquiry";   // 목록 URL에 맞춰 수정
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("errorMsg", "삭제 중 오류가 발생했습니다.");
+        return "redirect:/board/inquiry/" + id;
+    }
+}
+
 
 }

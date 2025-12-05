@@ -44,5 +44,9 @@
             content = #{content}
         WHERE id = #{id}
     </update>
+    <delete id="deleteInquiry" parameterType="long">
+    DELETE FROM inquiry
+    WHERE id = #{id}
+</delete>
 
 </mapper>

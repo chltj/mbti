@@ -14,7 +14,6 @@ public interface InquiryService {
 
     void updateInquiry(InquiryDto inquiry); // ✅ 수정
 
-    // 필요하면 아래 두 개는 중복이라 정리 가능
-    // List<InquiryDto> findAll();
-    // InquiryDto getInquiry(Long id);
+    void deleteInquiry(Long id);
+
 }

@@ -14,5 +14,6 @@ public interface InquiryDao {
 
     InquiryDto findById(Long id);
 
-    void updateInquiry(InquiryDto inquiry); // ✅ 추가
+    void updateInquiry(InquiryDto inquiry); 
+     void deleteInquiry(Long id);// ✅ 추가
 }

@@ -55,14 +55,29 @@
             <!-- 버튼 영역 -->
             <div style="margin-top:20px; text-align:right;">
                 <button class="btn-submit" type="submit">저장하기</button>
-
-                <a th:href="@{'/board/inquiry/' + ${inquiry.id}}"
+                    <a th:href="@{'/board/inquiry/' + ${inquiry.id}}"
                    style="margin-left:8px; font-size:13px; color:#333; text-decoration:none;">
                     취소
                 </a>
-            </div>
+</div>
 
         </form>
+        <!-- 🔥 삭제 전용 폼: 수정 폼 밖에 위치해야 함 -->
+<div style="margin-top:8px; text-align:right;">
+    <form th:action="@{'/board/inquiry/' + ${inquiry.id} + '/delete'}"
+          method="post"
+          style="display:inline-block;">
+
+        <button type="submit"
+                class="btn-secondary"
+                style="background:#ffdddd; color:#a30000; border:1px solid #e59a9a;"
+                onclick="return confirm('정말 삭제하시겠습니까?');">
+            삭제하기
+        </button>
+    </form>
+</div>
+
+
     </div>
 </div>
 

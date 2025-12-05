@@ -1,120 +1,152 @@
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f7f7f7; 
-            padding-top: 50px; 
-            display: flex; 
-            justify-content: center;
-        }
-        .container { 
-            max-width: 1000px; 
-            width: 90%;
-            margin: 0 auto;
-            background: #fff; 
-            padding: 40px; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); 
-        }
-        .header { text-align: center; margin-bottom: 40px; }
-        
-        /* 1. 종합 점수 섹션 스타일 (원형 그래프 포함) */
-        .score-box { 
-            display: flex; /* 요소들을 가로로 배열 */
-            align-items: center; /* 수직 중앙 정렬 */
-            justify-content: center;
-            padding: 30px; 
-            border-radius: 15px; 
-            background: linear-gradient(135deg, #fff3f5 0%, #ffc1d4 100%); 
-            margin-bottom: 40px; 
-            box-shadow: 0 5px 15px rgba(255, 193, 212, 0.4);
-        }
-        
-        /* 원형 그래프 컨테이너 (시각화 UI) */
-        .circular-progress-container {
-            width: 150px;
-            height: 150px;
-            margin-right: 40px;
-            position: relative;
-            background: conic-gradient(#d81b60 0deg, #f0f0f0 0deg); /* CSS로 원형 그래프 구현 */
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        /* 원형 그래프 내부의 흰색 원 */
-        .circular-progress-container::before {
-            content: "";
-            position: absolute;
-            width: 130px;
-            height: 130px;
-            background-color: white;
-            border-radius: 50%;
-        }
-        /* 점수 텍스트 */
-        .score-percentage {
-            position: relative;
-            font-size: 38px;
-            font-weight: 900;
-            color: #d81b60;
-        }
-        
-        /* 종합 코멘트 섹션 */
-        .score-text-area {
-            max-width: 60%;
-            text-align: left;
-        }
-        .score-level { 
-            font-size: 28px; 
-            font-weight: bold; 
-            color: #333; 
-            margin-bottom: 10px;
-        }
-        .score-comment { 
-            font-size: 18px; 
-            color: #555; 
-            line-height: 1.4;
-        }
+/* ================================
+ * 호감도 결과 페이지 전용 스타일
+ * (common.css 기반 + 추가/오버라이드만)
+ * ================================ */
 
-        /* 2. 세부 지표 섹션 (기존 그리드 유지) */
-        .metrics-grid-title {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        .metric-card {
-            padding: 25px;
-            border-radius: 12px;
-            background-color: #ffffff;
-            border: 1px solid #eee;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            min-height: 150px; 
-        }
-        .metric-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #4a148c;
-            margin-bottom: 15px;
-        }
-        .metric-label {
-            font-size: 15px;
-            color: #333;
-            line-height: 1.6;
-        }
-        .metric-sub-label {
-            font-size: 14px;
-            color: #777;
-            margin-top: 5px;
-            font-style: italic;
-        }
-        /* 버튼 스타일 */
-        .footer-actions { text-align: center; margin-top: 40px; }
-        .btn { display: inline-block; padding: 12px 25px; margin: 0 10px; border-radius: 8px; text-decoration: none; font-weight: bold; }
-        .btn-primary { background-color: #d81b60; color: white; }
-        .btn-secondary { background-color: #eee; color: #333; }
+/* 배경색만 추가 */
+body {
+    background-color: #FFF7C2;
+}
+
+/* 부제목과 결과 카드 사이 간격 넉넉하게 (MBTI 결과 페이지처럼) */
+.page-sub {
+    margin-bottom: 36px;   /* common.css의 24px보다 살짝 더 띄움 */
+}
+
+/* 결과 카드 안에서 상단 한 줄 설명 */
+.result-description {
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* ================================
+ * 종합 점수 박스
+ * ================================ */
+
+.score-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #FFF9DA 0%, #FFE3AE 100%);
+    box-shadow: 0 4px 14px rgba(255, 180, 0, 0.18);
+    margin-bottom: 26px;
+}
+
+/* 원형 그래프 */
+.circular-progress-container {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circular-progress-container::before {
+    content: "";
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background-color: #ffffff;
+}
+
+.score-percentage {
+    position: relative;
+    font-size: 26px;
+    font-weight: 900;
+    color: #d81b60;
+}
+
+/* 오른쪽 텍스트 */
+.score-text-area {
+    flex: 1;
+    min-width: 220px;
+}
+
+.score-level {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.score-comment {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* ================================
+ * 세부 지표 카드
+ * ================================ */
+
+.metrics-grid-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 8px 0 14px;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 18px;
+}
+
+.metric-card {
+    padding: 16px;
+    border-radius: 18px;
+    background-color: #ffffff;
+    border: 1px solid #FFE8B3;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+}
+
+.metric-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #B67A00;
+    margin-bottom: 6px;
+}
+
+.metric-label {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.metric-sub-label {
+    font-size: 11px;
+    color: #777;
+    margin-top: 4px;
+}
+
+/* ================================
+ * 하단 버튼 영역
+ * ================================ */
+
+.footer-actions {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.footer-actions p {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 12px;
+}
+
+/* 반응형: 폭 좁을 때 지표 카드 1열로 */
+@media (max-width: 768px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .score-box {
+        flex-direction: column;
+        text-align: center;
+    }
+}
