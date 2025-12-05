@@ -11,9 +11,8 @@ import java.util.regex.Pattern;
 
 public class KakaoParser {
 
-    // 카카오톡 내보내기 파일의 표준 대화 패턴
+    // 카카오톡 내보내기 파일의 표준 대화 패턴 (역슬래시 이스케이프 적용 완료)
     // 패턴 예: 2023. 12. 5. 오후 5:00, 김OO : 안녕하세요
-    // 그룹: 1:날짜 부분, 2:오전/오후, 3:시간, 4:발화자, 5:내용
     private static final Pattern TALK_PATTERN = Pattern.compile(
         "^(\\d{4}\\.\\s+\\d{1,2}\\.\\s+\\d{1,2}\\.\\s+)(오전|오후)\\s+(\\d{1,2}:\\d{2}),\\s+(.+?)\\s+:\\s+(.*)$"
     );
@@ -24,7 +23,6 @@ public class KakaoParser {
 
     /**
      * 카카오톡 대화 텍스트를 파싱하여 TalkData 객체 리스트를 반환합니다.
-     * CrushService에서 KakaoParser.parse(text, myName, targetName) 형태로 호출됩니다.
      */
     public static List<TalkData> parse(String text, String userA, String userB) {
         List<TalkData> talkList = new ArrayList<>();
