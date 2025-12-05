@@ -1,12 +1,12 @@
 com\example\k_mbti\config\SecurityConfig.class
 com\example\k_mbti\controller\ChatController.class
+com\example\k_mbti\dto\CrushResultDto.class
+com\example\k_mbti\dto\Message.class
+com\example\k_mbti\service\MbtiChatService.class
 com\example\k_mbti\parser\KakaoParser.class
 com\example\k_mbti\controller\Maincontroller.class
 com\example\k_mbti\controller\CrushController.class
 com\example\k_mbti\KMbtiApplication.class
-com\example\k_mbti\service\MbtiRuleService.class
-com\example\k_mbti\dto\CrushResultDto.class
-com\example\k_mbti\dto\Message.class
-com\example\k_mbti\service\MbtiChatService.class
 com\example\k_mbti\service\ChatService.class
+com\example\k_mbti\service\MbtiRuleService.class
 com\example\k_mbti\service\CrushService.class
