@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +14,7 @@ public class KakaoParser {
     // 카카오톡 내보내기 파일의 표준 대화 패턴 (역슬래시 이스케이프 적용 완료)
     // 패턴 예: 2023. 12. 5. 오후 5:00, 김OO : 안녕하세요
     private static final Pattern TALK_PATTERN = Pattern.compile(
-        "^(\d{4}\.\s+\d{1,2}\.\s+\d{1,2}\.\s+)(오전|오후)\s+(\d{1,2}:\d{2}),\s+(.+?)\s+:\s+(.*)$"
+        "^(\\d{4}\\.\\s+\\d{1,2}\\.\\s+\\d{1,2}\\.\\s+)(오전|오후)\\s+(\\d{1,2}:\\d{2}),\\s+(.+?)\\s+:\\s+(.*)$"
     );
 
     // 날짜 포맷: yyyy. M. d. a h:mm (12시간 형식에 맞춰서 사용)
@@ -27,7 +26,7 @@ public class KakaoParser {
      */
     public static List<TalkData> parse(String text, String userA, String userB) {
         List<TalkData> talkList = new ArrayList<>();
-        String[] lines = text.split("\r?\n"); // \r?\n으로 Windows/Linux 줄바꿈 모두 처리
+        String[] lines = text.split("\\r?\\n"); // \r?\n으로 Windows/Linux 줄바꿈 모두 처리
         boolean isStartTalk = false;
 
         // BOM 제거
@@ -82,10 +81,5 @@ public class KakaoParser {
             }
         }
         return talkList;
-    }
-
-    public static Map<String, List<String>> parseByUser(String rawText) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseByUser'");
     }
 }
