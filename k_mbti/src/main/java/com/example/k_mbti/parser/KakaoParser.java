@@ -4,88 +4,69 @@ import com.example.k_mbti.dto.TalkData;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// Map import는 필요 없으므로 제거 (import java.util.Map;)
+
 public class KakaoParser {
 
     // 카카오톡 내보내기 파일의 표준 대화 패턴 (역슬래시 이스케이프 적용 완료)
-    // 패턴 예: 2023. 12. 5. 오후 5:00, 김OO : 안녕하세요
-    private static final Pattern TALK_PATTERN = Pattern.compile(
-        "^(\d{4}\.\s+\d{1,2}\.\s+\d{1,2}\.\s+)(오전|오후)\s+(\d{1,2}:\d{2}),\s+(.+?)\s+:\s+(.*)$"
+    // 🚨 수정: \d, \s 앞에 \를 추가했습니다.
+// KakaoParser.java 파일 내부
+
+// ... (기존 parse 메소드 정의 후) ...
+
+// MBTI 분석용: 시간 정보 없이 대화 내용만 추출하여 Map으로 반환
+public static Map<String, List<String>> parseByUser(String rawText) {
+    Map<String, List<String>> result = new HashMap<>();
+    
+    // 카카오톡 파일의 표준 대화 패턴
+    // (시간 정보는 있으나 사용하지 않고 발화자와 내용만 추출함)
+    Pattern SIMPLE_TALK_PATTERN = Pattern.compile(
+        "^\\d{4}\\.\\s*\\d{1,2}\\.\\s*\\d{1,2}\\.\\s*(오전|오후)\\s+\\d{1,2}:\\d{2},\\s*(.+?)\\s*:\\s*(.*)$"
     );
 
-    // 날짜 포맷: yyyy. M. d. a h:mm (12시간 형식에 맞춰서 사용)
-    private static final DateTimeFormatter FORMATTER = 
-        DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm");
+    String[] lines = rawText.split("\\r?\\n");
+    boolean isStartTalk = false;
 
-    /**
-     * 카카오톡 대화 텍스트를 파싱하여 TalkData 객체 리스트를 반환합니다.
-     */
-    public static List<TalkData> parse(String text, String userA, String userB) {
-        List<TalkData> talkList = new ArrayList<>();
-        String[] lines = text.split("\r?\n"); // \r?\n으로 Windows/Linux 줄바꿈 모두 처리
-        boolean isStartTalk = false;
-
-        // BOM 제거
-        if (text != null && text.startsWith("\uFEFF")) {
-            text = text.substring(1);
-        }
-
-        for (String line : lines) {
-            line = line.trim();
-            
-            // 대화 시작 지점 찾기
-            if (line.endsWith("카카오톡 대화")) {
-                isStartTalk = true;
-                continue;
-            }
-            if (!isStartTalk) continue;
-            
-            if (line.isEmpty()) continue;
-
-            Matcher matcher = TALK_PATTERN.matcher(line);
-
-            if (matcher.matches()) {
-                // 파싱된 그룹 추출
-                String datePart = matcher.group(1).trim();
-                String ampmPart = matcher.group(2);
-                String timePart = matcher.group(3);
-                String speaker = matcher.group(4).trim();
-                String content = matcher.group(5).trim();
-
-                // 대화 참여자만 포함
-                if (!(speaker.equals(userA) || speaker.equals(userB))) {
-                    continue;
-                }
-                
-                try {
-                    // 날짜+시간 문자열을 LocalDateTime으로 변환
-                    String dateTimeStr = datePart + " " + ampmPart + " " + timePart;
-                    LocalDateTime timestamp = LocalDateTime.parse(dateTimeStr, FORMATTER);
-
-                    TalkData data = new TalkData();
-                    data.setTimestamp(timestamp);
-                    data.setSpeaker(speaker);
-                    data.setContent(content);
-
-                    // 시스템 메시지 필터링 (TalkData 내부 로직 사용)
-                    if (!data.isNonTalk()) {
-                        talkList.add(data);
-                    }
-                } catch (DateTimeParseException e) {
-                    // 파싱 오류 발생 시 해당 라인 건너뛰기
-                }
-            }
-        }
-        return talkList;
+    // BOM 제거
+    if (rawText != null && rawText.startsWith("\uFEFF")) {
+        rawText = rawText.substring(1);
     }
 
-    public static Map<String, List<String>> parseByUser(String rawText) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parseByUser'");
+    for (String line : lines) {
+        if (line.endsWith("카카오톡 대화")) {
+            isStartTalk = true;
+            continue;
+        }
+        if (!isStartTalk) continue;
+        
+        Matcher matcher = SIMPLE_TALK_PATTERN.matcher(line.trim());
+        
+        if (matcher.matches()) {
+            // 2: 발화자, 3: 내용
+            String speaker = matcher.group(2).trim();
+            String content = matcher.group(3).trim();
+
+            // 시스템 메시지 필터링 및 내용이 비어있지 않은지 확인
+            if (!(content.startsWith("[") && content.endsWith("]")) && !content.isEmpty()) {
+                result.computeIfAbsent(speaker, k -> new ArrayList<>()).add(content);
+            }
+        }
     }
+    return result;
+}
+
+public static List<TalkData> parse(String text, String myName, String targetName) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'parse'");
+}
+
+    // 🚨 parseByUser 메소드는 CrushService에서 사용되지 않으므로 제거합니다.
+    // 만약 MBTI 분석을 위해 필요하다면 MainController의 수정 단계에서 구현체를 사용해야 합니다.
 }
