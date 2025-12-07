@@ -13,6 +13,17 @@
         FROM users
         WHERE email = #{email}
     </select>
+        <select id="findById"
+            parameterType="long"
+            resultType="com.example.k_mbti.dto.UserDto">
+        SELECT
+            id,
+            nickname,
+            email,
+            password
+        FROM users
+        WHERE id = #{id}
+    </select>
 
     <!-- 회원가입 시 실제 저장하는 메소드 -->
     <insert id="insertUser"
@@ -20,5 +31,13 @@
         INSERT INTO users (email, nickname, password, created_at)
         VALUES (#{email}, #{nickname}, #{password}, NOW())
     </insert>
+    <update id="updateProfile" parameterType="com.example.k_mbti.dto.UserDto">
+    UPDATE users
+    SET nickname = #{nickname},
+        email = #{email}
+    WHERE id = #{id}
+</update>
+
+
 
 </mapper>

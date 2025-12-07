@@ -15,11 +15,19 @@ public class AuthServiceImpl implements AuthService {
     private final UserDao userDao;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // 생성자 주입
+
     public AuthServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
 
+    @Override
+    public UserDto findById(Long id) {
+        return userDao.findById(id);
+    }
+
+    public void updateProfile(UserDto user) {
+        userDao.updateProfile(user);
+    }
     /**
      * 카카오 로그인 (이미 잘 구현되어 있음)
      */

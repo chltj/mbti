@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.k_mbti.dao.ChatDao">
+
+    <!-- 방 ResultMap -->
+    <resultMap id="ChatRoomResultMap" type="com.example.k_mbti.dto.ChatRoomDto">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="maxCount" column="max_count"/>
+        <result property="owner" column="owner"/>
+        <!-- current_count 라는 별칭 컬럼을 currentCount 필드로 매핑 -->
+        <result property="currentCount" column="current_count"/>
+    </resultMap>
+
+    <!-- 방 생성 (id 자동 증가) -->
+    <insert id="insertRoom" parameterType="com.example.k_mbti.dto.ChatRoomDto"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO chat_room (name, max_count, owner)
+        VALUES (#{name}, #{maxCount}, #{owner})
+    </insert>
+
+    <!-- 방 멤버 추가 -->
+    <insert id="insertMember">
+        INSERT INTO chat_room_member (room_id, nickname)
+        VALUES (#{roomId}, #{nickname})
+    </insert>
+
+    <!-- 단일 방 조회 (현재 인원은 서브쿼리로 계산) -->
+    <select id="findRoomById" parameterType="long" resultMap="ChatRoomResultMap">
+        SELECT
+            r.id,
+            r.name,
+            r.max_count,
+            r.owner,
+            (SELECT COUNT(*) FROM chat_room_member m WHERE m.room_id = r.id) AS current_count
+        FROM chat_room r
+        WHERE r.id = #{id}
+    </select>
+
+    <!-- 전체 방 목록 -->
+    <select id="findAllRooms" resultMap="ChatRoomResultMap">
+        SELECT
+            r.id,
+            r.name,
+            r.max_count,
+            r.owner,
+            (SELECT COUNT(*) FROM chat_room_member m WHERE m.room_id = r.id) AS current_count
+        FROM chat_room r
+        ORDER BY r.id DESC
+    </select>
+
+    <!-- 특정 유저가 참여한 방 목록 -->
+    <select id="findRoomsByMember" parameterType="string" resultMap="ChatRoomResultMap">
+        SELECT
+            r.id,
+            r.name,
+            r.max_count,
+            r.owner,
+            (SELECT COUNT(*) FROM chat_room_member m2 WHERE m2.room_id = r.id) AS current_count
+        FROM chat_room r
+        JOIN chat_room_member m ON r.id = m.room_id
+        WHERE m.nickname = #{nickname}
+        ORDER BY r.id DESC
+    </select>
+
+    <!-- 방 멤버 목록(닉네임 리스트) -->
+    <select id="findMembersByRoomId" parameterType="long" resultType="string">
+        SELECT nickname
+        FROM chat_room_member
+        WHERE room_id = #{roomId}
+        ORDER BY joined_at ASC
+    </select>
+
+    <!-- 메시지 저장 -->
+    <insert id="insertMessage" parameterType="com.example.k_mbti.dto.ChatMessageDto">
+        INSERT INTO chat_message (room_id, sender, message, sent_at)
+        VALUES (#{roomId}, #{sender}, #{content}, #{sentAt})
+    </insert>
+
+    <!-- 메시지 목록 -->
+    <select id="findMessagesByRoomId" parameterType="long"
+            resultType="com.example.k_mbti.dto.ChatMessageDto">
+        SELECT
+            id,
+            room_id    AS roomId,
+            sender,
+            message    AS content,
+            sent_at    AS sentAt
+        FROM chat_message
+        WHERE room_id = #{roomId}
+        ORDER BY sent_at ASC, id ASC
+    </select>
+
+</mapper>

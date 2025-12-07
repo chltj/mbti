@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${room.name} + ' - 소통의 방'">소통의 방</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/room.css}">
+
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+
+    <!-- 방 타이틀 -->
+    <h2 class="page-title">
+        <span>💬</span>
+        <span th:text="${room.name}">방 이름</span>
+    </h2>
+    <p class="page-sub">
+        인원
+        <b th:text="${room.currentCount} + ' / ' + ${room.maxCount}"></b>
+        · 참여자:
+        <span th:each="m, iter : ${room.members}">
+            <span th:text="${m}"></span><span th:if="${!iter.last}">, </span>
+        </span>
+    </p>
+
+    <!-- 채팅 영역 -->
+    <div class="card" style="max-height:480px; overflow-y:auto; margin-bottom:16px;">
+        <div th:if="${#lists.isEmpty(messages)}" style="font-size:13px; color:#777;">
+            아직 메시지가 없습니다. 먼저 말을 걸어보세요 😊
+        </div>
+
+        <div th:each="msg : ${messages}"
+             style="margin-bottom:8px; font-size:13px;">
+            <b th:text="${msg.sender}">닉네임</b>
+            <span style="color:#bbb; font-size:11px; margin-left:4px;"
+                  th:text="${#temporals.format(msg.sentAt, 'HH:mm')}">12:34</span>
+            <div th:text="${msg.content}"></div>
+        </div>
+    </div>
+
+    <!-- 메시지 입력 -->
+    <form th:action="@{'/chat/rooms/' + ${room.id} + '/message'}"
+          method="post">
+        <div class="form-row">
+            <textarea name="content"
+                      class="form-input"
+                      rows="2"
+                      placeholder="메시지를 입력하세요"
+                      required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">보내기</button>
+        <a th:href="@{/chat/rooms}" class="btn-secondary" style="margin-left:8px;">
+            방 목록으로
+        </a>
+    </form>
+
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>

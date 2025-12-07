@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+
+    <!-- 타이틀 -->
+    <h2 class="page-title">
+        <span>👤</span>
+        <span>마이페이지</span>
+    </h2>
+
+    <p class="page-sub">
+        <b th:text="${loginUser.nickname}">내 이름</b> 님의 활동 기록입니다.
+    </p>
+        <div style="margin-bottom: 24px;">
+        <a th:href="@{/mypage/edit}" class="btn-primary">
+            내 정보 수정하기
+        </a>
+    </div>
+
+    <!-- 참여 중인 소통의 방 -->
+    <div class="card" style="margin-bottom:30px;">
+        <div class="card-title">참여 중인 소통의 방</div>
+
+        <!-- 방이 없을 때 -->
+        <div th:if="${#lists.isEmpty(myRooms)}"
+             style="font-size:13px; color:#777;">
+            참여 중인 방이 없어요 😊
+        </div>
+
+        <!-- 방이 있을 때 -->
+        <ul th:if="${!#lists.isEmpty(myRooms)}"
+            style="list-style:none; padding-left:0; margin:10px 0 0 0;">
+            <li th:each="room : ${myRooms}"
+                style="margin-bottom:6px;">
+                <a th:href="@{'/chat/rooms/' + ${room.id}}"
+                   style="text-decoration:none; color:#333;">
+                    <span th:text="${room.name}">방 이름</span>
+                </a>
+                <span style="color:#999; font-size:12px;">
+                    (
+                    <span th:text="${room.currentCount}">0</span> /
+                    <span th:text="${room.maxCount}">0</span>
+                    )
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 내가 작성한 문의 -->
+    <div class="card">
+        <div class="card-title">내가 작성한 문의</div>
+
+        <!-- 문의가 없을 때 -->
+        <div th:if="${#lists.isEmpty(myInquiries)}"
+             style="font-size:13px; color:#777;">
+            작성한 문의가 없어요 😊
+        </div>
+
+        <!-- 문의가 있을 때 -->
+        <ul th:if="${!#lists.isEmpty(myInquiries)}"
+            style="list-style:none; padding-left:0; margin:10px 0 0 0;">
+            <li th:each="inq : ${myInquiries}"
+                style="margin-bottom:6px;">
+                <a th:href="@{'/board/inquiry/' + ${inq.id}}"
+                   style="text-decoration:none; color:#333;">
+                    <span th:text="${inq.title}">문의 제목</span>
+                </a>
+                <!-- createDate 필드가 없을 수도 있으니, 우선 날짜 표시는 주석 -->
+                <!--
+                <span style="color:#999; font-size:12px;">
+                    (작성일:
+                    <span th:text="${inq.createDate}">2025-01-01</span>)
+                </span>
+                -->
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>

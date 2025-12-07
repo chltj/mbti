@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보 수정</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+
+    <h2 class="page-title">
+        <span>🛠</span>
+        <span>내 정보 수정</span>
+    </h2>
+
+    <p class="page-sub">
+        회원 정보(닉네임, 이메일)를 수정할 수 있어요.
+    </p>
+
+    <div class="card">
+
+        <!-- 에러/완료 메시지 -->
+        <div th:if="${errorMsg}"
+             style="margin-bottom:12px; padding:10px; border-radius:10px;
+                    background:#ffeaea; border:1px solid #f5b1b1; color:#b00020; font-size:13px;"
+             th:text="${errorMsg}">
+        </div>
+
+        <div th:if="${successMsg}"
+             style="margin-bottom:12px; padding:10px; border-radius:10px;
+                    background:#e8ffea; border:1px solid #a9e6b0; color:#206a2f; font-size:13px;"
+             th:text="${successMsg}">
+        </div>
+
+        <form th:action="@{/mypage/edit}" th:object="${user}" method="post">
+
+            <!-- 아이디(로그인ID) / 변경 불가 예시 -->
+            <div class="form-row">
+                <label class="form-label">아이디</label>
+                <input class="form-input" type="text"
+                       th:value="*{loginId}"
+                       readonly>
+            </div>
+
+            <!-- 닉네임 -->
+            <div class="form-row">
+                <label class="form-label" for="nickname">닉네임</label>
+                <input id="nickname" class="form-input" type="text"
+                       th:field="*{nickname}"
+                       placeholder="표시될 닉네임" required>
+            </div>
+
+            <!-- 이메일 -->
+            <div class="form-row">
+                <label class="form-label" for="email">이메일</label>
+                <input id="email" class="form-input" type="email"
+                       th:field="*{email}"
+                       placeholder="example@email.com">
+            </div>
+
+            <!-- 버튼 영역 -->
+            <div style="margin-top:18px; display:flex; justify-content:flex-end; gap:8px;">
+                <a th:href="@{/mypage}" class="btn-secondary">취소</a>
+                <button type="submit" class="btn-submit">저장하기</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>

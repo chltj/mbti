@@ -1,11 +1,16 @@
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\config\SecurityConfig.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\AuthController.java
-C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\BoardController.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\ChatController.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\ChatRoomController.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\CrushController.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\InquiryController.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\Maincontroller.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\controller\MypageController.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dao\ChatDao.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dao\InquiryDao.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dao\UserDao.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\ChatMessageDto.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\ChatRoomDto.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\CrushResultDto.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\InquiryDto.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\dto\LoginDto.java
@@ -17,6 +22,8 @@ C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\KMbtiApplication.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\parser\KakaoParser.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\AuthService.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\AuthServiceImpl.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\ChatRoomService.java
+C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\ChatRoomServiceImpl.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\ChatService.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\CrushService.java
 C:\project\mbti\k_mbti\src\main\java\com\example\k_mbti\service\InquiryService.java

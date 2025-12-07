@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>소통의 방 - 목록</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/room.css}">
+
+</head>
+<body>
+
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="page-wrap">
+
+    <!-- 타이틀 -->
+    <h2 class="page-title">
+        <span>💬</span>
+        <span>소통의 방</span>
+    </h2>
+    <p class="page-sub">
+        관심사에 맞는 작은 채팅방을 열고,<br>
+        정해진 인원 안에서 자유롭게 이야기해 보세요.
+    </p>
+
+    <!-- 에러 메시지 -->
+    <div th:if="${errorMsg}"
+         style="margin-bottom:12px; padding:10px 12px; background:#ffeaea; border-radius:12px;
+                border:1px solid #f5b1b1; font-size:13px; color:#c00;">
+        <span th:text="${errorMsg}"></span>
+    </div>
+
+    <!-- 방 생성 카드 -->
+    <div class="card" style="margin-bottom:24px;">
+        <form th:action="@{/chat/rooms}" method="post">
+            <div class="form-row">
+                <label class="form-label">방 이름</label>
+                <input type="text" name="name" class="form-input"
+                       placeholder="예) 취준 고민 나누기 방" required>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">최대 인원</label>
+                <input type="number" name="maxCount" class="form-input"
+                       min="2" max="20" value="4">
+            </div>
+
+            <button type="submit" class="btn-submit">소통의 방 만들기</button>
+        </form>
+    </div>
+
+    <!-- 방 목록 카드 -->
+    <div class="card">
+        <h3 class="section-title" style="font-size:16px; margin-bottom:12px;">
+            현재 열린 방
+        </h3>
+
+        <div th:if="${#lists.isEmpty(rooms)}" style="font-size:13px; color:#777;">
+            아직 열린 방이 없어요. 첫 번째 소통의 방을 만들어 보세요 😊
+        </div>
+
+        <div th:if="${!#lists.isEmpty(rooms)}" class="card-grid">
+            <div class="card" th:each="room : ${rooms}">
+                <div class="card-title" th:text="${room.name}">방 이름</div>
+                <div class="card-desc">
+                    인원:
+                    <span th:text="${room.currentCount}"></span> /
+                    <span th:text="${room.maxCount}"></span><br>
+                    방장:
+                    <span th:text="${room.owner}">방장</span>
+                </div>
+
+                <form th:action="@{'/chat/rooms/' + ${room.id} + '/join'}"
+                      method="post" style="margin-top:8px;">
+                    <button type="submit"
+                            class="btn-primary"
+                            th:disabled="${room.currentCount >= room.maxCount}">
+                        <span th:text="${room.currentCount >= room.maxCount ? '가득 찼어요' : '입장하기'}"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>

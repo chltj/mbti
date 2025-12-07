@@ -82,9 +82,12 @@
     ">
 
         <!-- 🔥 로그인 상태일 때 (세션에 loginUser가 있을 때) -->
-        <li th:if="${session.loginUser != null}" style="color:#333;">
-            <strong th:text="${session.loginUser.nickname}"></strong>님 환영합니다!
-        </li>
+<li th:if="${session.loginUser != null}" style="color:#333;">
+    <a th:href="@{/mypage}" style="font-weight:600; text-decoration:none;">
+        <span th:text="${session.loginUser.nickname}"></span>
+    </a> 님 환영합니다!
+</li>
+
 
         <li th:if="${session.loginUser != null}">
 <a href="/logout" onclick="return logoutAll();"
@@ -211,7 +214,7 @@
                         </li>
                         <li>
                             <a th:if="${session.loginUser != null}"
-                               th:href="@{/board/community}">
+                               th:href="@{/chat/rooms}">
                                 소통의 방
                             </a>
                             <a th:if="${session.loginUser == null}"
