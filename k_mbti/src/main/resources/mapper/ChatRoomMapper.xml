@@ -93,5 +93,10 @@
         WHERE room_id = #{roomId}
         ORDER BY sent_at ASC, id ASC
     </select>
+    <update id="updateMemberNickname">
+    UPDATE chat_room_member
+    SET nickname = #{newNickname}
+    WHERE nickname = #{oldNickname}
+</update>
 
 </mapper>

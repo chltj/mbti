@@ -15,5 +15,8 @@ public interface InquiryService {
     void updateInquiry(InquiryDto inquiry); // ✅ 수정
 
     void deleteInquiry(Long id);
+    
+    void updateWriterNickname(String oldNickname, String newNickname);
+
 
 }

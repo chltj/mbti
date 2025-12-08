@@ -47,3 +47,52 @@ body {
     font-size: 11px;
     font-weight: 700;
 }
+/* 호감도 카드에 로딩 오버레이 얹기 */
+.crush-card {
+    position: relative;
+}
+
+/* 오버레이 전체 */
+.crush-loading-overlay {
+    position: absolute;
+    inset: 0; /* top:0; right:0; bottom:0; left:0 */
+    background: rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* 가운데 박스 */
+.crush-loading-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 24px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* 텍스트 */
+.crush-loading-text {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 스피너 */
+.crush-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid #FFE58F;
+    border-top-color: #F7B500;
+    border-radius: 50%;
+    animation: crush-spin 0.9s linear infinite;
+}
+
+@keyframes crush-spin {
+    to { transform: rotate(360deg); }
+}
+

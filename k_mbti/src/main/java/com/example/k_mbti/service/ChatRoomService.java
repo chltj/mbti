@@ -28,4 +28,5 @@ public interface ChatRoomService {
     List<ChatRoomDto> getRoomsByMember(String myName);
 
     List<String> getMembers(Long roomId);
+     void updateMemberNickname(String oldNickname, String newNickname);
 }

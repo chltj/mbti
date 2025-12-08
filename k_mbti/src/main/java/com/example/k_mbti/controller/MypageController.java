@@ -72,37 +72,45 @@ public class MypageController {
     }
 
     /** 수정 처리 */
-    @PostMapping("/mypage/edit")
-    public String editSubmit(@ModelAttribute UserDto form,
-                             HttpSession session,
-                             Model model) {
+   @PostMapping("/mypage/edit")
+public String editSubmit(@ModelAttribute UserDto form,
+                         HttpSession session,
+                         Model model) {
 
-        UserDto loginUser = (UserDto) session.getAttribute("loginUser");
-        if (loginUser == null) {
-            return "redirect:/login";
+    UserDto loginUser = (UserDto) session.getAttribute("loginUser");
+    if (loginUser == null) {
+        return "redirect:/login";
+    }
+
+    // 로그인한 본인만 업데이트
+    form.setId(loginUser.getId());
+
+    String oldNickname = loginUser.getNickname();
+    String newNickname = form.getNickname();
+
+    try {
+        // 1) 회원 정보 수정
+        authService.updateProfile(form);
+
+        // 2) 닉네임이 바뀐 경우, 관련 테이블 닉네임도 같이 변경
+        if (!oldNickname.equals(newNickname)) {
+            chatRoomService.updateMemberNickname(oldNickname, newNickname);
+            inquiryService.updateWriterNickname(oldNickname, newNickname);
         }
 
-        // 로그인한 본인만 업데이트
-        form.setId(loginUser.getId());
+        // 3) 세션 최신화
+        UserDto updated = authService.findById(loginUser.getId());
+        session.setAttribute("loginUser", updated);
 
-        try {
-            // 🔹 static 호출 말고, 주입받은 서비스 인스턴스 사용
-            authService.updateProfile(form);
-
-            // 세션도 최신 값으로 갱신
-            UserDto updated = authService.findById(loginUser.getId());
-            session.setAttribute("loginUser", updated);
-
-            model.addAttribute("auth", updated);
-            model.addAttribute("successMsg", "정보가 수정되었습니다!");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("auth", form);
-            model.addAttribute("errorMsg", "수정 중 오류가 발생했습니다.");
-        }
-
+        // ✅ 수정 후 마이페이지로 이동
         return "redirect:/mypage";
 
+    } catch (Exception e) {
+        e.printStackTrace();
+        model.addAttribute("auth", form);
+        model.addAttribute("errorMsg", "수정 중 오류가 발생했습니다.");
+        return "mypage-edit";
     }
+}
+
 }

@@ -48,5 +48,10 @@
     DELETE FROM inquiry
     WHERE id = #{id}
 </delete>
+<update id="updateWriterNickname">
+    UPDATE inquiry
+    SET writer = #{newNickname}
+    WHERE writer = #{oldNickname}
+</update>
 
 </mapper>
