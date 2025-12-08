@@ -14,19 +14,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class MypageController {
 
     private final ChatRoomService chatRoomService;
     private final InquiryService inquiryService;
-    private AuthService authService;
+    private final AuthService authService;   // 🔹 final 로 만들고
 
+    // 🔹 생성자에서 주입받기
     public MypageController(ChatRoomService chatRoomService,
-                            InquiryService inquiryService) {
+                            InquiryService inquiryService,
+                            AuthService authService) {
         this.chatRoomService = chatRoomService;
         this.inquiryService = inquiryService;
+        this.authService = authService;
     }
 
     @GetMapping("/mypage")
@@ -40,10 +42,8 @@ public class MypageController {
 
         String myName = loginUser.getNickname();
 
-        // ✅ DB에서 "내가 참여한 방" 리스트를 바로 가져옴
         List<ChatRoomDto> myRooms = chatRoomService.getRoomsByMember(myName);
 
-        // 문의는 그대로
         List<InquiryDto> myInquiries =
                 inquiryService.getInquiryList()
                         .stream()
@@ -56,7 +56,8 @@ public class MypageController {
 
         return "mypage";
     }
- @GetMapping("/mypage/edit")
+
+    @GetMapping("/mypage/edit")
     public String editForm(HttpSession session, Model model) {
 
         UserDto loginUser = (UserDto) session.getAttribute("loginUser");
@@ -85,7 +86,8 @@ public class MypageController {
         form.setId(loginUser.getId());
 
         try {
-            AuthService.updateProfile(form);
+            // 🔹 static 호출 말고, 주입받은 서비스 인스턴스 사용
+            authService.updateProfile(form);
 
             // 세션도 최신 값으로 갱신
             UserDto updated = authService.findById(loginUser.getId());
@@ -100,6 +102,7 @@ public class MypageController {
             model.addAttribute("errorMsg", "수정 중 오류가 발생했습니다.");
         }
 
-        return "mypage-edit";
+        return "redirect:/mypage";
+
     }
 }
