@@ -23,6 +23,7 @@
 </div>
     <div class="card">
         <!-- 제목 -->
+         <label class="form-label">제목 : </label>
         <h3 th:text="${inquiry.title}" style="margin-top:0;"></h3>
 
         <!-- 작성자 / 작성일 -->
@@ -35,6 +36,7 @@
         </p>
 
         <!-- 내용 -->
+         <label class="form-label">내용 : </label>
         <div style="font-size:14px; line-height:1.6; white-space:pre-wrap;"
              th:text="${inquiry.content}">
             내용이 들어갑니다.

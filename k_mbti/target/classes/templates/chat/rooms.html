@@ -50,37 +50,41 @@
     </div>
 
     <!-- 방 목록 카드 -->
-    <div class="card">
-        <h3 class="section-title" style="font-size:16px; margin-bottom:12px;">
-            현재 열린 방
-        </h3>
+   <!-- 방 목록 카드 -->
+<div class="card">
+    <h3 class="section-title" style="font-size:16px; margin-bottom:12px;">
+        현재 열린 방
+    </h3>
 
-        <div th:if="${#lists.isEmpty(rooms)}" style="font-size:13px; color:#777;">
-            아직 열린 방이 없어요. 첫 번째 소통의 방을 만들어 보세요 😊
-        </div>
+    <div th:if="${#lists.isEmpty(rooms)}" style="font-size:13px; color:#777;">
+        아직 열린 방이 없어요. 첫 번째 소통의 방을 만들어 보세요 😊
+    </div>
 
-        <div th:if="${!#lists.isEmpty(rooms)}" class="card-grid">
-            <div class="card" th:each="room : ${rooms}">
-                <div class="card-title" th:text="${room.name}">방 이름</div>
-                <div class="card-desc">
-                    인원:
-                    <span th:text="${room.currentCount}"></span> /
-                    <span th:text="${room.maxCount}"></span><br>
-                    방장:
-                    <span th:text="${room.owner}">방장</span>
-                </div>
+    <!-- 🔥 요기 바꿔줌 -->
+    <div th:if="${!#lists.isEmpty(rooms)}" class="room-list">
+        <div class="card room-card" th:each="room : ${rooms}">
+            <div class="card-title" th:text="${room.name}"></div>
 
-                <form th:action="@{'/chat/rooms/' + ${room.id} + '/join'}"
-                      method="post" style="margin-top:8px;">
-                    <button type="submit"
-                            class="btn-primary"
-                            th:disabled="${room.currentCount >= room.maxCount}">
-                        <span th:text="${room.currentCount >= room.maxCount ? '가득 찼어요' : '입장하기'}"></span>
-                    </button>
-                </form>
+            <div class="card-desc">
+                인원:
+                <span th:text="${room.currentCount}"></span> /
+                <span th:text="${room.maxCount}"></span><br>
+                방장:
+                <span th:text="${room.owner}"></span>
             </div>
+
+            <form th:action="@{'/chat/rooms/' + ${room.id} + '/join'}"
+                  method="post" style="margin-top:8px;">
+                <button type="submit"
+                        class="btn-primary"
+                        th:disabled="${room.currentCount >= room.maxCount}">
+                    <span th:text="${room.currentCount >= room.maxCount ? '가득 찼어요' : '입장하기'}"></span>
+                </button>
+            </form>
         </div>
     </div>
+</div>
+
 
 </div>
 

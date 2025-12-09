@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${room.name} + ' - 소통의 방'">소통의 방</title>
+
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/room.css}">
-
 </head>
 <body>
 
@@ -28,17 +28,20 @@
     </p>
 
     <!-- 채팅 영역 -->
-    <div class="card" style="max-height:480px; overflow-y:auto; margin-bottom:16px;">
-        <div th:if="${#lists.isEmpty(messages)}" style="font-size:13px; color:#777;">
+    <!-- ✅ 인라인 style 제거하고 chat-card 클래스 추가 -->
+    <div class="card chat-card">
+        <div th:if="${#lists.isEmpty(messages)}" class="chat-empty">
             아직 메시지가 없습니다. 먼저 말을 걸어보세요 😊
         </div>
 
-        <div th:each="msg : ${messages}"
-             style="margin-bottom:8px; font-size:13px;">
-            <b th:text="${msg.sender}">닉네임</b>
-            <span style="color:#bbb; font-size:11px; margin-left:4px;"
-                  th:text="${#temporals.format(msg.sentAt, 'HH:mm')}">12:34</span>
-            <div th:text="${msg.content}"></div>
+        <!-- ✅ 인라인 style 대신 chat-message 클래스 사용 -->
+        <div th:each="msg : ${messages}" class="chat-message">
+            <div class="chat-header">
+                <span class="chat-sender" th:text="${msg.sender}">닉네임</span>
+                <span class="chat-time"
+                      th:text="${#temporals.format(msg.sentAt, 'HH:mm')}">12:34</span>
+            </div>
+            <div class="chat-content" th:text="${msg.content}"></div>
         </div>
     </div>
 

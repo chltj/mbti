@@ -11,7 +11,7 @@ public class MbtiMlClient {
 
     // ❗ 본인 PC의 파이썬 스크립트 경로로 꼭 확인해주세요!
     private static final String SCRIPT_PATH =
-            "C:/Users/dmsgk/Downloads/mbti-main/mbti-main/k_mbti/ml_python/predict_mbti.py";
+            "C:/project/mbti/k_mbti/ml_python/predict_mbti.py";
 
     public MbtiMlResult predict(String fullText) {
         

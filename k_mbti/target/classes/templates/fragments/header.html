@@ -48,89 +48,63 @@
 </style>
 
 
-    <!-- 1. 메인 헤더 (로고 + 로그인/회원가입) -->
+  <!-- 1. 메인 헤더 -->
+<div style="background-color:#FFD93B; padding:16px 0; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
     <div style="
-        background-color: #FFD93B;
-        padding: 16px 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        max-width:960px;
+        margin:0 auto;             /* ⭐ 가운데 정렬 */
+        display:flex;
+        align-items:center;
+        justify-content:space-between;  /* 좌우 균형 */
     ">
-        <div style="
-            max-width: 960px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 24px;
-        ">
-            <!-- 로고 / 제목 -->
-            <div style="font-weight: 700; font-size: 20px;">
-                <a th:href="@{/}" style="text-decoration:none; color:#333;">
-                    🧠 KakaoTalk MBTI Analyzer
-                </a>
-            </div>
-
-            <!-- 로그인 / 회원가입 -->
-<nav>
-    <ul style="
-        display: flex;
-        list-style: none;
-        gap: 16px;
-        margin: 0;
-        padding: 0;
-        font-size: 15px;
-        font-weight: 500;
-    ">
-
-        <!-- 🔥 로그인 상태일 때 (세션에 loginUser가 있을 때) -->
-<li th:if="${session.loginUser != null}" style="color:#333;">
-    <a th:href="@{/mypage}" style="font-weight:600; text-decoration:none;">
-        <span th:text="${session.loginUser.nickname}"></span>
-    </a> 님 환영합니다!
-</li>
-
-
-        <li th:if="${session.loginUser != null}">
-<a href="/logout" onclick="return logoutAll();"
-   style="text-decoration:none; color:#333;">
-    로그아웃
-</a>
-<script>
-  function logoutAll() {
-    // 카카오 SDK가 로드된 경우에만
-    if (window.Kakao && Kakao.Auth && Kakao.Auth.getAccessToken()) {
-      Kakao.Auth.logout(function () {
-        console.log('kakao logout done');
-        localStorage.removeItem('kakao_nickname');
-        // 스프링 세션 로그아웃 요청
-        window.location.href = '/logout';
-      });
-      return false; // a 태그 기본 이동 막기
-    } else {
-      localStorage.removeItem('kakao_nickname');
-      return true; // 그냥 /logout으로 이동
-    }
-  }
-</script>
-
-        </li>
-
-        <!-- 🔥 로그인 안 되어 있을 때 -->
-        <li th:if="${session.loginUser == null}">
-            <a th:href="@{/login}" style="text-decoration:none; color:#333;">
-                로그인
+        <!-- 로고 + 사이트명 -->
+        <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:20px;">
+            <img th:src="@{/img/logo.png}"
+                 alt="logo"
+                 style="width:34px; height:34px; object-fit:contain;">
+            <a th:href="@{/}" style="text-decoration:none; color:#333;">
+                KakaoTalk MBTI Analyzer
             </a>
-        </li>
-        <li th:if="${session.loginUser == null}">
-            <a th:href="@{/signup}" style="text-decoration:none; color:#333;">
-                회원가입
-            </a>
-        </li>
-
-    </ul>
-</nav>
-
         </div>
+
+        <!-- 로그인 / 회원가입 메뉴 -->
+        <nav>
+            <ul style="
+                display:flex;
+                list-style:none;
+                gap:16px;
+                margin:0;
+                padding:0;
+                font-size:15px;
+                font-weight:500;
+            ">
+                <li th:if="${session.loginUser != null}" style="color:#333;">
+                    <a th:href="@{/mypage}" style="font-weight:600; text-decoration:none;">
+                        <span th:text="${session.loginUser.nickname}"></span>
+                    </a> 님 환영합니다!
+                </li>
+
+                <li th:if="${session.loginUser != null}">
+                    <a href="/logout" onclick="return logoutAll();" style="text-decoration:none; color:#333;">
+                        로그아웃
+                    </a>
+                </li>
+
+                <li th:if="${session.loginUser == null}">
+                    <a th:href="@{/login}" style="text-decoration:none; color:#333;">
+                        로그인
+                    </a>
+                </li>
+                <li th:if="${session.loginUser == null}">
+                    <a th:href="@{/signup}" style="text-decoration:none; color:#333;">
+                        회원가입
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
+</div>
+
 
 <!-- 2. 서브 헤더 -->
 <div style="

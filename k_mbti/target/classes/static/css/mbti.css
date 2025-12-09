@@ -1,6 +1,7 @@
 /* MBTI 업로드 페이지 배경 */
 body {
     background-color: #FFF7C2;
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", system-ui, sans-serif;
 }
 
 /* 업로드 페이지는 공통 .page-wrap / .card / 폼 스타일 그대로 사용 */
@@ -15,6 +16,88 @@ body {
     font-size: 11px;
     font-weight: 700;
 }
+.mbti-loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    border-radius: 18px; /* 카드 모양 따라감 */
+}
+
+.mbti-loading-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 24px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.mbti-loading-text {
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.mbti-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #FFE58F;
+    border-top-color: #F7B500;
+    border-radius: 50%;
+    animation: mbti-spin 0.9s linear infinite;
+}
+.loading-img {
+    width: 100px;
+    height: 100px;
+}
+
+.loading-img-box {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.loading-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+.mbti-spinner {
+    display: none !important;
+}
+
+.frame1 {
+    animation: swap 0.8s infinite;
+}
+
+.frame2 {
+    animation: swap 0.8s infinite;
+    animation-delay: 0.4s; /* frame1 이후에 시작 */
+}
+
+@keyframes swap {
+    0%   { opacity: 1; }
+    50%  { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+
+
+@keyframes mbti-spin {
+    to { transform: rotate(360deg); }
+}
+
 
 @media (max-width: 600px) {
     .page-wrap {

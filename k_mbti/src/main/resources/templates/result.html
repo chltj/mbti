@@ -23,7 +23,7 @@
 
     <div class="chemistry-section">
         <div class="chem-badge">
-            <i class="fas fa-heart text-danger me-2"></i>AI Chemistry Score
+            <i class="fas fa-heart text-danger me-2"></i>궁합 점수
         </div>
         <div class="chem-score" th:text="${chemistryScore}">95</div>
         <div class="chem-desc">
@@ -48,9 +48,9 @@
                         <span class="confidence-label">AI 신뢰도</span>
                         <div class="confidence-bar-bg">
                             <div class="confidence-bar-fill" 
-                                 th:style="'width: ' + ${myResult.finalConfidence * 100} + '%; background-color: #4facfe;'"></div>
+                                 th:style="'width: ' + ${myResult.finalConfidence * 150} + '%; background-color: #4facfe;'"></div>
                         </div>
-                        <span class="confidence-label" th:text="${#numbers.formatInteger(myResult.finalConfidence * 100, 1) + '%'}"></span>
+                        <span class="confidence-label" th:text="${#numbers.formatInteger(myResult.finalConfidence * 150, 1) + '%'}"></span>
                     </div>
 
                     <div class="keyword-box" id="my-keywords"></div>
@@ -81,9 +81,9 @@
                         <span class="confidence-label">AI 신뢰도</span>
                         <div class="confidence-bar-bg">
                             <div class="confidence-bar-fill" 
-                                 th:style="'width: ' + ${partnerResult.finalConfidence * 100} + '%; background-color: #ff9a9e;'"></div>
+                                 th:style="'width: ' + ${partnerResult.finalConfidence * 150} + '%; background-color: #ff9a9e;'"></div>
                         </div>
-                        <span class="confidence-label" th:text="${#numbers.formatInteger(partnerResult.finalConfidence * 100, 1) + '%'}"></span>
+                        <span class="confidence-label" th:text="${#numbers.formatInteger(partnerResult.finalConfidence * 150, 1) + '%'}"></span>
                     </div>
 
                     <div class="keyword-box" id="partner-keywords"></div>

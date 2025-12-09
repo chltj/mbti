@@ -11,7 +11,7 @@
 
         body {
             font-family: 'Pretendard', sans-serif;
-            background-color: var(--kakao-bg); /* 배경색 통일 */
+            background-color: #FFF7C2; /* 배경색 통일 */
             color: var(--text-main);
             margin: 0;
             padding-bottom: 80px;
@@ -75,6 +75,7 @@
             color: #888;
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
             display: inline-block;
+            margin-top: 50px;
             margin-bottom: 15px;
             font-weight: 600;
         }
