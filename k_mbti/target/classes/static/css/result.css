@@ -1,77 +1,131 @@
-/* 결과 페이지 배경 */
-body {
-    background-color: #FFF7C2;
+/* ===============================
+   ✅ result.html 전용 하이브리드 UI
+=============================== */
+
+.page-wrap {
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 0 24px;
 }
 
-.result-tag {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 600;
-    color: #666;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background-color: #FFF7C2;
+.page-title {
+    font-size: 28px;
+    font-weight: 800;
     margin-bottom: 12px;
 }
 
-.result-name {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 8px;
+.page-sub {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 40px;
 }
 
-.result-sub {
-    font-size: 14px;
-    color: #777;
-    margin-bottom: 22px;
+/* ✅ 카드 그룹 */
+.mbti-card-group {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
 }
 
-.mbti-box {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 18px 32px 20px;
-    border-radius: 16px;
-    background-color: #FFFBEA;
-    border: 1px solid #FFE58F;
-    min-width: 220px;
-    margin-bottom: 18px;
+/* ✅ 공통 카드 스타일 */
+.mbti-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+    transition: 0.25s;
 }
 
-.mbti-label {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 4px;
+.mbti-card:hover {
+    transform: translateY(-4px);
 }
 
-.mbti-value {
+/* ✅ 메인 카드 */
+.mbti-card.main {
+    flex: 1 1 100%;
+    border: 3px solid #FFD43B;
+    text-align: center;
+}
+
+.mbti-type {
+    font-size: 52px;
+    font-weight: 900;
+    margin: 16px 0;
+    color: #333;
+}
+
+/* ✅ 신뢰도 바 */
+.confidence-bar {
+    width: 100%;
+    height: 14px;
+    background: #eee;
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.confidence-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FFD43B, #FFA500);
+    border-radius: 99px;
+}
+
+.name-text {
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+/* ✅ 서브 카드 */
+.mbti-card.sub {
+    flex: 1 1 48%;
+    border: 2px dashed #ddd;
+    text-align: center;
+}
+
+.sub-mbti {
     font-size: 40px;
     font-weight: 800;
-    letter-spacing: 4px;
+    margin: 14px 0;
 }
 
-.mbti-desc {
-    font-size: 13px;
-    color: #777;
-    line-height: 1.6;
-    margin-bottom: 22px;
+.desc {
+    font-size: 14px;
+    color: #666;
 }
 
-.btn-row {
+/* ✅ 안내 박스 */
+.result-notice {
+    background: #fff9e6;
+    border-left: 6px solid #FFD43B;
+    padding: 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* ✅ 버튼 영역 */
+.btn-wrap {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 20px;
 }
 
-@media (max-width: 600px) {
-    .page-wrap {
-        margin-top: 24px;
-    }
-    .card {
-        padding: 22px 18px 24px;
-    }
-    .mbti-value {
-        font-size: 32px;
-    }
+.btn-main {
+    background: #FFD43B;
+    color: #000;
+    padding: 12px 28px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.btn-sub {
+    background: #eaeaea;
+    color: #333;
+    padding: 12px 28px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
 }
