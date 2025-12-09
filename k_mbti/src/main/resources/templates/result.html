@@ -1,96 +1,159 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>MBTI 분석 결과</title>
-
-    <!-- 공통 CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MBTI 분석 결과 - KakaoTalk Analyzer</title>
+    
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+       <!-- 공통 CSS -->
     <link rel="stylesheet" th:href="@{/css/common.css}">
-    <!-- 결과 전용 CSS -->
-    <link rel="stylesheet" th:href="@{/css/result.css}">
+
+    <!-- 회원가입 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/signup.css}">
+
 </head>
 <body>
+    <div th:replace="fragments/header :: siteHeader"></div>
 
-<!-- ✅ header fragment (신 문법 적용) -->
-<div th:replace="~{fragments/header :: siteHeader}"></div>
+<div class="report-container">
 
-<div class="page-wrap">
+    <div class="chemistry-section">
+        <div class="chem-badge">
+            <i class="fas fa-heart text-danger me-2"></i>AI Chemistry Score
+        </div>
+        <div class="chem-score" th:text="${chemistryScore}">95</div>
+        <div class="chem-desc">
+            <span th:if="${chemistryScore >= 90}">"말하지 않아도 통하는 소울메이트"</span>
+            <span th:if="${chemistryScore >= 80 && chemistryScore < 90}">"대화가 끊이지 않는 환상의 짝꿍"</span>
+            <span th:if="${chemistryScore < 80}">"서로를 알아가는 즐거움이 있는 사이"</span>
+        </div>
+    </div>
 
-    <h2 class="page-title">
-        <span>🔍</span>
-        <span>MBTI 분석 결과</span>
-    </h2>
+    <div class="row g-5">
+        
+        <div class="col-lg-6 animate-card delay-1">
+            <div class="mbti-card">
+                <span class="user-role">MY PROFILE</span>
+                
+                <div th:if="${myResult != null}">
+                    <h3 class="user-name"><span th:text="${myName}">나</span> 님</h3>
+                    
+                    <div class="mbti-code text-gradient-me" id="my-mbti" th:text="${myResult.finalMbti}">ISTJ</div>
+                    
+                    <div class="confidence-wrap">
+                        <span class="confidence-label">AI 신뢰도</span>
+                        <div class="confidence-bar-bg">
+                            <div class="confidence-bar-fill" 
+                                 th:style="'width: ' + ${myResult.finalConfidence * 100} + '%; background-color: #4facfe;'"></div>
+                        </div>
+                        <span class="confidence-label" th:text="${#numbers.formatInteger(myResult.finalConfidence * 100, 1) + '%'}"></span>
+                    </div>
 
-    <p class="page-sub">
-        업로드하신 카카오톡 대화를 기반으로<br>
-        <b>규칙 기반 + 머신러닝 하이브리드 분석</b> 결과입니다.
-    </p>
+                    <div class="keyword-box" id="my-keywords"></div>
 
-    <!-- ============================= -->
-    <!-- ✅ 하이브리드 MBTI 카드 그룹 -->
-    <!-- ============================= -->
-    <div class="mbti-card-group">
+                    <div class="analysis-comment">
+                        <div class="comment-title"><i class="fas fa-robot me-1"></i>AI ANALYSIS</div>
+                        <div class="comment-text" id="my-desc">분석 중...</div>
+                    </div>
+                </div>
 
-        <!-- ✅ 최종 하이브리드 MBTI -->
-        <div class="mbti-card main">
-            <h3>✅ 최종 하이브리드 MBTI</h3>
-
-            <div class="mbti-type" th:text="${mbti}">INFP</div>
-
-            <div class="confidence-bar">
-                <div class="confidence-fill"
-                     th:style="'width:' + ${confidence} + '%'">
+                <div th:if="${myResult == null}" class="py-5">
+                    <h4 class="text-muted">분석 실패</h4>
+                    <p class="small text-muted">데이터가 부족합니다.</p>
                 </div>
             </div>
-
-            <p>
-                신뢰도:
-                <b><span th:text="${confidence}">85</span>%</b>
-            </p>
-
-            <p class="name-text">
-                분석 대상: <b th:text="${name}">이름</b>
-            </p>
         </div>
 
-        <!-- ✅ 규칙 기반 MBTI -->
-        <div class="mbti-card sub">
-            <h4>📏 규칙 기반 MBTI</h4>
-            <p class="sub-mbti" th:text="${ruleMbti}">INFP</p>
-            <p class="desc">말투, 감정 표현, 문장 패턴 기반 분석</p>
+        <div class="col-lg-6 animate-card delay-2">
+            <div class="mbti-card">
+                <span class="user-role">PARTNER PROFILE</span>
+                
+                <div th:if="${partnerResult != null}">
+                    <h3 class="user-name"><span th:text="${partnerName}">상대</span> 님</h3>
+                    
+                    <div class="mbti-code text-gradient-partner" id="partner-mbti" th:text="${partnerResult.finalMbti}">ENFP</div>
+                    
+                    <div class="confidence-wrap">
+                        <span class="confidence-label">AI 신뢰도</span>
+                        <div class="confidence-bar-bg">
+                            <div class="confidence-bar-fill" 
+                                 th:style="'width: ' + ${partnerResult.finalConfidence * 100} + '%; background-color: #ff9a9e;'"></div>
+                        </div>
+                        <span class="confidence-label" th:text="${#numbers.formatInteger(partnerResult.finalConfidence * 100, 1) + '%'}"></span>
+                    </div>
+
+                    <div class="keyword-box" id="partner-keywords"></div>
+
+                    <div class="analysis-comment">
+                        <div class="comment-title"><i class="fas fa-robot me-1"></i>AI ANALYSIS</div>
+                        <div class="comment-text" id="partner-desc">분석 중...</div>
+                    </div>
+                </div>
+
+                <div th:if="${partnerResult == null}" class="py-5">
+                    <h4 class="text-muted">정보 없음</h4>
+                    <p class="small text-muted">상대방 데이터를 찾을 수 없습니다.</p>
+                </div>
+            </div>
         </div>
+    </div> 
 
-        <!-- ✅ 머신러닝 기반 MBTI -->
-        <div class="mbti-card sub">
-            <h4>🤖 머신러닝 MBTI</h4>
-            <p class="sub-mbti" th:text="${mlMbti}">ESTP</p>
-            <p class="desc">10,000개 학습 데이터 기반 예측</p>
-        </div>
-
-    </div>
-
-    <!-- ============================= -->
-    <!-- ✅ 안내 문구 -->
-    <!-- ============================= -->
-    <div class="result-notice">
-        <p>
-            본 결과는 <b>AI 기반 추정 결과</b>이며,
-            실제 성격과는 차이가 있을 수 있습니다.
-        </p>
-    </div>
-
-    <!-- ============================= -->
-    <!-- ✅ 다시 분석 버튼 -->
-    <!-- ============================= -->
-    <div class="btn-wrap">
-        <a href="/mbti" class="btn-main">다시 분석하기</a>
-        <a href="/" class="btn-sub">메인으로</a>
+    <div class="text-center" style="margin-top: 60px;">
+        <a href="/" class="btn-kakao-action">
+            <i class="fas fa-redo-alt me-2"></i>다시 분석하기
+        </a>
+        <a href="/" class="btn-secondary-custom">메인으로</a>
     </div>
 
 </div>
 
-<!-- ✅ footer fragment (신 문법 적용) -->
-<div th:replace="~{fragments/footer :: siteFooter}"></div>
+<script>
+    const mbtiData = {
+        'ISTJ': { keys: ['#책임감', '#현실적', '#정리정돈'], desc: '한번 시작한 일은 끝까지 해내는 책임감이 강한 스타일이에요. 논리적이고 체계적인 대화를 선호하네요.' },
+        'ISFJ': { keys: ['#헌신적', '#섬세함', '#배려왕'], desc: '상대방의 감정을 잘 캐치하고 챙겨주는 따뜻한 수호자예요. 조용하지만 강한 인내심이 느껴져요.' },
+        'INFJ': { keys: ['#통찰력', '#공감능력', '#신비로움'], desc: '깊은 통찰력으로 상대방의 마음을 꿰뚫어봐요. 의미 있는 깊은 대화를 나누는 걸 좋아하시는군요.' },
+        'INTJ': { keys: ['#전략가', '#독립적', '#논리왕'], desc: '전체적인 흐름을 읽고 계획을 세우는 전략가 스타일이에요. 지적인 호기심이 강해 보여요.' },
+        'ISTP': { keys: ['#만능재주꾼', '#쿨함', '#효율적'], desc: '필요한 말만 핵심적으로 하는 쿨한 스타일! 상황 분석이 빠르고 융통성이 뛰어나시네요.' },
+        'ISFP': { keys: ['#예술가', '#온화함', '#겸손'], desc: '자유로운 영혼의 소유자예요. 갈등을 싫어하고 상대방을 편안하게 해주는 매력이 있어요.' },
+        'INFP': { keys: ['#낭만적', '#이상주의', '#감수성'], desc: '마음이 따뜻하고 낭만적인 대화를 즐겨요. 자신의 가치관과 감정을 소중히 여기는 분이네요.' },
+        'INTP': { keys: ['#아이디어', '#분석적', '#호기심'], desc: '평범한 대화보다는 지적이고 논리적인 토론을 즐겨요. 독창적인 관점이 돋보입니다.' },
+        'ESTP': { keys: ['#활동적', '#직설적', '#해결사'], desc: '에너지가 넘치고 직설적인 화법을 구사해요. 문제를 빠르게 해결하는 능력이 대화에서 느껴져요.' },
+        'ESFP': { keys: ['#분위기메이커', '#사교적', '#낙천적'], desc: '어디서나 분위기를 밝게 만드는 힘이 있어요. 즐겁고 에너지 넘치는 대화를 주도하시네요.' },
+        'ENFP': { keys: ['#열정적', '#창의적', '#스마일'], desc: '상상력이 풍부하고 리액션이 좋아요! 대화만 해도 상대방에게 긍정적인 에너지를 주네요.' },
+        'ENTP': { keys: ['#논쟁즐김', '#다재다능', '#유쾌'], desc: '다양한 주제로 끊임없이 대화하는 걸 즐겨요. 재치 있는 입담으로 지루할 틈이 없게 만드네요.' },
+        'ESTJ': { keys: ['#리더십', '#체계적', '#현실파'], desc: '사실과 근거를 바탕으로 명확하게 말하는 스타일이에요. 리더십이 있고 계획적인 면모가 보여요.' },
+        'ESFJ': { keys: ['#친목도모', '#리액션', '#협동'], desc: '사람들을 챙기고 조화를 중요하게 생각해요. 따뜻한 리액션으로 상대를 기분 좋게 하네요.' },
+        'ENFJ': { keys: ['#카리스마', '#언변술사', '#이타적'], desc: '사람들의 성장을 돕는 따뜻한 리더예요. 설득력 있고 호소력 짙은 대화 스킬을 가지셨네요.' },
+        'ENTJ': { keys: ['#지도자', '#결단력', '#계획'], desc: '비전이 뚜렷하고 목표 지향적인 대화를 해요. 효율적이고 단호한 카리스마가 느껴집니다.' }
+    };
+
+    function setMbtiInfo(elementId, keywordId, descId) {
+        const mbtiEl = document.getElementById(elementId);
+        if (!mbtiEl) return;
+
+        const mbti = mbtiEl.innerText.trim();
+        const info = mbtiData[mbti] || { keys: ['#알수없음', '#신비주의'], desc: '데이터 부족으로 상세 성향을 분석하지 못했어요.' };
+
+        const keywordBox = document.getElementById(keywordId);
+        let html = '';
+        info.keys.forEach(key => {
+            html += `<span class="hash-tag">${key}</span>`;
+        });
+        keywordBox.innerHTML = html;
+
+        document.getElementById(descId).innerText = info.desc;
+    }
+
+    window.onload = function() {
+        setMbtiInfo('my-mbti', 'my-keywords', 'my-desc');
+        setMbtiInfo('partner-mbti', 'partner-keywords', 'partner-desc');
+    };
+</script>
+<div th:replace="fragments/footer :: siteFooter"></div>
 
 </body>
 </html>

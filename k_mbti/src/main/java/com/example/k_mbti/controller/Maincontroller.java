@@ -4,94 +4,88 @@ import com.example.k_mbti.parser.KakaoParser;
 import com.example.k_mbti.service.MbtiRuleService;
 import com.example.k_mbti.mbti.hybrid.MbtiHybridService;
 import com.example.k_mbti.mbti.hybrid.HybridMbtiResult;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class Maincontroller {
 
-    private final MbtiRuleService mbtiRuleService;
-    private final MbtiHybridService mbtiHybridService;
+    private final MbtiRuleService ruleService;
+    private final MbtiHybridService hybridService;
 
-    public Maincontroller(MbtiRuleService mbtiRuleService,
-                          MbtiHybridService mbtiHybridService) {
-        this.mbtiRuleService = mbtiRuleService;
-        this.mbtiHybridService = mbtiHybridService;
+    public Maincontroller(MbtiRuleService ruleService, MbtiHybridService hybridService) {
+        this.ruleService = ruleService;
+        this.hybridService = hybridService;
     }
 
-    @GetMapping("/")
-    public String index() {
-        return "Main";
-    }
-
-    @GetMapping("/mbti")
-    public String mbtiPage() {
-        return "mbti";
-    }
+    @GetMapping("/") public String index() { return "Main"; }
+    @GetMapping("/mbti") public String mbtiPage() { return "mbti"; }
 
     @PostMapping("/mbti")
-    public String analyze(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("myName") String myName,
-            Model model) {
-
+    public String analyze(@RequestParam("file") MultipartFile file, 
+                          @RequestParam("myName") String myName, 
+                          Model model) {
         try {
-
-            if (file.isEmpty()) {
-                model.addAttribute("error", "파일이 업로드되지 않았습니다.");
-                return "Mbti";
-            }
-
-            myName = myName.trim();
+            if (file.isEmpty()) return "mbti";
 
             String rawText = new String(file.getBytes(), StandardCharsets.UTF_8);
-            Map<String, List<String>> userMessages = KakaoParser.parseByUser(rawText);
+            String targetName = myName.trim();
 
-            if (!userMessages.containsKey(myName)) {
-                model.addAttribute(
-                        "error",
-                        "카톡 파일에서 '" + myName + "' 을(를) 찾을 수 없습니다.\n" +
-                        "파싱된 이름: " + userMessages.keySet()
-                );
-                return "Mbti";
+            // 1. 파싱 (호감도용 파서 사용)
+            Map<String, List<String>> users = KakaoParser.parseByUser(rawText);
+
+            // 이름 체크
+            if (!users.containsKey(targetName)) {
+                model.addAttribute("error", "이름을 찾을 수 없습니다. (발견된 이름: " + users.keySet() + ")");
+                return "mbti";
             }
 
-            List<String> myMessages = userMessages.get(myName);
+            // 2. 상대방 찾기
+            String partnerName = users.keySet().stream()
+                    .filter(n -> !n.equals(targetName))
+                    .findFirst().orElse("상대방");
 
-            // ✅ 규칙 MBTI
-            String ruleMbti = mbtiRuleService.estimateMbti(myMessages);
-            double ruleScore = 0.75;
+            // 3. 분석 실행 (안전하게)
+            HybridMbtiResult myResult = safeAnalyze(users.get(targetName));
+            HybridMbtiResult partnerResult = safeAnalyze(users.get(partnerName));
 
-            // ✅ ML 입력 텍스트
-            String fullText = String.join(" ", myMessages);
+            // 4. 결과 전달
+            model.addAttribute("myName", targetName);
+            model.addAttribute("partnerName", partnerName);
+            model.addAttribute("myResult", myResult);
+            model.addAttribute("partnerResult", partnerResult);
+            
+            // 궁합 점수
+            model.addAttribute("chemistryScore", calcScore(myResult.getFinalMbti(), partnerResult.getFinalMbti()));
 
-            // ✅ 하이브리드 결과
-            HybridMbtiResult finalResult =
-                    mbtiHybridService.merge(ruleMbti, ruleScore, fullText);
-
-            // ✅ 최종 UI 전달 데이터
-            model.addAttribute("name", myName);
-            model.addAttribute("mbti", finalResult.getFinalMbti());
-            model.addAttribute("confidence",
-                    (int) (finalResult.getFinalConfidence() * 100));
-            model.addAttribute("ruleMbti", finalResult.getRuleMbti());
-            model.addAttribute("mlMbti", finalResult.getMlMbti());
-
-            return "result";
+            return "result"; 
 
         } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("error", "에러 발생: " + e.getMessage());
-            return "Mbti";
+            return "mbti";
         }
+    }
+
+    private HybridMbtiResult safeAnalyze(List<String> msgs) {
+        if (msgs == null || msgs.isEmpty()) return new HybridMbtiResult("UNKNOWN", 0.0, "-", "-");
+        try {
+            String ruleMbti = ruleService.estimateMbti(msgs);
+            return hybridService.merge(ruleMbti, 0.75, String.join(" ", msgs));
+        } catch (Exception e) {
+            return new HybridMbtiResult("ERROR", 0.0, "-", "-");
+        }
+    }
+
+    private int calcScore(String m1, String m2) {
+        if (m1.equals("UNKNOWN") || m2.equals("UNKNOWN")) return 0;
+        int score = 70;
+        if (m1.equals(m2)) return 95;
+        if (m1.charAt(0) != m2.charAt(0)) score += 10;
+        if (m1.charAt(3) != m2.charAt(3)) score += 5;
+        return Math.min(score, 100);
     }
 }
