@@ -19,6 +19,10 @@ C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\dto\SignupDto.java
 C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\dto\TalkData.java
 C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\dto\UserDto.java
 C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\KMbtiApplication.java
+C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\mbti\hybrid\HybridMbtiResult.java
+C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\mbti\hybrid\MbtiHybridService.java
+C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\mbti\ml\MbtiMlClient.java
+C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\mbti\ml\MbtiMlResult.java
 C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\parser\KakaoParser.java
 C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\service\AuthService.java
 C:\project\k_mbti\k_mbti\src\main\java\com\example\k_mbti\service\AuthServiceImpl.java
