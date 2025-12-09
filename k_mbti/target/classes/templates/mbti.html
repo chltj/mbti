@@ -2,9 +2,55 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>MBTI 분석</title>
+    <title>카카오톡 MBTI 분석</title>
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/mbti.css}">
+    <style>
+        /* 추가할 CSS 스타일 */
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        .mode-btn {
+            padding: 10px 20px;
+            border: 1px solid #ffde00; /* 카카오 노랑색 경계 */
+            border-radius: 8px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: bold;
+        }
+        .mode-btn.active {
+            background-color: #ffde00; /* 활성화 시 카카오 노랑 배경 */
+            color: #3c1e1e; /* 어두운 글자색 */
+            border-color: #ffe870;
+        }
+        .mode-btn:not(.active):hover {
+            background-color: #fffacd;
+        }
+        .form-section {
+            display: none; /* 기본적으로 숨김 */
+            padding: 15px;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .form-section.active {
+            display: block; /* 활성화 시 표시 */
+        }
+        .form-section h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .form-input[disabled], .form-file[disabled] {
+            background-color: #f7f7f7;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    </style>
 </head>
 <body>
 
@@ -21,33 +67,150 @@
     </p>
 
     <div class="card">
-        <form method="post" th:action="@{/mbti}" enctype="multipart/form-data">
-            <!-- 내 이름 -->
-            <div class="form-row">
-                <label class="form-label">내 이름</label>
-                <input class="form-input" type="text" name="myName" placeholder="예) 서연" required>
-                <div class="hint-text">카톡 대화에서 내가 사용하는 이름(대화명)을 입력해 주세요.</div>
+        <div class="mode-selector">
+            <button type="button" class="mode-btn active" data-mode="group">👨‍👩‍👧‍👦 단체 톡방 분석</button>
+            <button type="button" class="mode-btn" data-mode="single">🙋‍♀️ 개인 톡방 분석</button>
+        </div>
+        
+        <form id="analysisForm" action="/mbti/group" method="post" enctype="multipart/form-data">
+            
+            <div id="groupForm" class="form-section active">
+                <h3>단체 톡방: 모든 참여자 MBTI 분석</h3>
+                <div class="hint-text">업로드된 파일 내 **모든 참여자의 MBTI**를 분석합니다.</div>
+
+                <div class="form-row">
+                    <label class="form-label">내 이름</label>
+                    <input class="form-input" type="text" id="groupMyName" name="myName" placeholder="예) 상원" required>
+                    <div class="hint-text">카톡 대화에서 내가 사용하는 이름(대화명)을 입력해 주세요.</div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">단체 톡방 파일 선택 (.txt)</label>
+                    <input class="form-file" type="file" id="groupFile" name="file" accept=".txt" required>
+                    <div class="hint-text">카카오톡 대화 내보내기 → 텍스트 파일(.txt)을 업로드해 주세요.</div>
+                </div>
             </div>
 
-            <!-- 파일 업로드 -->
-            <div class="form-row">
-                <label class="form-label">카카오톡 txt 파일 업로드</label>
-                <input class="form-file" type="file" name="file" accept=".txt" required>
-                <div class="hint-text">카카오톡 대화 내보내기 → 텍스트 파일(.txt)을 업로드해 주세요.</div>
+            <div id="singleForm" class="form-section">
+                <h3>개인 톡방: 나와 상대방 MBTI 및 궁합 분석</h3>
+                <div class="hint-text">나와 상대방의 MBTI를 분석하고, 두 사람의 **궁합**을 추정합니다.</div>
+
+                <div class="form-row">
+                    <label class="form-label">내 이름</label>
+                    <input class="form-input" type="text" id="singleMyName" name="myName" placeholder="예) 상원" disabled>
+                </div>
+                
+                <div class="form-row">
+                    <label class="form-label">상대방 이름</label>
+                    <input class="form-input" type="text" id="targetName" name="targetName" placeholder="예) 서연" disabled>
+                    <div class="hint-text">상대방의 이름(대화명)을 정확히 입력해 주세요.</div>
+                </div>
+                
+                <div class="form-row">
+                    <label class="form-label">개인 톡방 파일 선택 (.txt)</label>
+                    <input class="form-file" type="file" id="singleFile" name="file" accept=".txt" disabled>
+                    <div class="hint-text">1:1 대화 파일(.txt)을 업로드해 주세요.</div>
+                </div>
             </div>
 
-            <!-- 제출 버튼 -->
+            <div th:if="${error}" class="error-text" th:text="${error}"></div>
+            
             <button type="submit" class="btn-submit">
                 <span class="icon">TALK</span>
                 <span>분석하기</span>
             </button>
         </form>
-
-        <div th:if="${error}" class="error-text" th:text="${error}"></div>
     </div>
 </div>
 
 <div th:replace="fragments/footer :: siteFooter"></div>
+
+<script th:inline="javascript">
+document.addEventListener('DOMContentLoaded', function() {
+    const modeSelector = document.querySelector('.mode-selector');
+    const analysisForm = document.getElementById('analysisForm');
+    
+    // 폼 섹션
+    const groupForm = document.getElementById('groupForm');
+    const singleForm = document.getElementById('singleForm');
+    
+    // 필드 (Input Name을 동적으로 변경해야 함)
+    const groupFile = document.getElementById('groupFile');
+    const singleFile = document.getElementById('singleFile');
+    const groupMyName = document.getElementById('groupMyName');
+    const singleMyName = document.getElementById('singleMyName');
+    const targetName = document.getElementById('targetName');
+
+    // 모드 변경 함수
+    function switchMode(mode) {
+        // 버튼 활성화/비활성화
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+
+        // 폼 섹션 표시/숨김
+        groupForm.classList.toggle('active', mode === 'group');
+        singleForm.classList.toggle('active', mode === 'single');
+        
+        if (mode === 'group') {
+            // 폼 액션 설정 및 필드 속성 변경: 단체 분석 (/mbti/group)
+            analysisForm.action = "/mbti/group";
+
+            // 단체 필드 활성화
+            groupFile.disabled = false;
+            groupFile.required = true;
+            groupMyName.disabled = false;
+            groupMyName.required = true;
+            groupMyName.name = "myName"; // name 속성 활성화
+            
+            // 개인 필드 비활성화 및 name 속성 해제
+            singleFile.disabled = true;
+            singleFile.required = false;
+            singleFile.name = ""; // 파일 업로드가 꼬이지 않도록 name 속성 해제
+            singleMyName.disabled = true;
+            singleMyName.required = false;
+            singleMyName.name = ""; 
+            targetName.disabled = true;
+            targetName.required = false;
+            targetName.name = "";
+
+        } else if (mode === 'single') {
+            // 폼 액션 설정 및 필드 속성 변경: 개인 분석 (/mbti/single)
+            analysisForm.action = "/mbti/single";
+
+            // 개인 필드 활성화 및 name 속성 설정
+            singleFile.disabled = false;
+            singleFile.required = true;
+            singleFile.name = "file";
+            singleMyName.disabled = false;
+            singleMyName.required = true;
+            singleMyName.name = "myName";
+            targetName.disabled = false;
+            targetName.required = true;
+            targetName.name = "targetName";
+
+            // 단체 필드 비활성화 및 name 속성 해제
+            groupFile.disabled = true;
+            groupFile.required = false;
+            groupFile.name = ""; 
+            groupMyName.disabled = true;
+            groupMyName.required = false;
+            groupMyName.name = "";
+        }
+    }
+
+    // 초기 모드 설정 (단체 톡방 분석이 기본)
+    switchMode('group');
+
+    // 버튼 클릭 이벤트 리스너
+    modeSelector.addEventListener('click', function(event) {
+        if (event.target.classList.contains('mode-btn')) {
+            const mode = event.target.dataset.mode;
+            switchMode(mode);
+        }
+    });
+});
+</script>
 
 </body>
 </html>
