@@ -54,3 +54,18 @@ CREATE TABLE `chat_room_member` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+추가해야하는 부분
+
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE users
+
+SET login_id = email
+WHERE login_id IS NULL OR login_id = '';
+
+SET SQL_SAFE_UPDATES = 1;
+ALTER TABLE users
+ADD COLUMN phone VARCHAR(20) AFTER password;
+ALTER TABLE users
+MODIFY login_id VARCHAR(50) NOT NULL UNIQUE,
+MODIFY phone VARCHAR(20) NULL;
