@@ -36,15 +36,13 @@
              th:text="${successMsg}">
         </div>
 
-        <form th:action="@{/mypage/edit}" th:object="${user}" method="post">
+        <!-- 🔹 컨트롤러에서 model.addAttribute("auth", ...) 로 넣었으니까 auth 로 바인딩 -->
+        <form th:action="@{/mypage/edit}" th:object="${auth}" method="post">
 
-            <!-- 아이디(로그인ID) / 변경 불가 예시 -->
-            <div class="form-row">
-                <label class="form-label">아이디</label>
-                <input class="form-input" type="text"
-                       th:value="*{loginId}"
-                       readonly>
-            </div>
+            <!-- PK 숨김 (id) -->
+            <input type="hidden" th:field="*{id}"/>
+
+            <!-- 아이디(로그인ID) : 여기서는 이메일을 아이디처럼 보여주기 (수정 불가) -->
 
             <!-- 닉네임 -->
             <div class="form-row">
@@ -54,7 +52,7 @@
                        placeholder="표시될 닉네임" required>
             </div>
 
-            <!-- 이메일 -->
+            <!-- 이메일 (수정 가능) -->
             <div class="form-row">
                 <label class="form-label" for="email">이메일</label>
                 <input id="email" class="form-input" type="email"

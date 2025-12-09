@@ -24,8 +24,22 @@
     </p>
 
     <!-- 업로드 카드 -->
-    <div class="card">
-        <form method="post" th:action="@{/crush}" enctype="multipart/form-data">
+    <div class="card crush-card">
+
+        <!-- 🔥 로딩 오버레이 추가 -->
+        <div id="loadingOverlay" class="crush-loading-overlay" style="display:none;">
+            <div class="crush-loading-box">
+                <div class="crush-spinner"></div>
+                <div class="crush-loading-text">분석중...</div>
+            </div>
+        </div>
+        <!-- 여기까지 -->
+
+        <form method="post"
+              th:action="@{/crush}"
+              enctype="multipart/form-data"
+              onsubmit="return showLoading();">
+
             <!-- 내 이름 -->
             <div class="form-row">
                 <label class="form-label">내 이름</label>
@@ -64,7 +78,7 @@
             </div>
 
             <!-- 제출 버튼 -->
-            <button type="submit" class="btn-submit">
+            <button type="submit" class="btn-submit crush-submit-btn">
                 <span class="icon">TALK</span>
                 <span>호감도 분석하기</span>
             </button>
@@ -92,6 +106,28 @@
 </div>
 
 <div th:replace="fragments/footer :: siteFooter"></div>
+
+<!-- 🔥 로딩 제어 스크립트 -->
+<script>
+    function showLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        const submitBtn = document.querySelector('.crush-submit-btn');
+
+        if (overlay) {
+            overlay.style.display = 'flex';
+        }
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerText = '분석중...';
+        }
+            setTimeout(() => {
+            document.querySelector("form").submit();
+        }, 5000); 
+
+        // 폼은 그대로 전송 (페이지 이동)
+        return false;
+    }
+</script>
 
 </body>
 </html>

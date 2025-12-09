@@ -24,4 +24,7 @@ public interface ChatDao {
     // 메시지
     void insertMessage(ChatMessageDto message);
     List<ChatMessageDto> findMessagesByRoomId(@Param("roomId") Long roomId);
+    
+      void updateMemberNickname(@Param("oldNickname") String oldNickname,
+                              @Param("newNickname") String newNickname);
 }

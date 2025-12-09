@@ -15,7 +15,6 @@ public class AuthServiceImpl implements AuthService {
     private final UserDao userDao;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-
     public AuthServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
@@ -25,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
         return userDao.findById(id);
     }
 
+    @Override
     public void updateProfile(UserDto user) {
         userDao.updateProfile(user);
     }

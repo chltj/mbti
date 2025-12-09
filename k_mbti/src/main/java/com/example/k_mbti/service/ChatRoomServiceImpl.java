@@ -13,10 +13,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatDao chatDao;
 
-    public ChatRoomServiceImpl(ChatDao chatDao) {
-        this.chatDao = chatDao;
+    public ChatRoomServiceImpl(ChatDao chatRoomDao) {
+        this.chatDao = chatRoomDao;
     }
 
+    @Override
+    public void updateMemberNickname(String oldNickname, String newNickname) {
+        chatDao.updateMemberNickname(oldNickname, newNickname);
+    }
     @Override
     public List<ChatRoomDto> getRoomList() {
         return chatDao.findAllRooms();

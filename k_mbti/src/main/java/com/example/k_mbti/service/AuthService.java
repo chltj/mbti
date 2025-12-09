@@ -11,8 +11,9 @@ public interface AuthService {
     UserDto login(LoginDto loginDto);
 
     UserDto kakaoLogin(String email, String nickname);
+
     UserDto findById(Long id);
-    static void updateProfile(UserDto user) {
-    }
-    
+
+    // 🔹 static 제거, 인스턴스 메서드로 변경
+    void updateProfile(UserDto user);
 }

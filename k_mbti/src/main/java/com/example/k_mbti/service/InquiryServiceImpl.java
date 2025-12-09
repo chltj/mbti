@@ -9,12 +9,17 @@ import java.util.List;
 @Service
 public class InquiryServiceImpl implements InquiryService {
 
+   
     private final InquiryDao inquiryDao;
 
     public InquiryServiceImpl(InquiryDao inquiryDao) {
         this.inquiryDao = inquiryDao;
     }
 
+    @Override
+    public void updateWriterNickname(String oldNickname, String newNickname) {
+        inquiryDao.updateWriterNickname(oldNickname, newNickname);
+    }
     @Override
     public List<InquiryDto> getInquiryList() {
         return inquiryDao.findAll();

@@ -43,6 +43,7 @@
         </div>
 
         <div class="card-grid">
+            <!-- ✅ MBTI는 비로그인도 바로 이용 가능 -->
             <a class="card" th:href="@{/mbti}">
                 <div class="card-title">🧬 MBTI 분석</div>
                 <div class="card-desc">
@@ -51,7 +52,9 @@
                 </div>
             </a>
 
-            <a class="card" th:href="@{/crush}">
+            <!-- ✅ 로그인 필요: 호감도 -->
+            <a class="card"
+               th:href="${session.loginUser != null} ? @{/crush} : @{/login}">
                 <div class="card-title">💘 호감도 보기</div>
                 <div class="card-desc">
                     대화 빈도, 말투, 이모티콘 등을 바탕으로
@@ -59,27 +62,42 @@
                 </div>
             </a>
 
-            <a class="card" th:href="@{/chat}">
+            <!-- ✅ 로그인 필요: 대화하기 -->
+            <a class="card"
+               th:href="${session.loginUser != null} ? @{/chat} : @{/login}">
                 <div class="card-title">💬 대화하기</div>
                 <div class="card-desc">
                     분석 결과를 바탕으로 어떤 톤과 스타일로
                     대화하면 좋은지 아이디어를 얻을 수 있어요.
                 </div>
+    
             </a>
 
-            <a class="card" th:href="@{/board}">
+            <!-- ✅ 로그인 필요: 게시판 -->
+            <a class="card"
+               th:href="${session.loginUser != null} ? @{/board} : @{/login}">
                 <div class="card-title">📌 게시판</div>
                 <div class="card-desc">
                     나만의 분석 결과를 공유하고,
                     다른 사람들과 비교해 보면서 놀 수 있는 커뮤니티 공간입니다.
                 </div>
+        
             </a>
         </div>
     </div>
 </div>
+<script>
+    function needLogin() {
+        if (confirm("로그인 후 이용할 수 있는 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
+            window.location.href = "/login";
+        }
+        return false;
+    }
+</script>
 
 <!-- Footer -->
 <div th:replace="fragments/footer :: siteFooter"></div>
+
 
 </body>
 </html>

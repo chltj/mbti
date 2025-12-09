@@ -79,7 +79,12 @@ public class ChatService {
         if (msg.contains("고민") || msg.contains("선택") || msg.contains("결정") || msg.contains("어떡해"))
             return "decision";
 
+         // 궁금
+        if (msg.contains("뭐가") || msg.contains("어떤") || msg.contains("무엇") || msg.contains("궁금"))
+            return "wondering";
+
         return "other";
+        
     }
 
     public String generateReply(String mbti, String userMsg) {
@@ -106,6 +111,7 @@ public class ChatService {
             case "work"       -> workReply(mbti);
             case "exercise"   -> exerciseReply(mbti);
             case "decision"   -> decisionReply(mbti);
+            case "wondering"  -> wonderingReply(mbti);
             default           -> genericReply(mbti);
         };
     }
@@ -508,4 +514,25 @@ public class ChatService {
             default -> "응응~ 계속 얘기해줘!";
         };
     }
+    private String wonderingReply(String m) {
+    return switch (m) {
+        case "ENFP" -> "뭐가 궁금해?? 😆 궁금한 거 다 말해줘!";
+        case "ENFJ" -> "어떤 게 궁금해~? 말해봐!";
+        case "ENTP" -> "뭐가?ㅋㅋ 얘기해봐!";
+        case "ENTJ" -> "궁금한 게 뭔데? 말해.";
+        case "ESFP" -> "뭐가 궁금해? 완전 재밌다! 😄";
+        case "ESFJ" -> "어떤 게 궁금했어~? 말해줘!";
+        case "ESTP" -> "뭐가 궁금해? 바로 말해!";
+        case "ESTJ" -> "궁금한 거 말해. 확인해줄게.";
+        case "INFP" -> "음… 뭐가 궁금해? 천천히 말해줘.";
+        case "INFJ" -> "어떤 게 궁금했을까? 얘기해줘.";
+        case "INTP" -> "음… 뭐가 궁금한지 말해봐.";
+        case "INTJ" -> "궁금한 내용이 뭔지 알려줘.";
+        case "ISFP" -> "응… 뭐가 궁금해?";
+        case "ISFJ" -> "어떤 게 궁금한가요~? 말해줘!";
+        case "ISTP" -> "뭐가 궁금해?";
+        case "ISTJ" -> "궁금한 걸 말해줘. 확인할게.";
+        default -> "뭐가 궁금해~? 말해줘!";
+    };
+}
 }

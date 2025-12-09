@@ -14,19 +14,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class MypageController {
 
     private final ChatRoomService chatRoomService;
     private final InquiryService inquiryService;
-    private AuthService authService;
+    private final AuthService authService;   // 🔹 final 로 만들고
 
+    // 🔹 생성자에서 주입받기
     public MypageController(ChatRoomService chatRoomService,
-                            InquiryService inquiryService) {
+                            InquiryService inquiryService,
+                            AuthService authService) {
         this.chatRoomService = chatRoomService;
         this.inquiryService = inquiryService;
+        this.authService = authService;
     }
 
     @GetMapping("/mypage")
@@ -40,10 +42,8 @@ public class MypageController {
 
         String myName = loginUser.getNickname();
 
-        // ✅ DB에서 "내가 참여한 방" 리스트를 바로 가져옴
         List<ChatRoomDto> myRooms = chatRoomService.getRoomsByMember(myName);
 
-        // 문의는 그대로
         List<InquiryDto> myInquiries =
                 inquiryService.getInquiryList()
                         .stream()
@@ -56,7 +56,8 @@ public class MypageController {
 
         return "mypage";
     }
- @GetMapping("/mypage/edit")
+
+    @GetMapping("/mypage/edit")
     public String editForm(HttpSession session, Model model) {
 
         UserDto loginUser = (UserDto) session.getAttribute("loginUser");
@@ -71,35 +72,45 @@ public class MypageController {
     }
 
     /** 수정 처리 */
-    @PostMapping("/mypage/edit")
-    public String editSubmit(@ModelAttribute UserDto form,
-                             HttpSession session,
-                             Model model) {
+   @PostMapping("/mypage/edit")
+public String editSubmit(@ModelAttribute UserDto form,
+                         HttpSession session,
+                         Model model) {
 
-        UserDto loginUser = (UserDto) session.getAttribute("loginUser");
-        if (loginUser == null) {
-            return "redirect:/login";
+    UserDto loginUser = (UserDto) session.getAttribute("loginUser");
+    if (loginUser == null) {
+        return "redirect:/login";
+    }
+
+    // 로그인한 본인만 업데이트
+    form.setId(loginUser.getId());
+
+    String oldNickname = loginUser.getNickname();
+    String newNickname = form.getNickname();
+
+    try {
+        // 1) 회원 정보 수정
+        authService.updateProfile(form);
+
+        // 2) 닉네임이 바뀐 경우, 관련 테이블 닉네임도 같이 변경
+        if (!oldNickname.equals(newNickname)) {
+            chatRoomService.updateMemberNickname(oldNickname, newNickname);
+            inquiryService.updateWriterNickname(oldNickname, newNickname);
         }
 
-        // 로그인한 본인만 업데이트
-        form.setId(loginUser.getId());
+        // 3) 세션 최신화
+        UserDto updated = authService.findById(loginUser.getId());
+        session.setAttribute("loginUser", updated);
 
-        try {
-            AuthService.updateProfile(form);
+        // ✅ 수정 후 마이페이지로 이동
+        return "redirect:/mypage";
 
-            // 세션도 최신 값으로 갱신
-            UserDto updated = authService.findById(loginUser.getId());
-            session.setAttribute("loginUser", updated);
-
-            model.addAttribute("auth", updated);
-            model.addAttribute("successMsg", "정보가 수정되었습니다!");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("auth", form);
-            model.addAttribute("errorMsg", "수정 중 오류가 발생했습니다.");
-        }
-
+    } catch (Exception e) {
+        e.printStackTrace();
+        model.addAttribute("auth", form);
+        model.addAttribute("errorMsg", "수정 중 오류가 발생했습니다.");
         return "mypage-edit";
     }
+}
+
 }
