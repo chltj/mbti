@@ -11,7 +11,7 @@ public class MbtiMlClient {
 
     // ❗ 본인 PC의 파이썬 스크립트 경로로 꼭 확인해주세요!
     private static final String SCRIPT_PATH =
-            "C:/project/mbti/k_mbti/ml_python/predict_mbti.py";
+            "C:/project/k_mbti/k_mbti/ml_python/predict_mbti.py";
 
     public MbtiMlResult predict(String fullText) {
         
@@ -61,6 +61,9 @@ public class MbtiMlClient {
             }
 
         } catch (Exception e) {
+                System.err.println("🔥🔥🔥 PYTHON EXCEPTION 발생!");
+                System.err.println("클래스: " + e.getClass().getName());
+                System.err.println("메시지: " + e.getMessage());
             e.printStackTrace();
         } finally {
             if (process != null) process.destroy();
