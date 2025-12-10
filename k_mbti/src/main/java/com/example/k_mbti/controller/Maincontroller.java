@@ -70,15 +70,24 @@ public class Maincontroller {
         }
     }
 
-    private HybridMbtiResult safeAnalyze(List<String> msgs) {
-        if (msgs == null || msgs.isEmpty()) return new HybridMbtiResult("UNKNOWN", 0.0, "-", "-");
-        try {
-            String ruleMbti = ruleService.estimateMbti(msgs);
-            return hybridService.merge(ruleMbti, 0.75, String.join(" ", msgs));
-        } catch (Exception e) {
-            return new HybridMbtiResult("ERROR", 0.0, "-", "-");
-        }
+private HybridMbtiResult safeAnalyze(List<String> msgs) {
+    if (msgs == null || msgs.isEmpty()) 
+        return new HybridMbtiResult("UNKNOWN", 0.0, "-", "-");
+    try {
+        String ruleMbti = ruleService.estimateMbti(msgs);
+        System.out.println("=== estimateMbti 결과 ===");
+        System.out.println(ruleMbti);
+        
+        HybridMbtiResult merged = hybridService.merge(ruleMbti, 0.75, String.join(" ", msgs));
+        System.out.println("=== 최종 Hybrid 결과 ===");
+        System.out.println(merged);
+
+        return merged;
+    } catch (Exception e) {
+        return new HybridMbtiResult("ERROR", 0.0, "-", "-");
     }
+}
+
 
     private int calcScore(String m1, String m2) {
         if (m1.equals("UNKNOWN") || m2.equals("UNKNOWN")) return 0;
@@ -88,4 +97,6 @@ public class Maincontroller {
         if (m1.charAt(3) != m2.charAt(3)) score += 5;
         return Math.min(score, 100);
     }
+
+    
 }

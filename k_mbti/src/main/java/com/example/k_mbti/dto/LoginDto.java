@@ -1,19 +1,21 @@
 package com.example.k_mbti.dto;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class LoginDto {
-        private String email;
-    private String password;
 
-        public String getEmail() {
-        return email;
+    private String loginId;  // 🔹 로그인용 아이디
+    private String password; // 비밀번호
+
+    public String getLoginId() {
+        return loginId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     public String getPassword() {
@@ -23,5 +25,4 @@ public class LoginDto {
     public void setPassword(String password) {
         this.password = password;
     }
-    
 }

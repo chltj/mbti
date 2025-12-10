@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
-
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 공통 CSS -->
     <link rel="stylesheet" th:href="@{/css/common.css}">
-
     <!-- 로그인 페이지 전용 CSS -->
     <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
@@ -21,26 +23,36 @@
     </h2>
 
     <p class="page-sub">
-        카카오톡으로 간편 로그인하거나<br>
-        이메일 회원가입으로 이용할 수 있어요.
+        아이디와 비밀번호로 로그인하거나<br>
+        카카오톡으로 간편 로그인할 수 있어요.
     </p>
 
     <div class="card login-card">
-    <!-- 로그인 실패 메시지 -->
-    <div th:if="${loginError}" class="error-msg">
-        <p th:text="${loginError}"></p>
-    </div>
+
+        <!-- 로그인 실패 메시지 -->
+        <div th:if="${loginError}" class="error-msg">
+            <p th:text="${loginError}"></p>
+        </div>
+
         <!-- 일반 로그인 -->
         <form th:action="@{/login}" method="post" class="normal-login-form">
 
+            <!-- 아이디 -->
             <div class="form-row">
-                <label class="form-label">이메일</label>
-                <input type="email" name="email" class="form-input" placeholder="이메일을 입력하세요" required>
+                <label class="form-label">아이디</label>
+                <input type="text" name="loginId"
+                       class="form-input"
+                       placeholder="아이디를 입력하세요"
+                       required>
             </div>
 
+            <!-- 비밀번호 -->
             <div class="form-row">
                 <label class="form-label">비밀번호</label>
-                <input type="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+                <input type="password" name="password"
+                       class="form-input"
+                       placeholder="비밀번호를 입력하세요"
+                       required>
             </div>
 
             <button type="submit" class="btn-submit full">
@@ -87,17 +99,14 @@
                     url: '/v2/user/me',
                     success: function(res) {
                         const name = res.kakao_account.profile.nickname;
-                        const email = res.kakao_account.email;  // 이메일 권한 허용했을 때
+                        const email = res.kakao_account.email;
 
-                        // ★ 더 이상 localStorage에만 저장하지 않고
-                        //    서버로 보내서 세션에 로그인 정보 저장하게 함
                         const params = new URLSearchParams();
                         params.append("nickname", name);
                         if (email) {
                             params.append("email", email);
                         }
 
-                        // /kakao-login 으로 이동 → 서버에서 세션 설정 후 메인으로 redirect
                         window.location.href = "/kakao-login?" + params.toString();
                     }
                 });
@@ -109,8 +118,6 @@
         e.preventDefault();
         loginWithKakao();
     });
-
-    // ★ localStorage 기반 환영메시지는 더 이상 사용 안 함
 </script>
 
 </body>

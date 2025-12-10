@@ -8,6 +8,7 @@
 /* 메인 페이지 전체 배경 */
 body {
     background-color: #f9f9f9;
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", system-ui, sans-serif;
 }
 
 /* Hero 영역 */
@@ -27,13 +28,13 @@ body {
     padding: 6px 12px;
     border-radius: 999px;
     background: rgba(255,255,255,0.7);
-    font-size: 12px;
+    font-size: 18px;
     font-weight: 600;
     margin-bottom: 18px;
 }
 .hero-title {
-    font-size: 34px;
-    font-weight: 800;
+    font-size: 40px;
+    font-weight: 1000;
     margin-bottom: 14px;
 }
 .hero-sub {

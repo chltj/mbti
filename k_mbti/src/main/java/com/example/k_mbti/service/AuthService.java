@@ -6,14 +6,13 @@ import com.example.k_mbti.dto.UserDto;
 
 public interface AuthService {
 
-    void signup(SignupDto signupDto);
+    void signup(SignupDto signupDto);      // 회원가입 (login_id + email + ...)
 
-    UserDto login(LoginDto loginDto);
+    UserDto login(LoginDto loginDto);      // 🔹 login_id로 로그인
 
     UserDto kakaoLogin(String email, String nickname);
 
     UserDto findById(Long id);
 
-    // 🔹 static 제거, 인스턴스 메서드로 변경
     void updateProfile(UserDto user);
 }

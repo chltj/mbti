@@ -1,9 +1,9 @@
 /* ===== 공통 기본 설정 ===== */
-body {
+html,body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", system-ui, sans-serif;
     color: #222;
-}
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", system-ui, sans-serif !important;
+    }
 
 /* 링크 공통 스타일 */
 a {

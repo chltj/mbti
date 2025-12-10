@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>마이페이지</title>
+            <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/mypage.css}">
+
 </head>
 <body>
 
@@ -27,61 +32,62 @@
         </a>
     </div>
 
-    <!-- 참여 중인 소통의 방 -->
-    <div class="card" style="margin-bottom:30px;">
-        <div class="card-title">참여 중인 소통의 방</div>
+  <!-- 참여 중인 소통의 방 -->
+    <div class="card mypage-card">
+        <div class="card-title">
+            <span>참여 중인 소통의 방</span>
+        </div>
 
         <!-- 방이 없을 때 -->
-        <div th:if="${#lists.isEmpty(myRooms)}"
-             style="font-size:13px; color:#777;">
+        <div th:if="${#lists.isEmpty(myRooms)}" class="mypage-empty">
             참여 중인 방이 없어요 😊
         </div>
 
         <!-- 방이 있을 때 -->
-        <ul th:if="${!#lists.isEmpty(myRooms)}"
-            style="list-style:none; padding-left:0; margin:10px 0 0 0;">
-            <li th:each="room : ${myRooms}"
-                style="margin-bottom:6px;">
-                <a th:href="@{'/chat/rooms/' + ${room.id}}"
-                   style="text-decoration:none; color:#333;">
-                    <span th:text="${room.name}">방 이름</span>
+        <ul th:if="${!#lists.isEmpty(myRooms)}" class="mypage-list">
+            <li th:each="room : ${myRooms}" class="mypage-item">
+                <a th:href="@{'/chat/rooms/' + ${room.id}}" class="mypage-link">
+                    <div class="mypage-item-main">
+                        <span class="mypage-item-title" th:text="${room.name}">방 이름</span>
+                    </div>
+                    <div class="mypage-item-meta">
+                        <span class="mypage-badge">
+                            <span th:text="${room.currentCount}">0</span>
+                            /
+                            <span th:text="${room.maxCount}">0</span> 명
+                        </span>
+                    </div>
                 </a>
-                <span style="color:#999; font-size:12px;">
-                    (
-                    <span th:text="${room.currentCount}">0</span> /
-                    <span th:text="${room.maxCount}">0</span>
-                    )
-                </span>
             </li>
         </ul>
     </div>
 
     <!-- 내가 작성한 문의 -->
-    <div class="card">
-        <div class="card-title">내가 작성한 문의</div>
+    <div class="card mypage-card">
+        <div class="card-title">
+            <span>내가 작성한 문의</span>
+        </div>
 
         <!-- 문의가 없을 때 -->
-        <div th:if="${#lists.isEmpty(myInquiries)}"
-             style="font-size:13px; color:#777;">
+        <div th:if="${#lists.isEmpty(myInquiries)}" class="mypage-empty">
             작성한 문의가 없어요 😊
         </div>
 
         <!-- 문의가 있을 때 -->
-        <ul th:if="${!#lists.isEmpty(myInquiries)}"
-            style="list-style:none; padding-left:0; margin:10px 0 0 0;">
-            <li th:each="inq : ${myInquiries}"
-                style="margin-bottom:6px;">
-                <a th:href="@{'/board/inquiry/' + ${inq.id}}"
-                   style="text-decoration:none; color:#333;">
-                    <span th:text="${inq.title}">문의 제목</span>
+        <ul th:if="${!#lists.isEmpty(myInquiries)}" class="mypage-list">
+            <li th:each="inq : ${myInquiries}" class="mypage-item">
+                <a th:href="@{'/board/inquiry/' + ${inq.id}}" class="mypage-link">
+                    <div class="mypage-item-main">
+                        <span class="mypage-item-title" th:text="${inq.title}">문의 제목</span>
+                    </div>
+                    <div class="mypage-item-meta">
+                        <!-- 날짜가 있으면 여기에 표시하면 돼요 -->
+                        <!-- <span class="mypage-date" th:text="${#temporals.format(inq.createDate, 'yyyy.MM.dd')}">2025.01.01</span> -->
+                        <span class="mypage-arrow">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </span>
+                    </div>
                 </a>
-                <!-- createDate 필드가 없을 수도 있으니, 우선 날짜 표시는 주석 -->
-                <!--
-                <span style="color:#999; font-size:12px;">
-                    (작성일:
-                    <span th:text="${inq.createDate}">2025-01-01</span>)
-                </span>
-                -->
             </li>
         </ul>
     </div>

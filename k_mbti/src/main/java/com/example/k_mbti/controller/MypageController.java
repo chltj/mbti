@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -20,9 +21,8 @@ public class MypageController {
 
     private final ChatRoomService chatRoomService;
     private final InquiryService inquiryService;
-    private final AuthService authService;   // 🔹 final 로 만들고
+    private final AuthService authService;
 
-    // 🔹 생성자에서 주입받기
     public MypageController(ChatRoomService chatRoomService,
                             InquiryService inquiryService,
                             AuthService authService) {
@@ -66,14 +66,16 @@ public class MypageController {
         }
 
         UserDto auth = authService.findById(loginUser.getId());
-        model.addAttribute("auth", auth);
+        model.addAttribute("auth", auth);  // mypage-edit.html 의 th:object="${auth}"
 
         return "mypage-edit";
     }
 
-    /** 수정 처리 */
-   @PostMapping("/mypage/edit")
-public String editSubmit(@ModelAttribute UserDto form,
+    /** 내 정보 수정 처리 */
+@PostMapping("/mypage/edit")
+public String editSubmit(@ModelAttribute("auth") UserDto form,
+                         @RequestParam(required = false) String newPassword,
+                         @RequestParam(required = false) String newPasswordConfirm,
                          HttpSession session,
                          Model model) {
 
@@ -82,17 +84,52 @@ public String editSubmit(@ModelAttribute UserDto form,
         return "redirect:/login";
     }
 
-    // 로그인한 본인만 업데이트
+    // 항상 세션의 id를 사용 (보안 + 정확성)
     form.setId(loginUser.getId());
 
     String oldNickname = loginUser.getNickname();
     String newNickname = form.getNickname();
 
+    // 🔍 여기서 한 번 form에 뭐가 들어왔는지 찍어보자
+    System.out.println(
+            "[MypageController.beforePw] id=" + form.getId()
+                    + ", nickname=" + form.getNickname()
+                    + ", email=" + form.getEmail()
+                    + ", phone=" + form.getPhone()
+                    + ", rawPassword=" + form.getPassword()
+    );
+
+    // 비밀번호 변경 의사가 있는 경우
+    if ((newPassword != null && !newPassword.isBlank()) ||
+        (newPasswordConfirm != null && !newPasswordConfirm.isBlank())) {
+
+        if (newPassword == null || !newPassword.equals(newPasswordConfirm)) {
+            model.addAttribute("auth", form);
+            model.addAttribute("errorMsg", "새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return "mypage-edit";
+        }
+
+        // 원문 비밀번호를 UserDto.password에 넣어줌 → 서비스에서 암호화
+        form.setPassword(newPassword);
+    } else {
+        // 비밀번호 변경 안 함
+        form.setPassword(null);
+    }
+
+    // 🔍 비밀번호 세팅한 뒤에도 한 번 더 찍어보자
+    System.out.println(
+            "[MypageController.beforeUpdate] id=" + form.getId()
+                    + ", nickname=" + form.getNickname()
+                    + ", email=" + form.getEmail()
+                    + ", phone=" + form.getPhone()
+                    + ", rawPassword=" + form.getPassword()
+    );
+
     try {
-        // 1) 회원 정보 수정
+        // 1) 회원 정보 수정 (닉네임, 이메일, 전화번호, (선택) 비밀번호)
         authService.updateProfile(form);
 
-        // 2) 닉네임이 바뀐 경우, 관련 테이블 닉네임도 같이 변경
+        // 2) 닉네임이 변경되면 관련 테이블도 업데이트
         if (!oldNickname.equals(newNickname)) {
             chatRoomService.updateMemberNickname(oldNickname, newNickname);
             inquiryService.updateWriterNickname(oldNickname, newNickname);
@@ -102,7 +139,6 @@ public String editSubmit(@ModelAttribute UserDto form,
         UserDto updated = authService.findById(loginUser.getId());
         session.setAttribute("loginUser", updated);
 
-        // ✅ 수정 후 마이페이지로 이동
         return "redirect:/mypage";
 
     } catch (Exception e) {
@@ -112,5 +148,6 @@ public String editSubmit(@ModelAttribute UserDto form,
         return "mypage-edit";
     }
 }
+
 
 }

@@ -7,13 +7,25 @@ import lombok.Setter;
 @Setter
 public class SignupDto {
 
+    private String loginId;         // 회원가입 아이디
+    private String email;           // 이메일
+    private String nickname;        // 닉네임
+    private String password;        // 비밀번호
+    private String passwordConfirm; // 비밀번호 확인
+    private String phone;           // 전화번호
 
-    private String email;
-    private String nickname;
-    private String password;
-    private String passwordConfirm;
-    
-    
+    // =============================
+    // Getter / Setter (명시적 작성)
+    // =============================
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -44,5 +56,13 @@ public class SignupDto {
 
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

@@ -1,126 +1,165 @@
 /* =========================================
-   소통의 방 화면 전용 스타일
+   소통의 방 화면 전용 스타일 (업그레이드)
    ========================================= */
 
 /* 배경 */
 body {
     background-color: #FFF7C2;
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", system-ui, sans-serif;
+    font-size: 18px;
 }
 
 /* 방 정보 */
 .room-title {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 800;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .room-info {
-    font-size: 13px;
+    font-size: 16px;
     color: #666;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
+    line-height: 1.6;
 }
 
 /* 채팅 박스 */
 .chat-box {
-    max-height: 460px;
+    max-height: 520px;              /* 460 → 520 */
     overflow-y: auto;
     background-color: #FFFBEA;
     border: 1px solid #FFE58F;
-    border-radius: 14px;
-    padding: 18px 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+    border-radius: 16px;
+    padding: 22px 20px;             /* 18,16 → 22,20 */
+    margin-bottom: 18px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.07);
 }
 
 /* 채팅 메시지 */
 .chat-message {
-    margin-bottom: 8px;
-    line-height: 1.5;
+    margin-bottom: 10px;
+    line-height: 1.6;
 }
 
+/* 닉네임 + 시간 줄 */
 .chat-sender {
     font-weight: 700;
-    font-size: 13px;
+    font-size: 16px;                /* 13 → 16 */
 }
 
 .chat-time {
-    font-size: 10px;
+    font-size: 12px;                /* 10 → 12 */
     color: #aaa;
-    margin-left: 4px;
+    margin-left: 6px;
 }
 
 .chat-content {
-    font-size: 13px;
+    font-size: 16px;                /* 13 → 16 */
     color: #444;
+    margin-top: 2px;
+}
+
+/* 입력 영역 래퍼 */
+.chat-input {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    align-items: flex-end;
 }
 
 /* 입력창 */
-.chat-input {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-}
-
 .chat-textarea {
     flex: 1;
-    min-height: 46px;
-    border-radius: 12px;
+    min-height: 56px;               /* 46 → 56 */
+    border-radius: 14px;
     border: 1px solid #ddd;
-    padding: 10px;
-    font-size: 13px;
+    padding: 12px 14px;
+    font-size: 16px;                /* 13 → 16 */
     resize: none;
     background-color: #fafafa;
 }
 
 .chat-textarea:focus {
     border-color: #FFD93B;
-    box-shadow: 0 0 0 3px rgba(255, 217, 59, 0.3);
+    box-shadow: 0 0 0 4px rgba(255, 217, 59, 0.3);
     background-color: #ffffff;
 }
 
-/* 버튼 */
+/* 보내기 버튼 */
 .chat-btn {
-    padding: 10px 18px;
+    padding: 12px 22px;             /* 10,18 → 12,22 */
     border-radius: 999px;
-    font-size: 13px;
+    font-size: 16px;                /* 13 → 16 */
     font-weight: 700;
     border: none;
     cursor: pointer;
     background-color: #FFD93B;
     color: #222;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    white-space: nowrap;
 }
 
 .chat-btn:hover {
     background-color: #FFC800;
     transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.18);
 }
 
 /* 뒤로 가기 버튼 */
 .chat-back {
-    padding: 8px 14px;
+    padding: 9px 16px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 14px;                /* 12 → 14 */
     border: 1px solid #ddd;
     background-color: #fafafa;
     color: #555;
 }
 
 .chat-back:hover {
-    background-color: white;
+    background-color: #ffffff;
 }
+/* 방 목록을 세로 리스트로 */
+.room-list {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    gap: 18px;              /* 카드 사이 간격 */
+}
+
+/* 개별 카드 */
+.room-card {
+    padding: 22px 24px;
+    border-radius: 16px;
+    background: #FFFBEA;
+}
+
 
 /* 반응형 */
 @media (max-width: 600px) {
     .chat-box {
-        padding: 14px;
+        padding: 18px 16px;
+        max-height: 460px;
     }
-    .chat-btn {
-        font-size: 12px;
-        padding: 8px 14px;
+
+    .chat-sender {
+        font-size: 15px;
     }
+
+    .chat-content {
+        font-size: 15px;
+    }
+
     .chat-textarea {
-        font-size: 12px;
+        font-size: 14px;
+        min-height: 52px;
+    }
+
+    .chat-btn {
+        font-size: 14px;
+        padding: 10px 18px;
+    }
+
+    .chat-back {
+        font-size: 13px;
+        padding: 8px 14px;
     }
 }

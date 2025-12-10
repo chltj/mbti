@@ -2,42 +2,88 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- namespace는 반드시 UserDao의 패키지+이름과 100% 같아야 함 -->
 <mapper namespace="com.example.k_mbti.dao.UserDao">
 
-    <!-- AuthServiceImpl.signup() 에서 호출하는 메소드 -->
+    <!-- 이메일로 유저 찾기 -->
     <select id="findByEmail"
             parameterType="string"
             resultType="com.example.k_mbti.dto.UserDto">
-        SELECT id, email, nickname, password, created_at
+        SELECT
+            id,
+            login_id   AS loginId,
+            email,
+            nickname,
+            password,
+            phone,
+            created_at AS createdAt
         FROM users
         WHERE email = #{email}
     </select>
-        <select id="findById"
+
+    <!-- login_id 로 찾기 -->
+    <select id="findByLoginId"
+            parameterType="string"
+            resultType="com.example.k_mbti.dto.UserDto">
+        SELECT
+            id,
+            login_id   AS loginId,
+            email,
+            nickname,
+            password,
+            phone,
+            created_at AS createdAt
+        FROM users
+        WHERE login_id = #{loginId}
+    </select>
+
+    <!-- PK로 찾기 -->
+    <select id="findById"
             parameterType="long"
             resultType="com.example.k_mbti.dto.UserDto">
         SELECT
             id,
-            nickname,
+            login_id   AS loginId,
             email,
-            password
+            nickname,
+            password,
+            phone,
+            created_at AS createdAt
         FROM users
         WHERE id = #{id}
     </select>
 
-    <!-- 회원가입 시 실제 저장하는 메소드 -->
+    <!-- 회원가입 -->
     <insert id="insertUser"
             parameterType="com.example.k_mbti.dto.UserDto">
-        INSERT INTO users (email, nickname, password, created_at)
-        VALUES (#{email}, #{nickname}, #{password}, NOW())
+        INSERT INTO users (
+            login_id,
+            email,
+            nickname,
+            password,
+            phone,
+            created_at
+        ) VALUES (
+            #{loginId},
+            #{email},
+            #{nickname},
+            #{password},
+            #{phone},
+            NOW()
+        )
     </insert>
-    <update id="updateProfile" parameterType="com.example.k_mbti.dto.UserDto">
-    UPDATE users
-    SET nickname = #{nickname},
-        email = #{email}
-    WHERE id = #{id}
-</update>
 
-
+    <!-- ✅ 내 정보 수정 (닉네임 / 이메일 / 전화번호 / (선택) 비밀번호) -->
+    <update id="updateProfile"
+            parameterType="com.example.k_mbti.dto.UserDto">
+        UPDATE users
+        SET
+            nickname = #{nickname},
+            email    = #{email},
+            phone    = #{phone}
+            <if test="password != null and password != ''">
+                , password = #{password}
+            </if>
+        WHERE id = #{id}
+    </update>
 
 </mapper>
