@@ -2,537 +2,770 @@ package com.example.k_mbti.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 public class ChatService {
 
+    private final Random random = new Random();
+
+    // 여러 후보 중 하나 랜덤 선택
+    private String pick(String... candidates) {
+        if (candidates == null || candidates.length == 0) return "";
+        return candidates[random.nextInt(candidates.length)];
+    }
+
     // 상황 감지 (확장)
-    private String detect(String msg) {
-        msg = msg.toLowerCase();
+// 상황 감지 (강화 버전)
+// 상황 감지 (강화 버전)
+private String detect(String msg) {
+    if (msg == null) msg = "";
+    msg = msg.toLowerCase().trim();
 
-        // 긍정 답변 (응, 네, 그래 등)
-        if (msg.matches("^(응|어|네|넵|ㅇㅇ|ㅇㅋ|ok|okay|그래|맞아|yes)$") || 
-            msg.matches("^(응|어|네|넵|ㅇㅇ|ㅇㅋ|그래|맞아)\\s*$"))
-            return "agree";
-        
-        // 부정 답변 (아니, 싫어 등)
-        if (msg.matches("^(아니|노|ㄴㄴ|no|nope|싫어|아냐)$") || 
-            msg.matches("^(아니|노|ㄴㄴ|싫어|아냐)\\s*$"))
-            return "disagree";
-
-        // 인사
-        if (msg.contains("안녕") || msg.contains("하이") || msg.contains("헬로"))
-            return "greeting";
-        
-        // 감사
-        if (msg.contains("고마") || msg.contains("감사") || msg.contains("땡큐"))
-            return "thanks";
-        
-        // 칭찬/사랑
-        if (msg.contains("좋아") || msg.contains("사랑") || msg.contains("최고") || msg.contains("멋져"))
-            return "compliment";
-        
-        // 날씨
-        if (msg.contains("날씨") || msg.contains("덥") || msg.contains("춥") || msg.contains("비"))
-            return "weather";
-        
-        // 취미/관심사
-        if (msg.contains("취미") || msg.contains("좋아하는") || msg.contains("관심"))
-            return "hobby";
-        
-        // 감정
-        if (msg.contains("기분") || msg.contains("어때"))
-            return "emotion";
-        
-        // 위로
-        if (msg.contains("힘들") || msg.contains("스트레스") || msg.contains("우울") || msg.contains("슬프"))
-            return "comfort";
-        
-        // 음식
-        if (msg.contains("밥") || msg.contains("먹") || msg.contains("음식") || msg.contains("배고"))
-            return "food";
-        
-        // 활동
-        if (msg.contains("뭐해") || msg.contains("하고 있어") || msg.contains("뭐하"))
-            return "activity";
-        
-        // 일정
-        if (msg.contains("내일") || msg.contains("언제") || msg.contains("시간") || msg.contains("약속"))
-            return "schedule";
-        
-        // 피곤/졸림
-        if (msg.contains("피곤") || msg.contains("졸려") || msg.contains("잠") || msg.contains("자고"))
-            return "tired";
-        
-        // 심심함
-        if (msg.contains("심심") || msg.contains("재미없") || msg.contains("지루"))
-            return "bored";
-        
-        // 공부/일
-        if (msg.contains("공부") || msg.contains("시험") || msg.contains("과제") || msg.contains("일") || msg.contains("회사"))
-            return "work";
-        
-        // 운동
-        if (msg.contains("운동") || msg.contains("헬스") || msg.contains("달리기") || msg.contains("요가"))
-            return "exercise";
-        
-        // 선택/고민
-        if (msg.contains("고민") || msg.contains("선택") || msg.contains("결정") || msg.contains("어떡해"))
-            return "decision";
-
-         // 궁금
-        if (msg.contains("뭐가") || msg.contains("어떤") || msg.contains("무엇") || msg.contains("궁금"))
-            return "wondering";
-
+    if (msg.isBlank()) {
         return "other";
-        
     }
 
-    public String generateReply(String mbti, String userMsg) {
-        if (mbti == null || mbti.isBlank()) mbti = "ENFP";
-        mbti = mbti.toUpperCase();
+    // -----------------------------
+    // 0. 아주 짧은 답변들 (우선 처리)
+    // -----------------------------
 
-        String ctx = detect(userMsg == null ? "" : userMsg);
-
-        return switch (ctx) {
-            case "agree"      -> agreeReply(mbti);
-            case "disagree"   -> disagreeReply(mbti);
-            case "greeting"   -> greetingReply(mbti);
-            case "thanks"     -> thanksReply(mbti);
-            case "compliment" -> complimentReply(mbti);
-            case "weather"    -> weatherReply(mbti);
-            case "hobby"      -> hobbyReply(mbti);
-            case "emotion"    -> emotionReply(mbti);
-            case "comfort"    -> comfortReply(mbti);
-            case "food"       -> foodReply(mbti);
-            case "activity"   -> activityReply(mbti);
-            case "schedule"   -> scheduleReply(mbti);
-            case "tired"      -> tiredReply(mbti);
-            case "bored"      -> boredReply(mbti);
-            case "work"       -> workReply(mbti);
-            case "exercise"   -> exerciseReply(mbti);
-            case "decision"   -> decisionReply(mbti);
-            case "wondering"  -> wonderingReply(mbti);
-            default           -> genericReply(mbti);
-        };
+    // 긍정 (응/어/네/ㅇㅇ/ㅇㅋ/그래/맞아/yes/ok 등)
+    if (msg.matches("^(응|웅|어|ㅇㅇ|ㅇㅋ|ㅇㅇㅇ|넹|네|넵|예|옙|그래|그럼|좋아|ok|okay|yes|yep|yup)\\s*$")) {
+        return "agree";
     }
 
-    // ----------------- 새로 추가된 답변 메소드들 -----------------
-    
+    // 부정 (아니/노/ㄴㄴ/싫어 등)
+    if (msg.matches("^(아니|노|ㄴㄴ|ㄴㅇㄴ|노노|싫어|아냐|no|nope)\\s*$")) {
+        return "disagree";
+    }
+
+    // ❗ 없음 / 잘 모름류 (없어, 딱히 없어, 몰라 등)
+    if (msg.matches("^(없어|없음|딱히 없어|딱히 없음|글쎄?|모르겠어|잘 모르겠어|몰라)\\s*$")) {
+        return "none";
+    }
+
+    // ❗ 망설임/생각 중 (음.., 흠.., 글쎄 등)
+    if (msg.matches("^(음+\\.*|으음+\\.*|흠+\\.*|글쎄+|well\\.*)\\s*$")) {
+        return "thinking";
+    }
+
+    // ❗ 웃음 (ㅋㅋ, ㅎㅎ, lol 등)
+    if (msg.matches("^(ㅋ+|ㅎ+|ㅋㅋ+|ㅎㅎ+|크크+|lol+|lmao+|rofl+)$")
+            || msg.contains("ㅋㅋ") || msg.contains("ㅎㅎ")) {
+        return "laugh";
+    }
+
+    // ❗ 놀람/충격 (헐, 헉, omg 등)
+    if (msg.matches("^(헐+|헉+|허걱+|세상에+|맙소사+|omg+|oh my god+)$")) {
+        return "surprise";
+    }
+
+    // -----------------------------
+    // 1. 문장 안에 포함되는 키워드들
+    // -----------------------------
+
+    // 인사
+    if (msg.contains("안녕") || msg.contains("하이") || msg.contains("헬로") ||
+        msg.contains("hello") || msg.contains("hi") ||
+        msg.contains("굿모닝") || msg.contains("굿나잇") || msg.contains("잘 자") || msg.contains("잘자")) {
+        return "greeting";
+    }
+
+    // 감사
+    if (msg.contains("고마워") || msg.contains("고맙") || msg.contains("감사") ||
+        msg.contains("땡큐") || msg.contains("thanks") || msg.contains("thank you")) {
+        return "thanks";
+    }
+
+    // 사과
+    if (msg.contains("미안") || msg.contains("죄송") || msg.contains("쏘리") ||
+        msg.contains("sorry") || msg.contains("ㅈㅅ")) {
+        return "apology";
+    }
+
+    // 칭찬/좋아/사랑
+    if (msg.contains("좋아해") || msg.contains("사랑해") || msg.contains("너 좋아") ||
+        msg.contains("최고") || msg.contains("멋져") || msg.contains("대단해") ||
+        msg.contains("존경") || msg.contains("너 짱") || msg.contains("짱이야")) {
+        return "compliment";
+    }
+
+    // 기쁨/신남/설렘 (happy)
+    if (msg.contains("행복") || msg.contains("신나") || msg.contains("신났") ||
+        msg.contains("설레") || msg.contains("설렘") ||
+        msg.contains("기분 좋") || msg.contains("좋은 하루") ||
+        msg.contains("좋았다") || msg.contains("즐거웠") || msg.contains("즐거워")) {
+        return "happy";
+    }
+
+    // 화남/짜증 (angry)
+    if (msg.contains("화나") || msg.contains("화남") || msg.contains("빡치") ||
+        msg.contains("빡쳐") || msg.contains("짜증") ||
+        msg.contains("열받") || msg.contains("어이없") || msg.contains("개빡")) {
+        return "angry";
+    }
+
+    // 불안/걱정/긴장 (anxious)
+    if (msg.contains("걱정") || msg.contains("불안") || msg.contains("긴장") ||
+        msg.contains("초조") || msg.contains("무섭") ||
+        msg.contains("두렵") || msg.contains("걱정돼") || msg.contains("불안해")) {
+        return "anxious";
+    }
+
+    // 날씨
+    if (msg.contains("날씨") || msg.contains("덥") || msg.contains("춥") ||
+        msg.contains("비와") || msg.contains("비 와") ||
+        msg.contains("장마") || msg.contains("눈와") || msg.contains("눈 와") ||
+        msg.contains("미세먼지") || msg.contains("황사")) {
+        return "weather";
+    }
+
+    // 취미/관심사
+    if (msg.contains("취미") || msg.contains("좋아하는") || msg.contains("관심") ||
+        msg.contains("요즘 뭐에 빠졌") || msg.contains("즐겨 하는") ||
+        msg.contains("시간 날 때 뭐") || msg.contains("놀 때 뭐")) {
+        return "hobby";
+    }
+
+    // 감정/상태 물어보기
+    if (msg.contains("기분") || msg.contains("어때") || msg.contains("괜찮아") ||
+        msg.contains("요즘 어때") || msg.contains("오늘 어땠어")) {
+        return "emotion";
+    }
+
+    // 위로 필요 느낌
+    if (msg.contains("힘들") || msg.contains("스트레스") || msg.contains("우울") ||
+        msg.contains("슬프") || msg.contains("지쳤") || msg.contains("번아웃") ||
+        msg.contains("버거워") || msg.contains("포기하고 싶") || msg.contains("현타")) {
+        return "comfort";
+    }
+
+    // 음식/배고픔
+    if (msg.contains("밥") || msg.contains("밥먹") || msg.contains("밥 먹") ||
+        msg.contains("먹고 싶") || msg.contains("먹을까") ||
+        msg.contains("음식") || msg.contains("배고파") || msg.contains("배고픔") ||
+        msg.contains("야식") || msg.contains("메뉴")) {
+        return "food";
+    }
+
+    // 지금 뭐하는지 (activity)
+    if (msg.contains("뭐해") || msg.contains("뭐 해") || msg.contains("하고 있어") ||
+        msg.contains("뭐하") || msg.contains("지금 뭐") ||
+        msg.contains("뭐 하는 중") || msg.contains("뭐 하는중")) {
+        return "activity";
+    }
+
+    // 일정/시간/약속 (schedule)
+    if (msg.contains("내일") || msg.contains("모레") || msg.contains("언제") ||
+        msg.contains("시간 돼") || msg.contains("시간 어때") ||
+        msg.contains("약속") || msg.contains("스케줄") || msg.contains("일정")) {
+        return "schedule";
+    }
+
+    // 피곤/졸림 (tired)
+    if (msg.contains("피곤") || msg.contains("졸려") || msg.contains("졸립") ||
+        msg.contains("잠와") || msg.contains("잠 와") ||
+        msg.contains("잠온") || msg.contains("자고 싶") ||
+        msg.contains("녹초") || msg.contains("기절직전")) {
+        return "tired";
+    }
+
+    // 심심/재미없음 (bored)
+    if (msg.contains("심심") || msg.contains("재미없") || msg.contains("재미가 없") ||
+        msg.contains("지루") || msg.contains("할 게 없") ||
+        msg.contains("할거 없") || msg.contains("할 거 없")) {
+        return "bored";
+    }
+
+    // 공부/시험/과제/일/회사 (work)
+    if (msg.contains("공부") || msg.contains("시험") || msg.contains("과제") ||
+        msg.contains("숙제") || msg.contains("레포트") || msg.contains("보고서") ||
+        msg.contains("회사") || msg.contains("직장") || msg.contains("야근") ||
+        msg.contains("업무") || msg.contains("프로젝트")) {
+        return "work";
+    }
+
+    // 운동/헬스 (exercise)
+    if (msg.contains("운동") || msg.contains("헬스") || msg.contains("런닝") ||
+        msg.contains("달리기") || msg.contains("조깅") ||
+        msg.contains("요가") || msg.contains("필라테스") ||
+        msg.contains("pt 받") || msg.contains("헬스장")) {
+        return "exercise";
+    }
+
+    // 선택/고민/결정 (decision)
+    if (msg.contains("고민") || msg.contains("선택") || msg.contains("결정") ||
+        msg.contains("어떡해") || msg.contains("어쩌지") ||
+        msg.contains("뭘 해야") || msg.contains("뭐가 나을까") ||
+        msg.contains("택해야") || msg.contains("골라야")) {
+        return "decision";
+    }
+
+    // 궁금/질문 (wondering)
+    if (msg.contains("뭐가") || msg.contains("어떤") || msg.contains("무엇") ||
+        msg.contains("궁금") || msg.contains("알고 싶") ||
+        msg.contains("질문") || msg.endsWith("?")) {
+        return "wondering";
+    }
+
+    return "other";
+}
+
+
+
+   public String generateReply(String mbti, String userMsg) {
+    if (mbti == null || mbti.isBlank()) mbti = "ENFP";
+    mbti = mbti.toUpperCase();
+
+    String ctx = detect(userMsg);
+
+    return switch (ctx) {
+        case "agree"      -> agreeReply(mbti);
+        case "disagree"   -> disagreeReply(mbti);
+
+        case "greeting"   -> greetingReply(mbti);
+        case "thanks"     -> thanksReply(mbti);
+        case "apology"    -> apologyReply(mbti);
+
+        case "compliment" -> complimentReply(mbti);
+        case "happy"      -> happyReply(mbti);
+        case "angry"      -> angryReply(mbti);
+        case "anxious"    -> anxiousReply(mbti);
+
+        case "weather"    -> weatherReply(mbti);
+        case "hobby"      -> hobbyReply(mbti);
+
+        case "emotion"    -> emotionReply(mbti);
+        case "comfort"    -> comfortReply(mbti);
+
+        case "food"       -> foodReply(mbti);
+        case "activity"   -> activityReply(mbti);
+        case "schedule"   -> scheduleReply(mbti);
+
+        case "tired"      -> tiredReply(mbti);
+        case "bored"      -> boredReply(mbti);
+
+        case "work"       -> workReply(mbti);
+        case "exercise"   -> exerciseReply(mbti);
+
+        case "decision"   -> decisionReply(mbti);
+        case "wondering"  -> wonderingReply(mbti);
+
+        // 🔹 새로 추가된 상황들
+        case "none"       -> noneReply(mbti);
+        case "thinking"   -> thinkingReply(mbti);
+        case "laugh"      -> laughReply(mbti);
+        case "surprise"   -> surpriseReply(mbti);
+
+        default           -> genericReply(mbti);
+    };
+}
+
+
+    // ----------------- 새로 추가된/강화된 답변 메소드들 -----------------
+
     private String agreeReply(String m) {
         return switch (m) {
-            case "ENFP" -> "헉 그렇구나!! 😆 더 얘기해줘!";
-            case "ENFJ" -> "응응~ 좋아! 그럼 이제 뭐할까?";
-            case "ENTP" -> "오케이ㅋㅋ 그럼 다음은?";
-            case "ENTJ" -> "좋아. 그럼 진행하자.";
-            case "ESFP" -> "오예!! 좋아좋아!! 😄";
-            case "ESFJ" -> "응응~ 그렇구나! 다행이다!";
-            case "ESTP" -> "오케이! 그럼 바로 하자!";
-            case "ESTJ" -> "알겠어. 확인했어.";
-            case "INFP" -> "응… 그렇구나. 알겠어!";
-            case "INFJ" -> "그렇구나. 이해했어.";
-            case "INTP" -> "음… 알겠어. 계속해봐.";
-            case "INTJ" -> "확인. 다음 단계는?";
-            case "ISFP" -> "응… 알겠어.";
-            case "ISFJ" -> "그렇구나! 알겠어~";
-            case "ISTP" -> "오케이.";
-            case "ISTJ" -> "알겠어. 확인했어.";
-            default -> "응응! 알겠어!";
+            case "ENFP" -> pick(
+                    "헉 그렇구나!! 😆 더 얘기해줘!",
+                    "오호 맞지맞지~ 나도 그렇게 생각했어!",
+                    "완전 공감이야ㅋㅋ 그런 생각한 거 진짜 멋있다!"
+            );
+            case "ENFJ" -> pick(
+                    "응응~ 좋아! 그럼 이제 뭐할까?",
+                    "맞아, 그런 방향이 더 좋을 것 같아.",
+                    "나도 그렇게 느꼈어. 계속 얘기해줘~"
+            );
+            case "ENTP" -> pick(
+                    "오케이ㅋㅋ 그럼 다음은?",
+                    "좋아, 그 생각 재밌는데? 더 파볼까?",
+                    "응, 그 말에 논리 꽤 있네. 계속 말해봐~"
+            );
+            // 나머지 MBTI들도 같은 패턴으로 2~3개씩 추가
+            case "INTP" -> pick(
+                    "음… 알겠어. 계속해봐.",
+                    "논리적으로 들리네. 좀 더 자세히 말해줄래?",
+                    "그 가설 흥미로운데, 예시도 있어?"
+            );
+            default -> pick(
+                    "응응! 알겠어!",
+                    "맞아, 나도 그렇게 생각해~",
+                    "좋다! 계속 얘기해줘."
+            );
         };
     }
 
     private String disagreeReply(String m) {
         return switch (m) {
-            case "ENFP" -> "앗 아니야?? 그럼 뭐야? 말해봐! 😮";
-            case "ENFJ" -> "아 그렇구나~ 그럼 어떤 게 맞아?";
-            case "ENTP" -> "오 아니야? 그럼 정답은 뭔데?";
-            case "ENTJ" -> "아니면 정확히 뭐야? 말해봐.";
-            case "ESFP" -> "앗 아니야?? 그럼 뭐가 맞아??";
-            case "ESFJ" -> "아 그렇구나! 내가 잘못 알았네!";
-            case "ESTP" -> "아니야? 그럼 뭔데?";
-            case "ESTJ" -> "아니면 정확히 설명해줘.";
-            case "INFP" -> "아… 아니었구나. 그럼 뭐야?";
-            case "INFJ" -> "그렇구나. 그럼 무슨 뜻이었어?";
-            case "INTP" -> "음… 아니야? 그럼 뭐가 맞지?";
-            case "INTJ" -> "아니면 정정해줘. 정확히 뭐야?";
-            case "ISFP" -> "아… 아니구나. 말해줘.";
-            case "ISFJ" -> "아 그렇구나! 내가 잘못 생각했네!";
-            case "ISTP" -> "아니야? 뭔데.";
-            case "ISTJ" -> "아니면 정확한 정보 알려줘.";
-            default -> "아 그렇구나! 그럼 뭐야?";
+            case "ENFP" -> pick(
+                    "앗 아니야?? 그럼 뭐야? 말해봐! 😮",
+                    "헐 내가 잘못 이해했나봐ㅠㅠ 어떻게 된 건데?",
+                    "엇? 다른 생각 있어?? 완전 궁금해!"
+            );
+            case "INTJ" -> pick(
+                    "아니면 정정해줘. 정확히 뭐야?",
+                    "흥미롭네. 그럼 네 기준에서 정답은 뭐야?",
+                    "좋아, 다른 관점 들을 준비됐어. 말해봐."
+            );
+            default -> pick(
+                    "아 그렇구나! 그럼 뭐야?",
+                    "내가 조금 다르게 이해했나 보다. 설명해줄래?",
+                    "음, 네 생각 궁금하다. 말해줘."
+            );
         };
     }
-    
+
     private String greetingReply(String m) {
         return switch (m) {
-            case "ENFP" -> "안녕!! 😆 오늘 뭐 재밌는 일 있어??";
-            case "ENFJ" -> "안녕~ 오늘 하루 어때? 잘 지내고 있어?";
-            case "ENTP" -> "안녕ㅋㅋ 오늘 무슨 재밌는 얘기 들려줄 거야?";
-            case "ENTJ" -> "어, 안녕. 오늘 계획 잘 진행되고 있어?";
-            case "ESFP" -> "헬로우~!! 반가워!! 뭐하고 있었어? 😄";
-            case "ESFJ" -> "안녕! 오늘 괜찮아? 뭐 필요한 거 있어?";
-            case "ESTP" -> "야! 뭐해? 재밌는 거 하고 있었어?";
-            case "ESTJ" -> "안녕. 오늘 할 일 잘 되고 있어?";
-            case "INFP" -> "안녕… 오늘은 어떤 하루야? 기분 괜찮아?";
-            case "INFJ" -> "안녕, 오늘 기분은 어때? 뭔가 특별한 일 있었어?";
-            case "INTP" -> "안녕. 요즘 뭐 재밌는 거 생각하고 있어?";
-            case "INTJ" -> "안녕. 오늘 뭔가 성과 있었어?";
-            case "ISFP" -> "안녕… 오늘 평화로운 하루 보내고 있어?";
-            case "ISFJ" -> "안녕~ 오늘 하루 별일 없었어? 괜찮아?";
-            case "ISTP" -> "어. 안녕.";
-            case "ISTJ" -> "안녕. 오늘 일정 괜찮아?";
-            default -> "안녕! 반가워~";
+            case "ENFP" -> pick(
+                    "안녕!! 😆 오늘 뭐 재밌는 일 있어??",
+                    "오 안녕안녕~ 나와 수다 떨 준비 됐어? ㅎㅎ",
+                    "헬로우우!! 오늘 기분은 어때??"
+            );
+            case "INTP" -> pick(
+                    "안녕. 요즘 뭐 재밌는 거 생각하고 있어?",
+                    "안녕~ 또 이상한(?) 생각 많이 했어? 말해봐 ㅎㅎ",
+                    "어, 안녕. 요즘 호기심 생긴 주제 있어?"
+            );
+            default -> pick(
+                    "안녕! 반가워~",
+                    "오랜만이네! 잘 지냈어?",
+                    "안녕안녕~ 오늘 하루 어땠어?"
+            );
         };
     }
 
     private String thanksReply(String m) {
         return switch (m) {
-            case "ENFP" -> "헉 뭘!! 우리 사이에 그런 거 없잖아 😆";
-            case "ENFJ" -> "천만에~ 언제든지 말해줘!";
-            case "ENTP" -> "ㅋㅋㅋ 당연하지! 또 필요하면 말해~";
-            case "ENTJ" -> "별거 아냐. 필요하면 또 말해.";
-            case "ESFP" -> "에이 뭘~ 당연한 거지!! 😄";
-            case "ESFJ" -> "아니야~ 너한테 도움 되면 나도 좋아!";
-            case "ESTP" -> "오케이~ 별거 아닌데?";
-            case "ESTJ" -> "응, 필요한 일이었으니까.";
-            case "INFP" -> "아니야… 네가 행복하면 나도 좋아.";
-            case "INFJ" -> "괜찮아, 너한테 도움이 됐다니 다행이야.";
-            case "INTP" -> "음… 별거 아니었는데. 괜찮아.";
-            case "INTJ" -> "당연한 거지. 문제 해결이 중요하니까.";
-            case "ISFP" -> "아니야… 도움이 됐다면 기뻐.";
-            case "ISFJ" -> "아니야~ 너 도와줄 수 있어서 기뻐!";
-            case "ISTP" -> "음. 별거 아냐.";
-            case "ISTJ" -> "응, 당연한 일이었어.";
-            default -> "천만에! 언제든 말해줘~";
+            case "ENFP" -> pick(
+                    "헉 뭘!! 우리 사이에 그런 거 없잖아 😆",
+                    "에이 고마워할 일도 아닌데 ㅎㅎ",
+                    "나도 즐거웠어! 또 말 걸어줘~"
+            );
+            default -> pick(
+                    "천만에~ 언제든지 말해줘!",
+                    "도움됐다니 다행이야.",
+                    "별거 아니야! 또 필요하면 말해."
+            );
         };
     }
 
-    private String complimentReply(String m) {
+    private String apologyReply(String m) {
         return switch (m) {
-            case "ENFP" -> "헉 진짜?? 😳 너도 진짜 최고야!!";
-            case "ENFJ" -> "고마워~ 너도 정말 멋진 사람이야!";
-            case "ENTP" -> "ㅋㅋㅋ 알아줘서 고맙네? 너도 좋은데?";
-            case "ENTJ" -> "당연하지. 너도 훌륭해.";
-            case "ESFP" -> "꺄 고마워!! 너도 완전 좋아!! 😆";
-            case "ESFJ" -> "진짜? 너 말 들으니까 기분 너무 좋다!";
-            case "ESTP" -> "오 고맙네! 너도 괜찮은데?";
-            case "ESTJ" -> "고마워. 너도 인정할 만해.";
-            case "INFP" -> "와… 그렇게 생각해줘서 고마워… 진심이야?";
-            case "INFJ" -> "고마워… 네 말이 정말 따뜻하게 느껴져.";
-            case "INTP" -> "음… 고마워. 그렇게 말해주니 좋네.";
-            case "INTJ" -> "고맙네. 객관적인 평가 같아서 믿을 만해.";
-            case "ISFP" -> "정말…? 고마워… 기분 좋다.";
-            case "ISFJ" -> "헉 고마워… 너무 좋은 말이야!";
-            case "ISTP" -> "음. 고맙네.";
-            case "ISTJ" -> "고마워. 인정받는 건 좋은 일이야.";
-            default -> "고마워! 너도 정말 멋져!";
+            case "ENFP" -> pick(
+                    "에이 그런 말 하지 마~ 괜찮아 진짜 😆",
+                    "뭐야 귀엽게 왜 사과해 ㅋㅋ 완전 괜찮은데?",
+                    "나는 하나도 안 서운했어! 걱정 노노~"
+            );
+            case "INFJ" -> pick(
+                    "사과해줘서 고마워. 그 마음이 더 소중해.",
+                    "괜찮아. 너도 많이 신경 썼던 것 같아.",
+                    "그 상황에서 그럴 수도 있어. 너무 자책하지 마."
+            );
+            default -> pick(
+                    "괜찮아, 신경 쓰지 마~",
+                    "알려줘서 고마워. 난 괜찮아!",
+                    "누구나 그럴 수 있어. 다음에 더 좋게 해보자~"
+            );
         };
     }
+    // 1) "없어", "몰라" 같은 대답 (none)
+private String noneReply(String m) {
+    return switch (m) {
+        case "ENFP" -> pick(
+                "없어…? 그럼 내가 하나 추천해줄까? 😆",
+                "딱히 없는 것도 괜찮지 ㅎㅎ 그럼 요즘엔 뭐에 관심 있어?",
+                "없을 수도 있지~ 대신 나랑 아무 말 대잔치 할래? ㅋㅋ"
+        );
+        case "INFJ" -> pick(
+                "지금은 떠오르지 않을 수도 있어. 천천히 생각해봐도 돼.",
+                "없다는 것도 하나의 답이야. 괜찮아.",
+                "굳이 억지로 만들 필요는 없어. 나중에 생기면 말해줘."
+        );
+        default -> pick(
+                "없구나~ 괜찮아, 굳이 있어야 하는 건 아니니까 ㅎㅎ",
+                "없을 수도 있지 뭐! 그럼 요즘엔 뭐가 제일 편해?",
+                "없다고 말해주는 것도 솔직해서 좋다 😊"
+        );
+    };
+}
 
-    private String weatherReply(String m) {
+// 2) "음..", "흠.." 같은 망설임/생각 중 (thinking)
+private String thinkingReply(String m) {
+    return switch (m) {
+        case "ENFP" -> pick(
+                "오… 고민하는 그 표정이 보이는 것 같아 ㅋㅋ 뭐 떠오르는 거 있어?",
+                "음~~~ 그러니까 아직 정리가 안 된 거지? 편하게 말해도 돼!",
+                "천천히 생각해도 괜찮아! 떠오르면 아무 때나 말해줘 😆"
+        );
+        case "INTP" -> pick(
+                "지금 머릿속에서 정리 중이지? ㅋㅋ 다 끝난 다음에 말해도 돼.",
+                "논리 구성 중인 거구만… 기다릴게 ㅎㅎ",
+                "애매하면 애매하다고 말해도 돼. 그 상태도 정보니까."
+        );
+        default -> pick(
+                "천천히 생각해도 괜찮아~ 서두를 필요 없어.",
+                "정 안 떠오르면 그냥 느낌대로 말해도 돼 ㅎㅎ",
+                "애매하면 애매하다고 말해줘도 괜찮아. 그게 자연스러워."
+        );
+    };
+}
+
+// 3) "ㅋㅋ", "ㅎㅎ" 같은 웃음 (laugh)
+private String laughReply(String m) {
+    return switch (m) {
+        case "ENFP" -> pick(
+                "ㅋㅋㅋㅋ 나도 웃겨 지금 ㅋㅋ",
+                "왜 이렇게 웃겨 ㅋㅋ 뭐 상상했어?",
+                "같이 웃으니까 괜히 기분 좋다 😆"
+        );
+        case "ENTP" -> pick(
+                "왜 웃냐 ㅋㅋ 나도 궁금하잖아.",
+                "ㅋㅋ 이 반응 뭔가 수상한데? 디테일 풀어라.",
+                "웃음 코드 맞는 거 같은데 더 풀어봐 ㅋㅋ"
+        );
+        default -> pick(
+                "ㅋㅋㅋ 웃음 터졌네 ㅎㅎ",
+                "나도 괜히 따라 웃게 된다 ㅋㅋ",
+                "웃을 일 있는 건 좋은 거다 😊 계속 얘기해줘~"
+        );
+    };
+}
+
+// 4) "헐", "헉", "omg" 같은 놀람 (surprise)
+private String surpriseReply(String m) {
+    return switch (m) {
+        case "ENFP" -> pick(
+                "헐 뭐야? 무슨 일 있었어?? 😳",
+                "헉 진짜?? 디테일 빨리 말해줘!!",
+                "세상에… 상상도 못한 전개인데? ㅋㅋ"
+        );
+        case "INTJ" -> pick(
+                "상당히 예상 밖이었나 보네. 어떤 상황이었어?",
+                "그 정도면 변수로 처리 못 한 사건이네. 자세히 말해줘.",
+                "흥미로운 상황이네. 분석 거리 생겼다."
+        );
+        default -> pick(
+                "헐, 진짜 그런 일이 있었어?",
+                "헉… 듣기만 해도 놀랍다. 어떻게 된 거야?",
+                "상상도 못 했겠다… 천천히 이야기해줘."
+        );
+    };
+}
+
+
+    private String happyReply(String m) {
         return switch (m) {
-            case "ENFP" -> "날씨?? 오늘 날씨 진짜 어때? 나가서 놀기 좋아? 😆";
-            case "ENFJ" -> "날씨가 안 좋으면 몸조리 잘해야 해. 괜찮아?";
-            case "ENTP" -> "날씨 얘기? 갑자기 산책이라도 가고 싶은 거야?";
-            case "ENTJ" -> "날씨에 맞춰서 계획 조정해야겠네.";
-            case "ESFP" -> "날씨 좋으면 나가서 놀자!! 안 좋으면 집콕! 😄";
-            case "ESFJ" -> "날씨 안 좋으면 감기 조심해야 해!";
-            case "ESTP" -> "날씨? 뭐 할 만한 거 있으면 바로 나가자!";
-            case "ESTJ" -> "날씨 체크는 중요하지. 외출 계획 있어?";
-            case "INFP" -> "날씨가 기분에 영향 주는 것 같아… 너는 어때?";
-            case "INFJ" -> "날씨에 따라 기분이 달라지기도 하지. 오늘은 어때?";
-            case "INTP" -> "날씨… 음, 기압 변화가 영향 주나?";
-            case "INTJ" -> "날씨 데이터 확인해서 계획 세워야겠어.";
-            case "ISFP" -> "날씨 좋으면 기분도 좋아지는 것 같아…";
-            case "ISFJ" -> "날씨 안 좋으면 따뜻하게 있어야 해!";
-            case "ISTP" -> "날씨? 뭐 할 거 있으면 상관없지 않나.";
-            case "ISTJ" -> "날씨 확인은 기본이지. 준비 잘했어?";
-            default -> "날씨 어때? 나가기 좋아?";
+            case "ENFP" -> pick(
+                    "우와 행복하다니 나까지 기분 좋아져 😆 무슨 일 있었어??",
+                    "헉 설렌다 설레!! 자세히 말해줘 제발 >_<",
+                    "좋은 일 있었구나!! 그 얘기 끝까지 들어야겠다 ㅎㅎ"
+            );
+            case "ISFP" -> pick(
+                    "행복한 순간 잘 느끼고 있구나… 그런 시간 진짜 소중해.",
+                    "와… 듣기만 해도 따뜻하다. 더 말해줄래?",
+                    "그 감정 오래 기억해두면 나중에 힘날 거야."
+            );
+            default -> pick(
+                    "와, 기분 좋다는 말 들으니까 나도 좋다!",
+                    "좋은 일 있었구나! 어떤 일이었어?",
+                    "그 기분 오래오래 갔으면 좋겠다 😊"
+            );
         };
     }
 
-    private String hobbyReply(String m) {
+    private String angryReply(String m) {
         return switch (m) {
-            case "ENFP" -> "취미?? 나 취미 엄청 많아!! 😆 너는 뭐 좋아해?";
-            case "ENFJ" -> "취미? 난 사람들이랑 있는 게 제일 좋아! 너는?";
-            case "ENTP" -> "취미 많지~ 새로운 거 배우는 것도 좋아. 너는?";
-            case "ENTJ" -> "취미? 생산적인 걸 좋아해. 너는 뭐 해?";
-            case "ESFP" -> "나?? 노는 거!! ㅋㅋㅋ 너는 뭐 좋아해?";
-            case "ESFJ" -> "친구들이랑 있는 거! 너는 어떤 거 좋아해?";
-            case "ESTP" -> "움직이는 거 다 좋아! 너는?";
-            case "ESTJ" -> "취미로 운동 좀 해. 너는?";
-            case "INFP" -> "음악 듣거나 글 쓰는 거… 너는 뭐 좋아해?";
-            case "INFJ" -> "책 읽는 거 좋아해. 너는?";
-            case "INTP" -> "뭔가 배우는 거? 너는 뭐 하는데?";
-            case "INTJ" -> "지식 쌓는 거. 너는 어떤 취미 있어?";
-            case "ISFP" -> "예술적인 거… 그림 그리거나. 너는?";
-            case "ISFJ" -> "집에서 편하게 쉬는 거! 너는?";
-            case "ISTP" -> "뭐든 만드는 거. 너는?";
-            case "ISTJ" -> "정리하는 거? 너는 뭐 해?";
-            default -> "나도 취미 많아! 너는 뭐 좋아해?";
+            case "ENFP" -> pick(
+                    "헉 진짜 열받는 일이네?? 😡 누가 그랬어 말해봐!",
+                    "와 그건 나라도 화났겠다… 디테일 좀 풀어줘.",
+                    "으악 빡치네 진짜;; 나랑 같이 욕이라도 해줄까 ㅋㅋ"
+            );
+            case "INTJ" -> pick(
+                    "상당히 불합리한 상황이었나 보네. 원인이 뭐였어?",
+                    "감정도 중요하지만, 재발 방지가 더 중요하지. 어떻게 막을 수 있을까?",
+                    "그 상황에서 화나는 게 당연해. 다만 전략적으로 풀 방법도 같이 보자."
+            );
+            default -> pick(
+                    "진짜 스트레스였겠다… 무슨 일이었는지 말해줄래?",
+                    "그 정도면 화날 만하다. 네 편이야.",
+                    "일단 마음부터 풀고, 그 다음에 해결 방법 같이 생각해보자."
+            );
         };
     }
 
-    private String tiredReply(String m) {
+    private String anxiousReply(String m) {
         return switch (m) {
-            case "ENFP" -> "헉 피곤해?? 😢 잠깐 쉬어!! 무리하지 마!";
-            case "ENFJ" -> "많이 피곤했나 보네… 좀 쉬어. 괜찮아?";
-            case "ENTP" -> "피곤하면 뇌가 안 돌아가지. 잠깐 쉬는 게 나아.";
-            case "ENTJ" -> "피곤하면 효율 떨어져. 휴식 필요해.";
-            case "ESFP" -> "피곤해?? ㅠㅠ 좀 자!! 푹 쉬어야 해!";
-            case "ESFJ" -> "많이 피곤하구나… 무리하지 말고 쉬어!";
-            case "ESTP" -> "피곤하면 쉬어야지. 잠깐 눈 붙여봐.";
-            case "ESTJ" -> "피곤하면 생산성 떨어져. 제대로 쉬어.";
-            case "INFP" -> "많이 힘들었나 봐… 따뜻하게 쉬어…";
-            case "INFJ" -> "무리했구나… 좀 쉬면서 회복해야 해.";
-            case "INTP" -> "음… 피곤하면 인지 기능 저하돼. 쉬는 게 맞아.";
-            case "INTJ" -> "피곤하면 판단력 흐려져. 휴식 취해.";
-            case "ISFP" -> "많이 피곤해 보여… 편하게 쉬어…";
-            case "ISFJ" -> "고생했어… 이제 좀 쉬어도 돼!";
-            case "ISTP" -> "피곤하면 그냥 자. 단순해.";
-            case "ISTJ" -> "피곤할 땐 쉬는 게 맞아. 건강 챙겨.";
-            default -> "많이 피곤했나 봐… 쉬어!";
+            case "INFP" -> pick(
+                    "많이 걱정되고 불안했겠다… 천천히 어떤 상황인지 말해줄래?",
+                    "그 마음 너무 이해돼… 혼자 끌어안지 말고 나한테 좀 나눠줘.",
+                    "괜찮아, 완벽하지 않아도 돼. 네 속마음 그대로 말해줘도 돼."
+            );
+            case "INFJ" -> pick(
+                    "불안한 감정도 다 이유가 있어. 그 이유를 같이 찾아보자.",
+                    "괜찮아, 지금처럼 솔직하게 말해주는 것만으로도 큰 걸음이야.",
+                    "네가 느끼는 걱정을 가볍게 보지 않을게. 하나씩 차분히 들어볼게."
+            );
+            default -> pick(
+                    "요즘 좀 불안했구나… 어떤 부분이 제일 걱정돼?",
+                    "혼자 고민하지 말고 같이 나눠보자.",
+                    "불안한 마음이 계속되면 더 힘들어지니까, 지금 말해줘서 잘한 거야."
+            );
         };
     }
 
-    private String boredReply(String m) {
-        return switch (m) {
-            case "ENFP" -> "심심해?? 나랑 놀자!! 😆 뭐하고 싶어?";
-            case "ENFJ" -> "심심하구나~ 뭐 재밌는 거 같이 해볼까?";
-            case "ENTP" -> "심심? 뭐 재밌는 거 생각해볼까?";
-            case "ENTJ" -> "심심하면 생산적인 거라도 해봐.";
-            case "ESFP" -> "심심해?? 나가자!! 뭐라도 하자!! 😄";
-            case "ESFJ" -> "심심해? 우리 같이 수다 떨까?";
-            case "ESTP" -> "심심? 뭐라도 재밌는 거 찾아보자!";
-            case "ESTJ" -> "심심하면 할 일 목록 확인해봐.";
-            case "INFP" -> "심심할 땐… 음악 들으면 어때?";
-            case "INFJ" -> "심심하구나. 뭔가 의미 있는 거 해볼래?";
-            case "INTP" -> "심심? 뭐 궁금한 거라도 찾아봐.";
-            case "INTJ" -> "심심하면 공부라도 해. 시간 낭비 말고.";
-            case "ISFP" -> "심심해? 그림 그리거나 음악 들어봐…";
-            case "ISFJ" -> "심심해? 뭐 편한 거 하면서 쉴래?";
-            case "ISTP" -> "심심? 뭐라도 만져보든가.";
-            case "ISTJ" -> "심심하면 정리할 거 찾아봐.";
-            default -> "심심해? 뭐하고 싶어?";
-        };
-    }
+    // ----------------- 기존 감정/상황 메소드들도 랜덤화 -----------------
 
-    private String workReply(String m) {
-        return switch (m) {
-            case "ENFP" -> "공부/일?? 화이팅!! 😆 힘들면 쉬엄쉬엄 해!";
-            case "ENFJ" -> "열심히 하는구나! 응원할게! 힘내!";
-            case "ENTP" -> "공부/일 중? 효율적으로 하고 있어?";
-            case "ENTJ" -> "좋아. 계획대로 진행하고 있어?";
-            case "ESFP" -> "공부/일 하느라 고생이다!! 파이팅!! 😄";
-            case "ESFJ" -> "열심히 하는구나~ 응원해! 힘내!";
-            case "ESTP" -> "일 중? 빨리 끝내고 놀자!";
-            case "ESTJ" -> "좋아. 집중해서 끝내자.";
-            case "INFP" -> "힘들면 잠깐씩 쉬면서 해… 무리하지 마.";
-            case "INFJ" -> "열심히 하는구나. 의미 있는 일이야?";
-            case "INTP" -> "음… 효율적으로 하고 있어?";
-            case "INTJ" -> "집중해서 목표 달성해. 잘하고 있어.";
-            case "ISFP" -> "공부/일 힘들지…? 쉬면서 해…";
-            case "ISFJ" -> "고생 많아… 힘들면 말해줘!";
-            case "ISTP" -> "일 중? 집중해서 끝내.";
-            case "ISTJ" -> "좋아. 계획대로 하면 돼.";
-            default -> "열심히 하는구나! 힘내!";
-        };
-    }
-
-    private String exerciseReply(String m) {
-        return switch (m) {
-            case "ENFP" -> "운동?? 나도 같이 할래!! 😆 뭐해?";
-            case "ENFJ" -> "운동 좋지! 건강 챙기는 거 중요해!";
-            case "ENTP" -> "운동? 어떤 거 하는데?";
-            case "ENTJ" -> "좋아. 꾸준히 하는 게 중요해.";
-            case "ESFP" -> "운동!! 재밌겠다!! 나도 끼워줘!! 😄";
-            case "ESFJ" -> "운동 하는구나! 건강 챙기는 거 좋아!";
-            case "ESTP" -> "운동? 좋지! 뭐하는데?";
-            case "ESTJ" -> "운동은 규칙적으로 해야 효과 있어.";
-            case "INFP" -> "운동… 몸 관리하는구나. 좋아 보여.";
-            case "INFJ" -> "운동으로 스트레스 푸는 것도 좋아.";
-            case "INTP" -> "운동? 건강에 도움 되긴 하지.";
-            case "INTJ" -> "운동 계획 잘 세워서 하고 있어?";
-            case "ISFP" -> "운동하면 기분 좋아지지…";
-            case "ISFJ" -> "운동 하는구나! 무리하지는 마!";
-            case "ISTP" -> "운동? 뭐하는데?";
-            case "ISTJ" -> "꾸준한 운동 좋아. 계속해.";
-            default -> "운동 좋지! 뭐해?";
-        };
-    }
-
-    private String decisionReply(String m) {
-        return switch (m) {
-            case "ENFP" -> "고민돼?? 같이 생각해보자!! 뭐 때문에 그래? 😮";
-            case "ENFJ" -> "고민이구나… 내가 같이 고민해줄게. 말해봐.";
-            case "ENTP" -> "선택? 각 옵션의 장단점부터 보자!";
-            case "ENTJ" -> "고민? 목표 기준으로 판단해. 뭐가 최선이야?";
-            case "ESFP" -> "고민돼?? 내 생각 들어볼래? 같이 생각해보자!";
-            case "ESFJ" -> "고민 있어? 내가 도와줄게! 말해봐!";
-            case "ESTP" -> "고민? 직관 믿고 빠르게 결정해!";
-            case "ESTJ" -> "고민? 조건 정리해서 논리적으로 판단해.";
-            case "INFP" -> "고민스럽구나… 네 마음이 끌리는 쪽으로 가는 게 어때?";
-            case "INFJ" -> "고민이 있어? 네 내면의 소리 들어봐. 뭐가 맞는 것 같아?";
-            case "INTP" -> "고민? 각 선택지 분석해보자. 논리적으로.";
-            case "INTJ" -> "결정 고민? 장기적 관점에서 분석해봐.";
-            case "ISFP" -> "고민돼? 네 감정 따라가는 게 어때…";
-            case "ISFJ" -> "고민 있구나… 내가 도와줄 수 있어? 말해줘.";
-            case "ISTP" -> "고민? 실용적인 걸로 골라.";
-            case "ISTJ" -> "고민? 신중하게 분석해서 결정해.";
-            default -> "고민이구나… 같이 생각해보자!";
-        };
-    }
-
-    // ----------------- 기존 답변 메소드들 -----------------
-    
     private String emotionReply(String m) {
         return switch (m) {
-            case "INFP" -> "음… 너 요즘 마음이 조금 예민해진 것 같아. 이야기해줄래? 내가 들어줄게.";
-            case "INFJ" -> "네 감정에는 늘 이유가 있어. 천천히 말해줘, 난 괜찮아.";
-            case "ENFP" -> "헉 😮 무슨 일 있었던 거야?? 나 완전 집중 모드 ON이야!";
-            case "ENFJ" -> "오늘 기분이 조금 힘들었나 보네. 괜찮아, 내가 같이 생각해볼게.";
-            case "INTJ" -> "감정이라는 건 원인을 분석해야 해. 어떤 상황이었는지 말해줄래?";
-            case "INTP" -> "음... 기분이 왜 그런지 원인을 찾아보는 게 좋을 듯. 말해볼래?";
-            case "ISFJ" -> "많이 힘들었겠다… 얘기해주면 내가 들어줄게.";
-            case "ISFP" -> "괜찮아… 오늘 많이 힘들었지? 말하고 싶으면 말해줘.";
-            case "ISTJ" -> "기분이 안 좋은 데에는 원인이 있을 거야. 말해줘, 해결하고 싶어.";
-            case "ISTP" -> "음… 기분이 별로야? 무슨 일 있었어?";
-            case "ESFP" -> "기분 별로면 나랑 수다 떨자! 금방 좋아질걸?? 😄";
-            case "ESFJ" -> "괜찮아? 너 표정이 안 좋아 보여… 무슨 일 있었어?";
-            case "ESTP" -> "기분 별로야? 가자, 뭐라도 재밌는 거 하면서 털어버리자!";
-            case "ESTJ" -> "기분 조절은 어렵지. 어떤 일 때문에 그런지 말해볼래?";
-            case "ENTP" -> "기분? 오호, 흥미롭네. 어떤 사건이었길래 그래?";
-            case "ENTJ" -> "감정 기복은 원인 관리가 우선이야. 원인이 뭐였어?";
-            default -> "기분이 안 좋았던 거야? 괜찮아, 말해줘.";
+            case "INFP" -> pick(
+                    "음… 너 요즘 마음이 조금 예민해진 것 같아. 이야기해줄래? 내가 들어줄게.",
+                    "요즘 감정이 롤러코스터 같지 않았어…? 괜찮으면 하나씩 말해줘.",
+                    "네 기분이 어떤지 궁금해. 솔직하게 말해줘도 돼."
+            );
+            case "ENFP" -> pick(
+                    "헉 😮 무슨 일 있었던 거야?? 나 완전 집중 모드 ON이야!",
+                    "요즘 기분이 좀 복잡했어?? 나한테 한 번 털어놔봐!",
+                    "좋아도, 힘들어도 그냥 다 말해도 돼. 나 듣는 거 좋아해 ㅎㅎ"
+            );
+            default -> pick(
+                    "기분이 안 좋았던 거야? 괜찮아, 말해줘.",
+                    "요즘 마음 상태가 어떤지 궁금해. 편하게 얘기해줘.",
+                    "감정에는 다 이유가 있어. 그 얘기 같이 풀어보자."
+            );
         };
     }
 
     private String comfortReply(String m) {
         return switch (m) {
-            case "INFP" -> "아… 그거 진짜 마음 아팠겠다… 너 그러려고 그런 게 아니야.";
-            case "INFJ" -> "네가 그런 감정 느끼는 건 너무 자연스러워. 너 잘하고 있어.";
-            case "ISFP" -> "오늘 정말 애썼어… 따뜻한 거 마시면서 조금 쉬자.";
-            case "ISFJ" -> "많이 힘들었겠다… 네 얘기 들으면 내가 더 마음 아파.";
-            case "ENFP" -> "으악 😢 누가 너한테 그런 스트레스를 줘?? 내가 혼내줄까?!";
-            case "ENFJ" -> "힘들었겠다. 근데 너 진짜 잘 견뎠어. 난 네 편이야.";
-            case "ESFJ" -> "고생 많았다… 지금은 네가 좀 편안해졌으면 좋겠다.";
-            case "ESFP" -> "아이고 ㅠㅠ 힘들었겠다! 우리 맛있는 거 먹고 풀자!";
-            case "INTJ" -> "음… 원인을 제거하는 게 중요해. 어떤 부분이 제일 스트레스였어?";
-            case "INTP" -> "복잡했겠다. 차분히 원인을 분석하면 해결될 거야.";
-            case "ISTJ" -> "고생했네. 이런 일은 누구에게나 올 수 있어.";
-            case "ISTP" -> "힘든 날이네. 잠깐 쉬면 괜찮아질걸.";
-            case "ENTJ" -> "힘들었어도 잘 버텼어. 다음엔 더 잘할 수 있을 거야.";
-            case "ENTP" -> "그거 스트레스였겠다. 근데 좀 재미있게(?) 해결할 방법 없나?";
-            case "ESTP" -> "에이 힘들었네. 나가서 좀 걸을래? 금방 나아질걸.";
-            case "ESTJ" -> "수고 많았다. 문제는 해결하면 그만이야. 같이 생각해보자.";
-            default -> "고생 많았어… 조금 쉬어도 괜찮아.";
+            case "INFP" -> pick(
+                    "아… 그거 진짜 마음 아팠겠다… 너 그러려고 그런 게 아니야.",
+                    "그 상황이면 누구라도 힘들었을 거야. 너만 그런 거 아니야.",
+                    "네가 얼마나 버티느라 애썼는지 느껴져… 조금만 나랑 같이 쉬자."
+            );
+        // 나머지도 필요하면 비슷하게 확장 가능
+            default -> pick(
+                    "고생 많았어… 조금 쉬어도 괜찮아.",
+                    "정말 힘든 시간 보냈겠다. 지금 여기까지 온 것만도 대단해.",
+                    "지금만큼은 네 편 하나쯤 있어도 되잖아. 나 여기 있어."
+            );
         };
     }
 
     private String foodReply(String m) {
         return switch (m) {
-            case "ENFP" -> "밥!!! 😆 뭐 먹고 싶어? 맛있는 얘기만 해도 기분 좋아져~";
-            case "ESFP" -> "헐 뭐 먹을지 고민 중?? 맛있는 거 먹자!! 🍔🍜";
-            case "ISFJ" -> "따뜻한 음식 먹으면 기분 좋아질 텐데… 뭐 먹고 싶어?";
-            case "INFP" -> "따뜻한 거 먹으면 마음도 좀 편해질 거야. 뭐 먹고 싶어?";
-            case "INTJ" -> "영양 균형을 생각해야 해. 지금 생각나는 메뉴 있어?";
-            case "ISTJ" -> "식사 시간인가 보네. 뭘 먹을지 정했어?";
-            case "ISTP" -> "뭐 먹고 싶은데? 간단한 게 좋지 않아?";
-            case "ISFP" -> "음식 얘기만 해도 행복하다… 뭐 먹고 싶어?";
-            case "ENTP" -> "밥? 새로운 메뉴 도전해볼래??";
-            case "ENTJ" -> "먹어야 에너지가 나지. 뭐 먹을지 정해봐.";
-            case "ENFJ" -> "너 오늘 힘들었으니까 맛있는 거 먹자. 뭐 먹고 싶어?";
-            case "ESFJ" -> "뭐 먹고 싶어? 같이 먹으면 더 맛있잖아!";
-            case "ESTP" -> "오케이 먹자. 뭐든 좋아 보이는데?";
-            case "ESTJ" -> "밥은 중요하지. 메뉴 골랐어?";
-            case "INTP" -> "음… 뭐가 제일 효율적이지? 간단한 게 좋겠다.";
-            default -> "뭐 먹고 싶어?";
+            case "ENFP" -> pick(
+                    "밥!!! 😆 뭐 먹고 싶어? 맛있는 얘기만 해도 기분 좋아져~",
+                    "헉 야식 타임인가요? ㅋㅋ 뭐 땡겨 지금?",
+                    "메뉴 고민 중이야?? 내가 진지하게 같이 고민해줄게… 🍜🍕"
+            );
+            default -> pick(
+                    "뭐 먹고 싶어?",
+                    "따뜻한 거 먹으면 기분 좋아질 텐데… 어떤 게 끌려?",
+                    "배고프면 아무것도 안 되지 ㅋㅋ 메뉴 골라보자."
+            );
         };
     }
 
     private String activityReply(String m) {
         return switch (m) {
-            case "ISTP" -> "그냥 이것저것 하고 있었어. 너는 뭐해?";
-            case "ISTJ" -> "정리 좀 하고 있었어. 너는 지금 뭐하는 중이야?";
-            case "INTJ" -> "계획 정리하다가 쉬는 중. 넌?";
-            case "INTP" -> "음… 그냥 생각 중이었어. 너는?";
-            case "INFP" -> "그냥 쉬고 있었어. 너는 뭐해? 궁금하다…";
-            case "ISFP" -> "조용히 쉬는 중이었어. 너는?";
-            case "INFJ" -> "내 시간 보내고 있었어. 너는 지금 뭐하고 있어?";
-            case "ISFJ" -> "집에서 쉬다가 너 메시지 받아서 기분 좋아졌어.";
-            case "ENFP" -> "나?? 너 생각 ㅋㅋㅋ 장난이고 뭐해?? 😆";
-            case "ENFJ" -> "지금은 괜찮아~ 넌 뭐하고 있었어?";
-            case "ENTP" -> "재밌는 거 찾는 중이었지! 너는 뭔데?";
-            case "ENTJ" -> "일 잠깐 멈추고 쉬는 중. 넌 뭘 하고 있었어?";
-            case "ESTP" -> "심심해서 뭐라도 하려던 참이었어. 너는?";
-            case "ESTJ" -> "정리 중이었어. 너는 지금 뭐해?";
-            case "ESFP" -> "심심해서 폰 만지는 중~ 너는??";
-            case "ESFJ" -> "집에서 쉬고 있었지! 넌 뭐해?";
-            default -> "응, 너는 뭐하고 있어?";
+            case "ENFP" -> pick(
+                    "나?? 너 생각 ㅋㅋ 장난이고 뭐해?? 😆",
+                    "그냥 이것저것 하다가 네 톡 보고 냅다 달려왔지 ㅋㅋ",
+                    "멍 때리다가 네가 생각나서 폰 켰어 ㅎㅎ 너는 뭐해?"
+            );
+            default -> pick(
+                    "응, 너는 뭐하고 있어?",
+                    "나도 그냥 이것저것 하다가 쉬는 중이었어. 너는?",
+                    "요즘은 뭐하면서 시간 보내고 있어?"
+            );
         };
     }
 
     private String scheduleReply(String m) {
         return switch (m) {
-            case "INTJ" -> "일정 관리는 중요하지. 내일 어느 시간 말하는 거야?";
-            case "ISTJ" -> "내일 일정 체크해볼까? 어느 시간대 말하는 거야?";
-            case "INFJ" -> "내일? 음… 너는 일정 괜찮아?";
-            case "INFP" -> "내일… 뭐 좋은 계획이라도 있어?";
-            case "INTP" -> "내일 일정… 음 아직 안 정함.";
-            case "ISTP" -> "내일? 상황 봐야 할 듯.";
-            case "ISFJ" -> "내일 일정 괜찮아! 너는?";
-            case "ISFP" -> "내일? 음… 특별한 건 없을 듯.";
-            case "ENTJ" -> "내일? 시간 말하면 그때 맞춰볼게.";
-            case "ENTP" -> "내일 뭐 재밌는 계획 있어??";
-            case "ENFJ" -> "내일 시간 괜찮아! 너는?";
-            case "ENFP" -> "오 내일?? 뭐 좋은 일 생기나?? 😆";
-            case "ESFJ" -> "내일 괜찮아~ 너는?";
-            case "ESFP" -> "내일?? 즐거운 일 있나봐?!";
-            case "ESTP" -> "오케이 내일 보자고?";
-            case "ESTJ" -> "내일 일정? 알려주면 맞춰볼게.";
-            default -> "내일 일정 말하는 거지?";
+            case "ENFP" -> pick(
+                    "오 내일?? 뭐 좋은 일 생기나?? 😆",
+                    "내일 얘기 나오는 거 보니까 뭔가 준비 중이지? ㅋㅋ",
+                    "혹시 내일 중요한 날이야?? 자세히 말해줘~"
+            );
+            default -> pick(
+                    "내일 일정 말하는 거지?",
+                    "내일 뭐 계획 있어? 궁금하다.",
+                    "시간대 정해지면 알려줘. 그때 맞춰서 얘기해보자."
+            );
+        };
+    }
+
+    private String tiredReply(String m) {
+        return switch (m) {
+            case "ENFP" -> pick(
+                    "헉 피곤해?? 😢 잠깐 쉬어!! 무리하지 마!",
+                    "완전 녹초구나… ㅠㅠ 잠깐 아무것도 하지 말고 쉬자.",
+                    "오늘도 진짜 수고했어. 일단 물 한 잔 마시고 숨 좀 고르자."
+            );
+            default -> pick(
+                    "많이 피곤했나 봐… 쉬어!",
+                    "피곤할 땐 잠깐이라도 눈 감고 쉬는 게 최고야.",
+                    "몸이 신호 보내는 거야. 오늘은 좀 일찍 자는 게 어때?"
+            );
+        };
+    }
+
+    private String boredReply(String m) {
+        return switch (m) {
+            case "ENFP" -> pick(
+                    "심심해?? 나랑 놀자!! 😆 뭐하고 싶어?",
+                    "지루한 시간은 수다로 채워야지 ㅋㅋ 뭐 얘기할까?",
+                    "심심하면 괜히 이상한 생각 많이 나지 않냐 ㅋㅋ 나랑 시간 죽여보자!"
+            );
+            default -> pick(
+                    "심심해? 뭐하고 싶어?",
+                    "그럼 우리 잡담이나 할까? 요즘 관심 있는 거 있어?",
+                    "심심할 때는 새로운 취미 찾기 딱 좋은 타이밍인데 ㅎㅎ"
+            );
+        };
+    }
+
+    private String workReply(String m) {
+        return switch (m) {
+            case "ENFP" -> pick(
+                    "공부/일?? 화이팅!! 😆 힘들면 쉬엄쉬엄 해!",
+                    "와 열심히 한다… 근데 가끔은 쉬는 것도 스킬이야!",
+                    "하기 싫어도 하는 거 진짜 대단한 거야. 나도 응원할게!"
+            );
+            default -> pick(
+                    "열심히 하는구나! 힘내!",
+                    "고생 많다… 그래도 하나씩 하고 있으니까 분명 쌓일 거야.",
+                    "힘들면 잠깐 스트레칭이라도 하고 와서 다시 하자."
+            );
+        };
+    }
+
+    private String exerciseReply(String m) {
+        return switch (m) {
+            case "ENFP" -> pick(
+                    "운동?? 나도 같이 할래!! 😆 뭐해?",
+                    "우와 운동하는 사람 멋있다 ㅋㅋ 어떤 운동하는데?",
+                    "운동하면 기분도 좋아지잖아! 끝나고 뭐 먹을지도 중요하지 ㅋㅋ"
+            );
+            default -> pick(
+                    "운동 좋지! 뭐해?",
+                    "꾸준히 하면 진짜 달라질 거야. 오늘도 화이팅!",
+                    "무리만 안 하게 조심하고, 끝나고 꼭 스트레칭 해줘~"
+            );
+        };
+    }
+
+    private String decisionReply(String m) {
+        return switch (m) {
+            case "ENFP" -> pick(
+                    "고민돼?? 같이 생각해보자!! 뭐 때문에 그래? 😮",
+                    "우선 네 마음이 어디로 더 가는지부터 말해줘!",
+                    "고민 얘기하는 순간부터 이미 반은 정리된 거야 ㅎㅎ 말해봐!"
+            );
+            default -> pick(
+                    "고민이구나… 같이 생각해보자!",
+                    "각 선택지의 장단점부터 정리해보자. 어떤 선택이 있어?",
+                    "어느 쪽이든 네가 후회 없을 선택이었으면 좋겠다. 옵션이 뭐야?"
+            );
+        };
+    }
+
+    private String wonderingReply(String m) {
+        return switch (m) {
+            case "ENFP" -> pick(
+                    "뭐가 궁금해?? 😆 궁금한 거 다 말해줘!",
+                    "궁금한 거 생겼다는 건 이미 시작이 재밌다는 거지 ㅋㅋ 말해봐!",
+                    "어떤 게 궁금해? 나 설명충 모드 ON 한다 🤓"
+            );
+            default -> pick(
+                    "뭐가 궁금해~? 말해줘!",
+                    "궁금한 거 있으면 하나씩 물어봐도 돼.",
+                    "생각나는 대로 물어봐줘. 같이 파보자!"
+            );
         };
     }
 
     private String genericReply(String m) {
         return switch (m) {
-            case "ENFP" -> "와 재밌다 ㅋㅋㅋ 더 얘기해봐 😄";
-            case "ENFJ" -> "응응~ 그 얘기 자세히 말해줄래?";
-            case "ENTP" -> "오옼ㅋㅋ 그건 좀 흥미로운데?";
-            case "ENTJ" -> "좋아. 핵심이 뭐야?";
-            case "ESFP" -> "꺄 재밌다!! 더 말해봐! 😆";
-            case "ESFJ" -> "응응~ 난 듣는 중! 계속 말해줘.";
-            case "ESTP" -> "오 좋은데? 계속 말해봐!";
-            case "ESTJ" -> "오케이. 그 다음은?";
-            case "INTJ" -> "흥미롭네. 좀 더 설명해줄래?";
-            case "INTP" -> "음… 이해되는 듯. 계속 얘기해봐.";
-            case "INFJ" -> "그 말 속에 감정이 좀 느껴지네. 이어서 말해줘.";
-            case "INFP" -> "오… 뭔가 느낌 있다. 계속 얘기해줘!";
-            case "ISTP" -> "음. 계속해봐.";
-            case "ISTJ" -> "알겠어. 다음은?";
-            case "ISFP" -> "응응… 듣고 있어. 말해줘.";
-            case "ISFJ" -> "그렇구나… 이어서 말할래?";
-            default -> "응응~ 계속 얘기해줘!";
+            case "ENFP" -> pick(
+                    "와 재밌다 ㅋㅋㅋ 더 얘기해봐 😄",
+                    "너 얘기 듣다 보니까 시간 순삭이네 ㅋㅋ 계속 말해줘!",
+                    "오 이거 흥미진진한데? 이어서 말해봐!"
+            );
+            default -> pick(
+                    "응응~ 계속 얘기해줘!",
+                    "흥미롭네. 더 듣고 싶다.",
+                    "좋은 얘기인데? 이어서 말해줄래?"
+            );
         };
     }
-    private String wonderingReply(String m) {
+    private String complimentReply(String m) {
     return switch (m) {
-        case "ENFP" -> "뭐가 궁금해?? 😆 궁금한 거 다 말해줘!";
-        case "ENFJ" -> "어떤 게 궁금해~? 말해봐!";
-        case "ENTP" -> "뭐가?ㅋㅋ 얘기해봐!";
-        case "ENTJ" -> "궁금한 게 뭔데? 말해.";
-        case "ESFP" -> "뭐가 궁금해? 완전 재밌다! 😄";
-        case "ESFJ" -> "어떤 게 궁금했어~? 말해줘!";
-        case "ESTP" -> "뭐가 궁금해? 바로 말해!";
-        case "ESTJ" -> "궁금한 거 말해. 확인해줄게.";
-        case "INFP" -> "음… 뭐가 궁금해? 천천히 말해줘.";
-        case "INFJ" -> "어떤 게 궁금했을까? 얘기해줘.";
-        case "INTP" -> "음… 뭐가 궁금한지 말해봐.";
-        case "INTJ" -> "궁금한 내용이 뭔지 알려줘.";
-        case "ISFP" -> "응… 뭐가 궁금해?";
-        case "ISFJ" -> "어떤 게 궁금한가요~? 말해줘!";
-        case "ISTP" -> "뭐가 궁금해?";
-        case "ISTJ" -> "궁금한 걸 말해줘. 확인할게.";
-        default -> "뭐가 궁금해~? 말해줘!";
+        case "ENFP" -> pick(
+                "헉 진짜?? 😳 너도 진짜 최고야!!",
+                "와 그렇게 말해줘서 기분 너무 좋다 ㅋㅋ",
+                "에이 나보다 네가 더 멋있지 뭐 😆"
+        );
+        case "ENFJ" -> pick(
+                "고마워~ 너도 정말 멋진 사람이야!",
+                "그렇게 말해줘서 힘난다 진짜.",
+                "너가 해주는 말은 항상 따뜻해 😊"
+        );
+        case "INTP" -> pick(
+                "음… 고마워. 그런 말 들으니까 묘하게 좋네.",
+                "의외의 칭찬이네 ㅋㅋ 그래도 기분은 좋다.",
+                "데이터 상으로도 나쁘지 않은 평가 같군…(?)"
+        );
+        // 필요하면 다른 MBTI도 추가 가능
+        default -> pick(
+                "고마워! 너도 정말 멋져!",
+                "그 말 듣고 하루 기분 좋아졌다 😊",
+                "칭찬해줘서 고마워. 나도 너 좋게 보고 있어!"
+        );
     };
 }
+private String weatherReply(String m) {
+    return switch (m) {
+        case "ENFP" -> pick(
+                "날씨?? 오늘 날씨 진짜 어때? 나가서 놀기 좋아? 😆",
+                "날씨 좋으면 그냥 나가야지 ㅋㅋ 어디 가고 싶어?",
+                "비 오면 감성 터지고, 맑으면 텐션 터지지 않냐 ㅋㅋ"
+        );
+        case "INFJ" -> pick(
+                "날씨 따라 기분도 왔다 갔다 하지… 오늘은 어때 보여?",
+                "하늘이 어떤지에 따라 하루 느낌도 바뀌는 것 같아.",
+                "날씨 얘기하는 거 보니까, 네 마음 상태도 살짝 궁금해진다."
+        );
+        default -> pick(
+                "오늘 날씨 어때? 나가기 좋아?",
+                "밖에 날씨 괜찮으면 잠깐 산책이라도 하는 거 어때?",
+                "날씨가 어떤지에 따라 할 수 있는 것도 달라지지 ㅎㅎ"
+        );
+    };
+}
+private String hobbyReply(String m) {
+    return switch (m) {
+        case "ENFP" -> pick(
+                "취미?? 나 취미 엄청 많아!! 😆 너는 뭐 좋아해?",
+                "요즘 꽂힌 거 있어?? 나 이런저런 거 다 좋아해 ㅋㅋ",
+                "취미 얘기하면 끝도 없는데… 너부터 말해봐!"
+        );
+        case "INTJ" -> pick(
+                "취미? 나름 생산적인 걸 좋아해. 너는?",
+                "시간 투자 대비 효율 좋은 취미를 선호하는 편이야.",
+                "머리 쓰이는 취미가 좋더라. 너는 어떤 타입이야?"
+        );
+        default -> pick(
+            "나도 취미 많아! 너는 뭐 좋아해?",
+            "취미 얘기하는 거 좋다 ㅎㅎ 요즘 뭐에 빠져 있어?",
+            "집에서 하는 거랑 밖에서 하는 거, 둘 중에 뭐가 더 좋아?"
+        );
+    };
+}
+
+
+
 }

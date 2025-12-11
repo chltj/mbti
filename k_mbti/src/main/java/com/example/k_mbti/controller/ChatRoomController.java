@@ -23,22 +23,34 @@ public class ChatRoomController {
     }
 
     /** 소통의 방 목록 + 방 만들기 */
-    @GetMapping("/rooms")
-    public String roomList(HttpSession session,
-                           Model model) {
+@GetMapping("/rooms")
+public String roomList(HttpSession session,
+                       Model model) {
 
-        UserDto loginUser = (UserDto) session.getAttribute("loginUser");
-        if (loginUser == null) {
-            model.addAttribute("errorMsg", "로그인 후 이용 가능합니다.");
-            return "login"; // 실제 로그인 페이지 이름으로 변경
-        }
-
-        List<ChatRoomDto> rooms = chatRoomService.getRoomList();
-        model.addAttribute("rooms", rooms);
-        model.addAttribute("loginUser", loginUser);
-
-        return "chat/rooms"; // templates/chat/rooms.html
+    UserDto loginUser = (UserDto) session.getAttribute("loginUser");
+    if (loginUser == null) {
+        model.addAttribute("errorMsg", "로그인 후 이용 가능합니다.");
+        return "login"; // 실제 로그인 페이지로 변경
     }
+
+    // 전체 방 목록
+    List<ChatRoomDto> rooms = chatRoomService.getRoomList();
+
+    // ✅ 내가 참여한 방 목록
+    List<ChatRoomDto> myRooms = chatRoomService.getRoomsByMember(loginUser.getNickname());
+
+    // ✅ 내가 참여한 방의 id 목록만 추출
+    List<Long> joinedRoomIds = myRooms.stream()
+            .map(ChatRoomDto::getId)
+            .toList(); // 자바 17 이상. 8~11이면 collect(Collectors.toList())
+
+    model.addAttribute("rooms", rooms);
+    model.addAttribute("loginUser", loginUser);
+    model.addAttribute("joinedRoomIds", joinedRoomIds); // 🔥 추가
+
+    return "chat/rooms";
+}
+
 
     /** 방 생성 */
     @PostMapping("/rooms")

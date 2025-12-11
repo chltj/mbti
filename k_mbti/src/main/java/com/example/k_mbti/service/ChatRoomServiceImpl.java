@@ -47,25 +47,33 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatDao.findRoomById(roomId);
     }
 
-    @Override
-    public boolean joinRoom(Long roomId, String nickname) {
-        ChatRoomDto room = chatDao.findRoomById(roomId);
-        if (room == null) return false;
+@Override
+public boolean joinRoom(Long roomId, String nickname) {
+    ChatRoomDto room = chatDao.findRoomById(roomId);
+    if (room == null) return false;
 
-        // 인원 가득 찼는지 체크
-        if (room.getCurrentCount() >= room.getMaxCount()) {
-            return false;
-        }
+    // ✅ 1) 이미 멤버인지 먼저 체크 (재입장은 항상 허용)
+    List<String> members = chatDao.findMembersByRoomId(roomId);
+    System.out.println("joinRoom members = " + members + " / nickname = " + nickname);
 
-        // 이미 멤버인지 체크 (중복 방지)
-        List<String> members = chatDao.findMembersByRoomId(roomId);
-        if (members.contains(nickname)) {
-            return true; // 이미 들어가 있으니 OK 처리
-        }
-
-        chatDao.insertMember(roomId, nickname);
+    if (members.contains(nickname)) {
+        // 내가 이미 이 방 멤버라면, 인원 제한과 상관없이 입장 허용
+        System.out.println("이미 멤버이므로 인원 꽉 차도 입장 허용");
         return true;
     }
+
+    // ✅ 2) 새로 들어가는 경우에만 인원 제한 검사
+    System.out.println("현재 인원 = " + room.getCurrentCount() + ", 최대 인원 = " + room.getMaxCount());
+    if (room.getCurrentCount() >= room.getMaxCount()) {
+        System.out.println("멤버가 아니고, 방이 이미 가득 찼으므로 입장 불가");
+        return false;
+    }
+
+    // ✅ 3) 멤버가 아니고, 인원도 여유 → 새 멤버 추가
+    chatDao.insertMember(roomId, nickname);
+    System.out.println("새 멤버 추가 완료: " + nickname);
+    return true;
+}
 
     @Override
     public void sendMessage(Long roomId, String sender, String content) {

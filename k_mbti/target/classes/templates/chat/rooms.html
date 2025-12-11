@@ -33,6 +33,7 @@
                 border:1px solid #f5b1b1; font-size:13px; color:#c00;">
         <span th:text="${errorMsg}"></span>
     </div>
+    
 
     <!-- 방 생성 카드 -->
     <div class="card" style="margin-bottom:24px;">
@@ -78,13 +79,17 @@
             </div>
 
             <form th:action="@{'/chat/rooms/' + ${room.id} + '/join'}"
-                  method="post" style="margin-top:8px;">
-                <button type="submit"
-                        class="btn-primary"
-                        th:disabled="${room.currentCount >= room.maxCount}">
-                    <span th:text="${room.currentCount >= room.maxCount ? '가득 찼어요' : '입장하기'}"></span>
-                </button>
-            </form>
+      method="post" style="margin-top:8px;">
+
+    <button type="submit"
+            class="btn-primary"
+            th:disabled="${room.currentCount >= room.maxCount and !#lists.contains(joinedRoomIds, room.id)}">
+        <span th:text="${room.currentCount >= room.maxCount and !#lists.contains(joinedRoomIds, room.id)
+                        ? '가득 찼어요'
+                        : '입장하기'}"></span>
+    </button>
+</form>
+
         </div>
     </div>
 </div>

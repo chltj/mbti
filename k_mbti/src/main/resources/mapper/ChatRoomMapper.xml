@@ -11,11 +11,10 @@
         <result property="name" column="name"/>
         <result property="maxCount" column="max_count"/>
         <result property="owner" column="owner"/>
-        <!-- current_count 라는 별칭 컬럼을 currentCount 필드로 매핑 -->
         <result property="currentCount" column="current_count"/>
     </resultMap>
 
-    <!-- 방 생성 (id 자동 증가) -->
+    <!-- 방 생성 -->
     <insert id="insertRoom" parameterType="com.example.k_mbti.dto.ChatRoomDto"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO chat_room (name, max_count, owner)
@@ -28,7 +27,7 @@
         VALUES (#{roomId}, #{nickname})
     </insert>
 
-    <!-- 단일 방 조회 (현재 인원은 서브쿼리로 계산) -->
+    <!-- 단일 방 조회 -->
     <select id="findRoomById" parameterType="long" resultMap="ChatRoomResultMap">
         SELECT
             r.id,
@@ -37,7 +36,7 @@
             r.owner,
             (SELECT COUNT(*) FROM chat_room_member m WHERE m.room_id = r.id) AS current_count
         FROM chat_room r
-        WHERE r.id = #{id}
+        WHERE r.id = #{roomId}   <!-- 🔥 여기 반드시 roomId -->
     </select>
 
     <!-- 전체 방 목록 -->
@@ -66,7 +65,7 @@
         ORDER BY r.id DESC
     </select>
 
-    <!-- 방 멤버 목록(닉네임 리스트) -->
+    <!-- 방 멤버 목록 -->
     <select id="findMembersByRoomId" parameterType="long" resultType="string">
         SELECT nickname
         FROM chat_room_member
@@ -93,10 +92,12 @@
         WHERE room_id = #{roomId}
         ORDER BY sent_at ASC, id ASC
     </select>
+
+    <!-- 닉네임 변경 -->
     <update id="updateMemberNickname">
-    UPDATE chat_room_member
-    SET nickname = #{newNickname}
-    WHERE nickname = #{oldNickname}
-</update>
+        UPDATE chat_room_member
+        SET nickname = #{newNickname}
+        WHERE nickname = #{oldNickname}
+    </update>
 
 </mapper>
