@@ -93,17 +93,17 @@
         }
 
         /* MBTI 카드 (프리미엄 스타일) */
-        .mbti-card {
-            background: var(--card-white);
-            border-radius: 30px;
-            padding: 50px 30px;
-            text-align: center;
-            box-shadow: var(--card-shadow);
-            transition: transform 0.3s ease;
-            height: 100%;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
+.mbti-card {
+    background: var(--card-white);
+    border-radius: 30px;
+    padding: 50px 30px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease;
+    /* height: 100%;  ⬅️ 이 줄 지우기 */
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
         .mbti-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 25px 50px rgba(60, 30, 30, 0.08);

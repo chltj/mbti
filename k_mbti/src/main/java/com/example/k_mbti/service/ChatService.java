@@ -214,6 +214,7 @@ private String detect(String msg) {
 
 
 
+
    public String generateReply(String mbti, String userMsg) {
     if (mbti == null || mbti.isBlank()) mbti = "ENFP";
     mbti = mbti.toUpperCase();

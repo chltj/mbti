@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MBTI 분석 결과 - KakaoTalk Analyzer</title>
-    
+
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-       <!-- 공통 CSS -->
+
+    <!-- 공통 CSS -->
     <link rel="stylesheet" th:href="@{/css/common.css}">
 
-    <!-- 회원가입 전용 CSS -->
+    <!-- 결과 화면 전용 CSS -->
     <link rel="stylesheet" th:href="@{/css/result.css}">
-
 </head>
 <body>
-    <div th:replace="fragments/header :: siteHeader"></div>
+<div th:replace="fragments/header :: siteHeader"></div>
 
 <div class="report-container">
 
-    <div class="chemistry-section">
+    <!-- 🔹 대표 궁합 카드 (첫 번째 상대 기준) -->
+    <div class="chemistry-section" th:if="${partnerResult != null}">
         <div class="chem-badge">
             <i class="fas fa-heart text-danger me-2"></i>궁합 점수
         </div>
@@ -31,77 +32,134 @@
             <span th:if="${chemistryScore >= 80 && chemistryScore < 90}">"대화가 끊이지 않는 환상의 짝꿍"</span>
             <span th:if="${chemistryScore < 80}">"서로를 알아가는 즐거움이 있는 사이"</span>
         </div>
+        <div class="text-muted small mt-2">
+            * 가장 먼저 감지된 상대 ([[${partnerName}]]) 기준으로 계산된 궁합 점수입니다.
+        </div>
+    </div>
+
+    <div class="chemistry-section" th:if="${partnerResult == null}">
+        <div class="chem-badge">
+            <i class="fas fa-heart-broken text-danger me-2"></i>궁합 점수
+        </div>
+        <div class="chem-score">0</div>
+        <div class="chem-desc">
+            <span>함께 대화한 상대가 감지되지 않았어요.</span>
+        </div>
     </div>
 
     <div class="row g-5">
-        
+
+        <!-- 🔹 내 프로필 카드 -->
         <div class="col-lg-6 animate-card delay-1">
             <div class="mbti-card">
                 <span class="user-role">MY PROFILE</span>
-                
+
                 <div th:if="${myResult != null}">
-                    <h3 class="user-name"><span th:text="${myName}">나</span> 님</h3>
-                    
-                    <div class="mbti-code text-gradient-me" id="my-mbti" th:text="${myResult.finalMbti}">ISTJ</div>
-                    
+                    <h3 class="user-name">
+                        <span th:text="${myName}">나</span> 님
+                    </h3>
+
+                    <div class="mbti-code text-gradient-me" id="my-mbti"
+                         th:text="${myResult.finalMbti}">ISTJ</div>
+
                     <div class="confidence-wrap">
                         <span class="confidence-label">AI 신뢰도</span>
                         <div class="confidence-bar-bg">
-                            <div class="confidence-bar-fill" 
-                                 th:style="'width: ' + ${myResult.finalConfidence * 150} + '%; background-color: #4facfe;'"></div>
+                            <div class="confidence-bar-fill"
+                                 th:style="'width: ' + ${myResult.finalConfidence * 150} + '%; background-color: #4facfe;'">
+                            </div>
                         </div>
-                        <span class="confidence-label" th:text="${#numbers.formatInteger(myResult.finalConfidence * 150, 1) + '%'}"></span>
+                        <span class="confidence-label"
+                              th:text="${#numbers.formatInteger(myResult.finalConfidence * 150, 1) + '%'}">
+                            95%
+                        </span>
                     </div>
 
                     <div class="keyword-box" id="my-keywords"></div>
 
                     <div class="analysis-comment">
-                        <div class="comment-title"><i class="fas fa-robot me-1"></i>AI ANALYSIS</div>
+                        <div class="comment-title">
+                            <i class="fas fa-robot me-1"></i>AI ANALYSIS
+                        </div>
                         <div class="comment-text" id="my-desc">분석 중...</div>
                     </div>
                 </div>
 
                 <div th:if="${myResult == null}" class="py-5">
                     <h4 class="text-muted">분석 실패</h4>
-                    <p class="small text-muted">데이터가 부족합니다.</p>
+                    <p class="small text-muted">내 메시지가 충분하지 않아 분석할 수 없었어요.</p>
                 </div>
             </div>
         </div>
 
+        <!-- 🔹 상대 프로필들 (단체톡 지원) -->
         <div class="col-lg-6 animate-card delay-2">
-            <div class="mbti-card">
-                <span class="user-role">PARTNER PROFILE</span>
-                
-                <div th:if="${partnerResult != null}">
-                    <h3 class="user-name"><span th:text="${partnerName}">상대</span> 님</h3>
-                    
-                    <div class="mbti-code text-gradient-partner" id="partner-mbti" th:text="${partnerResult.finalMbti}">ENFP</div>
-                    
+
+            <!-- 상대 여러 명 있을 때 -->
+            <div th:if="${partnerResults != null and !partnerResults.isEmpty()}">
+                <div th:each="p, iter : ${partnerResults}" class="mbti-card mb-4">
+
+                    <span class="user-role"
+                          th:text="'PARTNER PROFILE ' + ${iter.count}">
+                        PARTNER PROFILE
+                    </span>
+
+                    <h3 class="user-name">
+                        <span th:text="${p.name}">상대</span> 님
+                    </h3>
+
+                    <div class="mbti-code text-gradient-partner"
+                         th:id="'partner-mbti-' + ${iter.index}"
+                         th:text="${p.result.finalMbti}">
+                        ENFP
+                    </div>
+
                     <div class="confidence-wrap">
                         <span class="confidence-label">AI 신뢰도</span>
                         <div class="confidence-bar-bg">
-                            <div class="confidence-bar-fill" 
-                                 th:style="'width: ' + ${partnerResult.finalConfidence * 150} + '%; background-color: #ff9a9e;'"></div>
+                            <div class="confidence-bar-fill"
+                                 th:style="'width: ' + ${p.result.finalConfidence * 150} + '%; background-color: #ff9a9e;'">
+                            </div>
                         </div>
-                        <span class="confidence-label" th:text="${#numbers.formatInteger(partnerResult.finalConfidence * 150, 1) + '%'}"></span>
+                        <span class="confidence-label"
+                              th:text="${#numbers.formatInteger(p.result.finalConfidence * 150, 1) + '%'}">
+                            90%
+                        </span>
                     </div>
 
-                    <div class="keyword-box" id="partner-keywords"></div>
+                    <!-- 나와의 개별 궁합 점수 -->
+                    <div class="mt-2 small text-muted">
+                        나와의 궁합 점수:
+                        <span th:text="${p.chemistryScore}">90</span>점
+                    </div>
 
+                    <!-- MBTI 키워드 들어가는 영역 (JS로 채움) -->
+                    <div class="keyword-box"
+                         th:id="'partner-keywords-' + ${iter.index}"></div>
+
+                    <!-- AI 분석 설명 -->
                     <div class="analysis-comment">
-                        <div class="comment-title"><i class="fas fa-robot me-1"></i>AI ANALYSIS</div>
-                        <div class="comment-text" id="partner-desc">분석 중...</div>
+                        <div class="comment-title">
+                            <i class="fas fa-robot me-1"></i>AI ANALYSIS
+                        </div>
+                        <div class="comment-text"
+                             th:id="'partner-desc-' + ${iter.index}">
+                            분석 중...
+                        </div>
                     </div>
-                </div>
-
-                <div th:if="${partnerResult == null}" class="py-5">
-                    <h4 class="text-muted">정보 없음</h4>
-                    <p class="small text-muted">상대방 데이터를 찾을 수 없습니다.</p>
                 </div>
             </div>
-        </div>
-    </div> 
 
+            <!-- 상대가 한 명도 없을 때 -->
+            <div th:if="${partnerResults == null or partnerResults.isEmpty()}" class="mbti-card py-5">
+                <h4 class="text-muted">상대 정보 없음</h4>
+                <p class="small text-muted">내 이외의 대화 참여자가 감지되지 않았어요.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 🔹 버튼 -->
     <div class="text-center" style="margin-top: 60px;">
         <a href="/mbti" class="btn-kakao-action">
             <i class="fas fa-redo-alt me-2"></i>다시 분석하기
@@ -111,6 +169,7 @@
 
 </div>
 
+<!-- 🔹 JS: MBTI별 키워드 & 설명 자동 채우기 -->
 <script>
     const mbtiData = {
         'ISTJ': { keys: ['#책임감', '#현실적', '#정리정돈'], desc: '한번 시작한 일은 끝까지 해내는 책임감이 강한 스타일이에요. 논리적이고 체계적인 대화를 선호하네요.' },
@@ -136,23 +195,41 @@
         if (!mbtiEl) return;
 
         const mbti = mbtiEl.innerText.trim();
-        const info = mbtiData[mbti] || { keys: ['#알수없음', '#신비주의'], desc: '데이터 부족으로 상세 성향을 분석하지 못했어요.' };
+        const info = mbtiData[mbti] || {
+            keys: ['#알수없음', '#신비주의'],
+            desc: '데이터 부족으로 상세 성향을 분석하지 못했어요.'
+        };
 
         const keywordBox = document.getElementById(keywordId);
-        let html = '';
-        info.keys.forEach(key => {
-            html += `<span class="hash-tag">${key}</span>`;
-        });
-        keywordBox.innerHTML = html;
+        if (keywordBox) {
+            let html = '';
+            info.keys.forEach(key => {
+                html += `<span class="hash-tag">${key}</span>`;
+            });
+            keywordBox.innerHTML = html;
+        }
 
-        document.getElementById(descId).innerText = info.desc;
+        const descEl = document.getElementById(descId);
+        if (descEl) {
+            descEl.innerText = info.desc;
+        }
     }
 
-    window.onload = function() {
+    window.onload = function () {
+        // 내 MBTI 카드
         setMbtiInfo('my-mbti', 'my-keywords', 'my-desc');
-        setMbtiInfo('partner-mbti', 'partner-keywords', 'partner-desc');
+
+        // 상대들 MBTI 카드 (partner-mbti-0,1,2,... 형식)
+        const partnerMbtiElements = document.querySelectorAll('.mbti-code.text-gradient-partner');
+        partnerMbtiElements.forEach((el, idx) => {
+            const mbtiId = 'partner-mbti-' + idx;
+            const keywordsId = 'partner-keywords-' + idx;
+            const descId = 'partner-desc-' + idx;
+            setMbtiInfo(mbtiId, keywordsId, descId);
+        });
     };
 </script>
+
 <div th:replace="fragments/footer :: siteFooter"></div>
 
 </body>

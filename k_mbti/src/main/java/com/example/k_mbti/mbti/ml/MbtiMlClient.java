@@ -7,11 +7,11 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class MbtiMlClient {
 
-    private static final String PYTHON_PATH = "python"; // 안되면 전체 경로(ex: C:\\Python39\\python.exe)
+    private static final String PYTHON_PATH = "C:\\Users\\ksw\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"; // 안되면 전체 경로(ex: C:\\Python39\\python.exe) // 안되면 전체 경로(ex: C:\\Python39\\python.exe)
 
     // ❗ 본인 PC의 파이썬 스크립트 경로로 꼭 확인해주세요!
     private static final String SCRIPT_PATH =
-            "C:/project/mbti/k_mbti/ml_python/predict_mbti.py";
+            "C:/project/k_mbti/k_mbti/ml_python/predict_mbti.py";
 
     public MbtiMlResult predict(String fullText) {
         
